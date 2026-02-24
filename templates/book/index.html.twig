@@ -1,0 +1,18 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    Books list
+{% endblock %}
+
+{% block body %}
+    <h1>Books list</h1>
+
+    {% for book in books %}
+        <p>{{ book.title }}</p>
+        <p>{{ book.createdAt|date('Y-m-d') }}</p>
+        <p>{{ book.updatedAt|date('Y-m-d') }}</p>
+        <p>{{ book.status.value }}</p>
+        <p>{{ book.yearOfRelease }}</p>
+        <p>{{ book.pages }}</p>
+    {% endfor %}
+{% endblock %}
