@@ -8,11 +8,13 @@
     <h1>Books list</h1>
 
     {% for book in books %}
-        <p>{{ book.title }}</p>
-        <p>{{ book.createdAt|date('Y-m-d') }}</p>
-        <p>{{ book.updatedAt|date('Y-m-d') }}</p>
-        <p>{{ book.status.value }}</p>
-        <p>{{ book.yearOfRelease }}</p>
-        <p>{{ book.pages }}</p>
+        <p>Id: {{ book.id }}</p>
+        <p>Title: {{ book.title }}</p>
+        <p>Created at: {{ book.createdAt|date('Y-m-d') }}</p>
+        <p>Updated at: {{ book.updatedAt|date('Y-m-d') }}</p>
+        <p>Status: {{ book.status.value }}</p>
+        <p>Year of release: {{ book.yearOfRelease }}</p>
+        <p>Pages: {{ book.pages }}</p>
+        <p>Category: {{ book.category.title }}</p>
     {% endfor %}
 {% endblock %}

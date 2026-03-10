@@ -1,0 +1,7 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    {{ form_start(form, {'action': path('category_delete', {'id': category.id}), 'method': 'DELETE'}) }}
+        <button>Delete</button>
+    {{ form_end(form) }}
+{% endblock %}

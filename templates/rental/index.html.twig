@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+<h1>Rentals</h1>
+
+{% for rental in rentals %}
+    <p>Created at: {{rental.createdAt|date('Y-m-d')}}</p>
+    <p>Updated at: {{rental.updatedAt|date('Y-m-d')}}</p>
+{% endfor %}
+{% endblock %}

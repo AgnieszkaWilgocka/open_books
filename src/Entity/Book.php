@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Enum\BookStatusEnum;
 use App\Repository\BookRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: BookRepository::class)]
 class Book
@@ -24,13 +25,19 @@ class Book
     private ?\DateTimeImmutable $updatedAt = null;
 
     #[ORM\Column]
+    #[Assert\Positive]
+    #[Assert\LessThan(2027)]
     private ?int $yearOfRelease = null;
 
     #[ORM\Column]
+    #[Assert\Positive]
     private ?int $pages = null;
 
     #[ORM\Column(length: 255)]
     private BookStatusEnum $status;
+
+    #[ORM\ManyToOne(inversedBy: 'books')]
+    private ?Category $category = null;
 
     public function getId(): ?int
     {
@@ -105,6 +112,18 @@ class Book
     public function setStatus(BookStatusEnum $status): static
     {
         $this->status = $status;
+
+        return $this;
+    }
+
+    public function getCategory(): ?Category
+    {
+        return $this->category;
+    }
+
+    public function setCategory(?Category $category): static
+    {
+        $this->category = $category;
 
         return $this;
     }

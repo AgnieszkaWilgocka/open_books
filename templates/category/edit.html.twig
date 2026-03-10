@@ -1,0 +1,7 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    {{ form_start(form, {'action': path('category_edit', {'id': category.id}), 'method': 'PUT'}) }}
+    {{ form_rest(form) }}
+    {{ form_end(form) }}
+{% endblock %}

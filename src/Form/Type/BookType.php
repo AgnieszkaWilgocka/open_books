@@ -2,11 +2,15 @@
 
 namespace App\Form\Type;
 
+use App\Entity\Book;
+use App\Entity\Category;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class BookType extends AbstractType
 {
@@ -16,29 +20,53 @@ class BookType extends AbstractType
             'title',
             TextType::class,
             [
-                'attr' => ['placeholder' => 'e.g Pinokio']
+                'attr' => [
+                    'placeholder' => 'e.g Pinokio',
+                ]
             ]
         )
         ->add(
             'year_of_release',
             IntegerType::class,
             [
-                'attr' => ['min' => 1800, 'max' => 2026, 'placeholder' => 'Enter the year of book release' ]
+                'attr' => [
+                    'min' => 1800,
+                    'max' => 2026,
+                    'placeholder' => 'Enter the year of book release',
+                ]
             ]
         )
         ->add(
             'pages',
             IntegerType::class,
             [
-                'attr' => ['min' => 1, 'placeholder' => 'Enter pages number']
+                'attr' => [
+                    'min' => 1,
+                    'placeholder' => 'Enter pages number',
+                ]
             ]
         )
         ->add(
             'save',
             SubmitType::class,
             [
-                'label' => 'Create Book'
+                'label' => 'Save Book'
+            ]
+        )
+        ->add(
+            'category',
+            EntityType::class,
+            [
+                'class' => Category::class,
+                'choice_label' => 'title'
             ]
         );
+    }
+
+    public function configureOptions(OptionsResolver $resolver): void
+    {
+        $resolver->setDefaults([
+            'data_class' => Book::class,
+        ]);
     }
 }

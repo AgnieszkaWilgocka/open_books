@@ -1,0 +1,7 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    {{ form_start(form, {'action': path('book_edit', {'id': book.id}), 'method': 'PUT'}) }}
+    {{ form_rest(form) }}
+    {{ form_end(form) }}
+{% endblock %}
