@@ -7,14 +7,14 @@
 {% block body %}
     <h1>Books list</h1>
 
-    {% for book in books %}
+     {% for book in books %}
         <p>Id: {{ book.id }}</p>
         <p>Title: {{ book.title }}</p>
         <p>Created at: {{ book.createdAt|date('Y-m-d') }}</p>
         <p>Updated at: {{ book.updatedAt|date('Y-m-d') }}</p>
-        <p>Status: {{ book.status.value }}</p>
+        <p>Status: {{ book.rentals|length ? 'Borrowed' : 'Available' }}</p>
         <p>Year of release: {{ book.yearOfRelease }}</p>
         <p>Pages: {{ book.pages }}</p>
-        <p>Category: {{ book.category.title }}</p>
-    {% endfor %}
+        <p>Category: {{ book.category.title }}</p> 
+    {% endfor %} 
 {% endblock %}

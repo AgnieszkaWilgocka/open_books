@@ -19,6 +19,15 @@ class Rental
     #[ORM\Column]
     private ?\DateTimeImmutable $updatedAt = null;
 
+    #[ORM\ManyToOne]
+    private ?Book $book = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?\DateTimeImmutable $returnedAt = null;
+
+    #[ORM\Column]
+    private ?\DateTimeImmutable $rentedAt = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -44,6 +53,42 @@ class Rental
     public function setUpdatedAt(\DateTimeImmutable $updatedAt): static
     {
         $this->updatedAt = $updatedAt;
+
+        return $this;
+    }
+
+    public function getBook(): ?Book
+    {
+        return $this->book;
+    }
+
+    public function setBook(?Book $book): static
+    {
+        $this->book = $book;
+
+        return $this;
+    }
+
+    public function getReturnedAt(): ?\DateTimeImmutable
+    {
+        return $this->returnedAt;
+    }
+
+    public function setReturnedAt(?\DateTimeImmutable $returnedAt): static
+    {
+        $this->returnedAt = $returnedAt;
+
+        return $this;
+    }
+
+    public function getRentedAt(): ?\DateTimeImmutable
+    {
+        return $this->rentedAt;
+    }
+
+    public function setRentedAt(\DateTimeImmutable $rentedAt): static
+    {
+        $this->rentedAt = $rentedAt;
 
         return $this;
     }

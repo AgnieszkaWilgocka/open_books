@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Rental;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -11,9 +12,15 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class RentalRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
+    public function __construct(ManagerRegistry $registry, private EntityManagerInterface $entityManager)
     {
         parent::__construct($registry, Rental::class);
+    }
+
+    public function save(Rental $rental): void
+    {
+        $this->entityManager->persist($rental);
+        $this->entityManager->flush();
     }
 
     //    /**

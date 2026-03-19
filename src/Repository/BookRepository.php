@@ -3,7 +3,10 @@
 namespace App\Repository;
 
 use App\Entity\Book;
+use App\Entity\Rental;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -11,9 +14,34 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class BookRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
+    public function __construct(ManagerRegistry $registry, private EntityManagerInterface $entityManager)
     {
         parent::__construct($registry, Book::class);
+    }
+
+    public function save(Book $book): void
+    {
+        $this->entityManager->persist($book);
+        $this->entityManager->flush();
+    }
+
+    public function getBooks(): array
+    {
+        return $this->createQueryBuilder('book')
+            ->select('book', 'partial rentals.{id, returnedAt}')
+            ->leftJoin('book.rentals', 'rentals', 'WITH', 'rentals.returnedAt IS NULL')
+            ->orderBy('book.title', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function getAvailable(): QueryBuilder
+    {
+        return $this->createQueryBuilder('book')
+            ->select('book', 'rentals')
+            ->leftJoin('book.rentals', 'rentals', 'WITH', 'rentals.returnedAt IS NULL')
+            ->andWhere('rentals.id IS NULL' )
+            ->orderBy('book.title', 'ASC');
     }
 
     //    /**

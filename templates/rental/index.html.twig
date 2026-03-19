@@ -1,11 +1,15 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
+    <h1>Rentals</h1>
 
-<h1>Rentals</h1>
-
-{% for rental in rentals %}
-    <p>Created at: {{rental.createdAt|date('Y-m-d')}}</p>
-    <p>Updated at: {{rental.updatedAt|date('Y-m-d')}}</p>
-{% endfor %}
+    {% for rental in rentals %}
+        <p>Id: {{ rental.id }}
+        <p>Created at: {{rental.createdAt|date('Y-m-d')}}</p>
+        <p>Updated at: {{rental.updatedAt|date('Y-m-d')}}</p>
+        <p>Rented at: {{ rental.rentedAt|date('Y-m-d')}}</p>
+        <p>Book: {{rental.book.title}}</p>
+        <p>Status: {{rental.returnedAt ? 'Returned' : 'Borrowed' }}</p>
+        <p>Returned at: {{ rental.returnedAt ? rental.returnedAt|date('Y-m-d') : '-'}}</p>
+    {% endfor %}
 {% endblock %}

@@ -17,6 +17,8 @@ class BookFixtures extends Fixture implements DependentFixtureInterface
 {
     private Generator $faker;
 
+    const BOOK_REFERENCE = 'book';
+
 	public function load(ObjectManager $manager): void
 	{
         $this->faker = Factory::create();
@@ -28,9 +30,9 @@ class BookFixtures extends Fixture implements DependentFixtureInterface
             $book->setUpdatedAt(DateTimeImmutable::createFromMutable($this->faker->dateTimeBetween('-30 days', 'now')));
             $book->setYearOfRelease($this->faker->numberBetween(1900, 2026));
             $book->setPages($this->faker->numberBetween(100, 500));
-            $book->setStatus(BookStatusEnum::Available);
             $book->setCategory($this->getReference(CategoryFixtures::CATEGORY_REFERENCE . '_' . $this->faker->numberBetween(0, 9), Category::class));
 
+            $this->addReference(self::BOOK_REFERENCE . '_' . $i, $book);
             $manager->persist($book);
         }
 

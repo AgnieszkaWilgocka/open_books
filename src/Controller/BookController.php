@@ -2,7 +2,6 @@
 namespace App\Controller;
 
 use App\Entity\Book;
-use App\Enum\BookStatusEnum;
 use App\Form\Type\BookType;
 use App\Repository\BookRepository;
 use DateTimeImmutable;
@@ -21,7 +20,9 @@ class BookController extends AbstractController
     #[Route('/', name: 'book_index', methods: ['GET'])]
     public function index(): Response
     {
-        $books = $this->bookRepository->findAll();
+        $books = $this->bookRepository->getBooks();
+
+        // var_dump($books);
 
         return $this->render('/book/index.html.twig', ['books' => $books]);
     }
@@ -37,7 +38,6 @@ class BookController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $book->setCreatedAt(new DateTimeImmutable());
             $book->setUpdatedAt(new DateTimeImmutable());
-            $book->setStatus(BookStatusEnum::Available);
 
             $this->entityManager->persist($book);
             $this->entityManager->flush();

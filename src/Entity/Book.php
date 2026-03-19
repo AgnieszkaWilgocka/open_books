@@ -2,8 +2,9 @@
 
 namespace App\Entity;
 
-use App\Enum\BookStatusEnum;
 use App\Repository\BookRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -33,11 +34,16 @@ class Book
     #[Assert\Positive]
     private ?int $pages = null;
 
-    #[ORM\Column(length: 255)]
-    private BookStatusEnum $status;
-
     #[ORM\ManyToOne(inversedBy: 'books')]
     private ?Category $category = null;
+
+    #[ORM\OneToMany(targetEntity: Rental::class, mappedBy: 'book')]
+    private $rentals;
+
+    public function __construct()
+    {
+        $this->rentals = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -104,18 +110,6 @@ class Book
         return $this;
     }
 
-    public function getStatus(): BookStatusEnum
-    {
-        return $this->status;
-    }
-
-    public function setStatus(BookStatusEnum $status): static
-    {
-        $this->status = $status;
-
-        return $this;
-    }
-
     public function getCategory(): ?Category
     {
         return $this->category;
@@ -124,6 +118,32 @@ class Book
     public function setCategory(?Category $category): static
     {
         $this->category = $category;
+
+        return $this;
+    }
+
+    public function getRentals(): Collection
+    {
+        return $this->rentals;
+    }
+
+    public function addRental(Rental $rental): self
+    {
+        if (!$this->rentals->contains($rental)) {
+            $this->rentals[] = $rental;
+            $rental->setBook($this);
+        }
+
+        return $this;
+    }
+
+    public function removeRental(Rental $rental): self
+    {
+        if ($this->rentals->removeElement($rental)) {
+            if ($rental->getBook() === $this) {
+                $rental->setBook(null);
+            }
+        }
 
         return $this;
     }

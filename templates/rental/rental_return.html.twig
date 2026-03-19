@@ -1,0 +1,7 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    {{ form_start(form, {'action': path('rental_return', {'id': rental.id}), 'method': 'PUT'}) }}
+        <button>Save</button>
+    {{ form_end(form) }}
+{% endblock %}
