@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\BookRepository;
+use App\Service\FileUploaderHelper;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -39,6 +40,9 @@ class Book
 
     #[ORM\OneToMany(targetEntity: Rental::class, mappedBy: 'book')]
     private $rentals;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $imageFileName = null;
 
     public function __construct()
     {
@@ -146,5 +150,22 @@ class Book
         }
 
         return $this;
+    }
+
+    public function getImageFileName(): ?string
+    {
+        return $this->imageFileName;
+    }
+
+    public function setImageFileName(?string $imageFileName): static
+    {
+        $this->imageFileName = $imageFileName;
+
+        return $this;
+    }
+
+    public function getImagePath(): string
+    {
+        return '/uploads/'. FileUploaderHelper::BOOK_IMAGE . '/' .  $this->getImageFileName();
     }
 }

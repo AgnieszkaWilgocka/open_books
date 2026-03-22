@@ -8,6 +8,11 @@
     <h1>Books list</h1>
 
      {% for book in books %}
+        {% if book.imageFileName %}
+            <img src="{{ asset(book.getImagePath) }}" alt="{{ book.title }}">
+        {% else %}
+            <p>No file uploaded</p>
+        {% endif %}
         <p>Id: {{ book.id }}</p>
         <p>Title: {{ book.title }}</p>
         <p>Created at: {{ book.createdAt|date('Y-m-d') }}</p>

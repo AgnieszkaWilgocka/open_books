@@ -4,10 +4,12 @@ namespace App\Controller;
 use App\Entity\Book;
 use App\Form\Type\BookType;
 use App\Repository\BookRepository;
+use App\Service\FileUploaderHelper;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\FormType;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -15,14 +17,12 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route('/books')]
 class BookController extends AbstractController
 {
-    public function __construct(private BookRepository $bookRepository, private EntityManagerInterface $entityManager) {}
+    public function __construct(private BookRepository $bookRepository, private EntityManagerInterface $entityManager, private FileUploaderHelper $fileUploaderHelper) {}
 
     #[Route('/', name: 'book_index', methods: ['GET'])]
     public function index(): Response
     {
         $books = $this->bookRepository->getBooks();
-
-        // var_dump($books);
 
         return $this->render('/book/index.html.twig', ['books' => $books]);
     }
@@ -36,6 +36,16 @@ class BookController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            
+            /** @var UploadedFile $uploadedFile */
+            $uploadedFile = $form->get('fileName')->getData();
+
+            if ($uploadedFile) {
+                $newFilename = $this->fileUploaderHelper->uploadFile($uploadedFile);
+                
+                $book->setImageFileName($newFilename);
+            }
+
             $book->setCreatedAt(new DateTimeImmutable());
             $book->setUpdatedAt(new DateTimeImmutable());
 
@@ -62,6 +72,15 @@ class BookController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            /** @var UploadedFile $uploadedFile */
+            $uploadedFile = $form->get('fileName')->getData();
+
+            if ($uploadedFile) {
+                $newFilename = $this->fileUploaderHelper->uploadFile($uploadedFile);
+                
+                $book->setImageFileName($newFilename);
+            }
+            
             $book->setUpdatedAt(new DateTimeImmutable());
 
             $this->entityManager->persist($book);
