@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Book;
 use App\Entity\Rental;
 use App\Enum\BookStatusEnum;
 use App\Form\Type\RentalType;
@@ -32,11 +33,16 @@ class RentalController extends AbstractController
     }
 
     #[Route('/create', name: 'rental_create', methods: ['GET', 'POST'])]
-    public function create(Request $request): Response
+    #[Route('/create/{id}', name: 'rental_create_with_book', requirements: ['id' => '[1-9]\d*'], methods: ['GET', 'POST'])]
+    public function create(Request $request, ?Book $book = null): Response
     {
         $rental = new Rental();
 
-        $form = $this->createForm(RentalType::class, $rental);
+        if ($book) {
+            $rental->setBook($book);
+        }
+
+        $form = $this->createForm(RentalType::class, $rental, ['lock_book' => $book !== null]);
 
         $form->handleRequest($request);
 

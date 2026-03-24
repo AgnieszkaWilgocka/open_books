@@ -1,15 +1,33 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <h1>Rentals</h1>
-
-    {% for rental in rentals %}
-        <p>Id: {{ rental.id }}
-        <p>Created at: {{rental.createdAt|date('Y-m-d')}}</p>
-        <p>Updated at: {{rental.updatedAt|date('Y-m-d')}}</p>
-        <p>Rented at: {{ rental.rentedAt|date('Y-m-d')}}</p>
-        <p>Book: {{rental.book.title}}</p>
-        <p>Status: {{rental.returnedAt ? 'Returned' : 'Borrowed' }}</p>
-        <p>Returned at: {{ rental.returnedAt ? rental.returnedAt|date('Y-m-d') : '-'}}</p>
-    {% endfor %}
+  <h1>Rentals</h1>
+  {% if rentals|length %}
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>Id</th>
+          <th>Rented at</th>
+          <th>Updated at</th>
+          <th>Book</th>
+          <th>Status</th>
+          <th>Returned at</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for rental in rentals %}
+          <tr>
+            <td>{{ rental.id }}</td>
+            <td>{{ rental.rentedAt|date('Y-m-d') }}</td>
+            <td>{{ rental.updatedAt|date('Y-m-d') }}</td>
+            <td>{{ rental.book.title }}</td>
+            <td>{{ rental.returnedAt ? 'Returned' : 'Borrowed' }}</td>
+            <td>{{ rental.returnedAt ? rental.returnedAt|date('Y-m-d') : '-' }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <p>No rentals found</p>
+  {% endif %}
 {% endblock %}
