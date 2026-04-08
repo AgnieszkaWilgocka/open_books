@@ -25,7 +25,7 @@ security:
                 username_parameter: email
                 password_parameter: password
                 default_target_path: book_index
-                enable_csrf: true
+                # enable_csrf: true
             # custom_authenticators:
             #     - App\Security\LoginFormAuthenticator
             logout: true

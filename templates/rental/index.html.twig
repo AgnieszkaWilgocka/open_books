@@ -12,6 +12,7 @@
           <th>Book</th>
           <th>Status</th>
           <th>Returned at</th>
+          <th>Owner </th>
         </tr>
       </thead>
       <tbody>
@@ -23,6 +24,7 @@
             <td>{{ rental.book.title }}</td>
             <td>{{ rental.returnedAt ? 'Returned' : 'Borrowed' }}</td>
             <td>{{ rental.returnedAt ? rental.returnedAt|date('Y-m-d') : '-' }}</td>
+            <td>{{ rental.owner.email }}</td>
           </tr>
         {% endfor %}
       </tbody>

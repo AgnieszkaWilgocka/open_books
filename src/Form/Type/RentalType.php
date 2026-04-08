@@ -21,7 +21,7 @@ class RentalType extends AbstractType
             [
                 'class' => Book::class,
                 'query_builder' => fn(BookRepository $bookRepository) => 
-                    $bookRepository->getAvailable(),
+                    $bookRepository->queryAvailable(),
                 'choice_label' => 'title',
                 'disabled' => $options['lock_book']
             ]

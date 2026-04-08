@@ -13,6 +13,7 @@
           <img src="{{ asset(book.getImagePath) }}" alt="{{ book.title }}" class="img-book">
           <div class="card-body">
             <h5 class="card-title">{{ book.title }}</h5>
+            <p>id: {{book.id}}</p>
             <h6 class="card-subtitle mb-2 text-body-secondary">{{ book.rentals|length ? 'Borrowed' : 'Available' }}</h6>
             <p class="card-text">{{ book.yearOfRelease }}, Pages: {{ book.pages }}</p>
             <p class="card-text">Category: {{ book.category.title }}</p>
@@ -20,7 +21,7 @@
             {% if book.rentals|length %}
                 <a href="#" class="btn btn-primary">Powiadom</a>
             {% else %}
-                <a href="{{ url(name = 'rental_create_with_book', parameters = {id: book.id }) }}" class="btn btn-primary">Wypożycz</a>
+                <a href="{{ url(name = 'rental_create_with_book', parameters = {book_id: book.id }) }}" class="btn btn-primary">Wypożycz</a>
             {% endif %}
           </div>
         </div>

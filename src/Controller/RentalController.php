@@ -4,16 +4,21 @@ namespace App\Controller;
 
 use App\Entity\Book;
 use App\Entity\Rental;
-use App\Enum\BookStatusEnum;
+use App\Entity\User;
 use App\Form\Type\RentalType;
 use App\Repository\BookRepository;
 use App\Repository\RentalRepository;
+use App\Security\Voter\RentalVoter;
 use DateTimeImmutable;
+use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\FormType;
+use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\CurrentUser;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/rentals')]
 class RentalController extends AbstractController
@@ -22,9 +27,11 @@ class RentalController extends AbstractController
     {}
 
     #[Route('/', name: 'rental_index', methods: ['GET'])]
-    public function index(): Response
+    #[IsGranted('ROLE_USER')]
+    public function index(#[CurrentUser] User $user): Response
     {
-        $rentals = $this->rentalRepository->findAll();
+        $rentals = $this->rentalRepository->queryAll($user);
+        // $rentals = $this->rentalRepository->findAll();
 
         return $this->render('/rental/index.html.twig',
         [
@@ -33,20 +40,27 @@ class RentalController extends AbstractController
     }
 
     #[Route('/create', name: 'rental_create', methods: ['GET', 'POST'])]
-    #[Route('/create/{id}', name: 'rental_create_with_book', requirements: ['id' => '[1-9]\d*'], methods: ['GET', 'POST'])]
-    public function create(Request $request, ?Book $book = null): Response
+    #[Route('/create/{book_id}', name: 'rental_create_with_book', requirements: ['id' => '[1-9]\d*'], methods: ['GET', 'POST'])]
+    #[IsGranted('ROLE_USER')]
+    public function create(Request $request, #[CurrentUser] User $user, ?Book $book = null): Response
     {
         $rental = new Rental();
-
+        
         if ($book) {
             $rental->setBook($book);
         }
 
+        $rental->setOwner($user);
         $form = $this->createForm(RentalType::class, $rental, ['lock_book' => $book !== null]);
 
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $selected_book = $form->get('book')->getData();
+
+            if ($this->bookRepository->isCurrentlyRented($selected_book)) {
+                $form->addError(new FormError('Book is currently borrowed'));
+            }
 
             $rental->setCreatedAt(new DateTimeImmutable());
             $rental->setUpdatedAt(new DateTimeImmutable());
@@ -64,8 +78,15 @@ class RentalController extends AbstractController
     }
 
     #[Route('/returnBook/{id}', name: 'rental_return', requirements: ['id' => '[1-9]\d*'], methods: ['GET', 'PUT'])]
+    #[IsGranted(RentalVoter::RENTAL_RETURN, subject: 'rental')]
     public function returnBook(Request $request, Rental $rental): Response
     {
+        if (!$rental->canBeReturned()) {
+            throw new Exception('rental already returned');    
+
+            //to-do: flash message
+        }
+
         $form = $this->createForm(FormType::class, $rental, 
         [
             'action' => $this->generateUrl('rental_return', ['id' => $rental->getId()]),
@@ -75,7 +96,6 @@ class RentalController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-
             $rental->setCreatedAt(new DateTimeImmutable());
             $rental->setUpdatedAt(new DateTimeImmutable());
             $rental->setReturnedAt(new DateTimeImmutable());
@@ -91,5 +111,4 @@ class RentalController extends AbstractController
             'rental' => $rental
         ]);
     }
-
 }

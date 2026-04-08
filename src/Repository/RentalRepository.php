@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Rental;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
@@ -21,6 +22,18 @@ class RentalRepository extends ServiceEntityRepository
     {
         $this->entityManager->persist($rental);
         $this->entityManager->flush();
+    }
+
+    public function queryAll(User $owner): array
+    {
+        return $this->createQueryBuilder('rental')
+            ->select('rental', 'partial user.{id, email}')
+            ->join('rental.owner', 'user')
+            ->andWhere('rental.owner = :owner')
+            ->setParameter('owner', $owner)
+            ->orderBy('rental.rentedAt', 'ASC')
+            ->getQuery()
+            ->getResult();
     }
 
     //    /**

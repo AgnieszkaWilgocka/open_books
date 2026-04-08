@@ -28,6 +28,10 @@ class Rental
     #[ORM\Column]
     private ?\DateTimeImmutable $rentedAt = null;
 
+    #[ORM\ManyToOne]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?User $owner;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -91,5 +95,22 @@ class Rental
         $this->rentedAt = $rentedAt;
 
         return $this;
+    }
+
+    public function getOwner(): ?User
+    {
+        return $this->owner;
+    }
+
+    public function setOwner(?User $owner): static
+    {
+        $this->owner = $owner;
+
+        return $this;
+    }
+
+    public function canBeReturned(): bool
+    {
+        return $this->returnedAt === null;
     }
 }

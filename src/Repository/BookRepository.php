@@ -25,7 +25,7 @@ class BookRepository extends ServiceEntityRepository
         $this->entityManager->flush();
     }
 
-    public function getBooks(): array
+    public function queryAll(): array
     {
         return $this->createQueryBuilder('book')
             ->select('book', 'partial rentals.{id, returnedAt}')
@@ -35,13 +35,26 @@ class BookRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    public function getAvailable(): QueryBuilder
+    public function queryAvailable(): QueryBuilder
     {
         return $this->createQueryBuilder('book')
             ->select('book', 'rentals')
             ->leftJoin('book.rentals', 'rentals', 'WITH', 'rentals.returnedAt IS NULL')
             ->andWhere('rentals.id IS NULL' )
             ->orderBy('book.title', 'ASC');
+    }
+
+    public function isCurrentlyRented(Book $book): bool
+    {
+        return (bool) $this->createQueryBuilder('book')
+            ->select('1')
+            ->join('book.rentals', 'rentals')
+            ->andWhere('b == :book')
+            ->andWhere('rentals.returnedAt IS NULL')
+            ->setParameter('book', $book)
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getOneOrNullResult();
     }
 
     //    /**
