@@ -43,7 +43,6 @@ class BookFixtures extends Fixture implements DependentFixtureInterface
             $book->setYearOfRelease($this->faker->numberBetween(1900, 2026));
             $book->setPages($this->faker->numberBetween(100, 500));
             $book->setCategory($this->getReference(CategoryFixtures::CATEGORY_REFERENCE . '_' . $this->faker->numberBetween(0, 9), Category::class));
-
             $imageFilename = $this->fakeFileUpload();
             $book->setImageFileName($imageFilename);
 
