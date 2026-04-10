@@ -21,7 +21,7 @@
             {% if book.rentals|length %}
                 <a href="#" class="btn btn-primary">Powiadom</a>
             {% else %}
-                <a href="{{ url(name = 'rental_create_with_book', parameters = {book_id: book.id }) }}" class="btn btn-primary">Wypożycz</a>
+                <a href="{{ url(name = 'rental_create_with_book', parameters = {id: book.id }) }}" class="btn btn-primary">Wypożycz</a>
             {% endif %}
           </div>
         </div>

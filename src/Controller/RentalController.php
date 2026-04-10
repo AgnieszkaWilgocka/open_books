@@ -10,10 +10,8 @@ use App\Repository\BookRepository;
 use App\Repository\RentalRepository;
 use App\Security\Voter\RentalVoter;
 use DateTimeImmutable;
-use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\FormType;
-use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -40,7 +38,7 @@ class RentalController extends AbstractController
     }
 
     #[Route('/create', name: 'rental_create', methods: ['GET', 'POST'])]
-    #[Route('/create/{book_id}', name: 'rental_create_with_book', requirements: ['id' => '[1-9]\d*'], methods: ['GET', 'POST'])]
+    #[Route('/create/{id}', name: 'rental_create_with_book', requirements: ['id' => '[1-9]\d*'], methods: ['GET', 'POST'])]
     #[IsGranted('ROLE_USER')]
     public function create(Request $request, #[CurrentUser] User $user, ?Book $book = null): Response
     {
@@ -59,7 +57,9 @@ class RentalController extends AbstractController
             $selected_book = $form->get('book')->getData();
 
             if ($this->bookRepository->isCurrentlyRented($selected_book)) {
-                $form->addError(new FormError('Book is currently borrowed'));
+                $this->addFlash('warning', 'This book is currently borrowed');
+
+                return $this->redirectToRoute('book_index');
             }
 
             $rental->setCreatedAt(new DateTimeImmutable());
@@ -67,6 +67,8 @@ class RentalController extends AbstractController
             $rental->setRentedAt(new DateTimeImmutable());
 
             $this->rentalRepository->save($rental);
+
+            $this->addFlash('success', 'Rental created successfully');
 
             return $this->redirectToRoute('rental_index');
         }
@@ -82,9 +84,10 @@ class RentalController extends AbstractController
     public function returnBook(Request $request, Rental $rental): Response
     {
         if (!$rental->canBeReturned()) {
-            throw new Exception('rental already returned');    
 
-            //to-do: flash message
+            $this->addFlash('warning', 'Rental already returned');
+            return $this->redirectToRoute('rental_index');
+            // throw new Exception('rental already returned');    
         }
 
         $form = $this->createForm(FormType::class, $rental, 
@@ -101,6 +104,8 @@ class RentalController extends AbstractController
             $rental->setReturnedAt(new DateTimeImmutable());
 
             $this->rentalRepository->save($rental);
+
+            $this->addFlash('success', 'Book returned successfully');
 
             return $this->redirectToRoute('rental_index');
         }

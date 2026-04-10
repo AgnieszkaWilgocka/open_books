@@ -3,7 +3,6 @@
 namespace App\Repository;
 
 use App\Entity\Book;
-use App\Entity\Rental;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\QueryBuilder;
@@ -49,7 +48,7 @@ class BookRepository extends ServiceEntityRepository
         return (bool) $this->createQueryBuilder('book')
             ->select('1')
             ->join('book.rentals', 'rentals')
-            ->andWhere('b == :book')
+            ->andWhere('book = :book')
             ->andWhere('rentals.returnedAt IS NULL')
             ->setParameter('book', $book)
             ->setMaxResults(1)

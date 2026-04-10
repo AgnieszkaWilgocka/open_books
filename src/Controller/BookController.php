@@ -52,6 +52,8 @@ class BookController extends AbstractController
             $this->entityManager->persist($book);
             $this->entityManager->flush();
 
+            $this->addFlash('success', 'Book created successfully');
+
             return $this->redirectToRoute('book_index');        
         }
 
@@ -86,6 +88,8 @@ class BookController extends AbstractController
             $this->entityManager->persist($book);
             $this->entityManager->flush();
 
+            $this->addFlash('success', 'Book updated successfully');
+
             return $this->redirectToRoute('book_index');
         }
 
@@ -109,6 +113,8 @@ class BookController extends AbstractController
         if ($form->isSubmitted() &&  $form->isValid()) {
             $this->entityManager->remove($book);
             $this->entityManager->flush();
+
+            $this->addFlash('success', 'Book deleted successfully');
 
             return $this->redirectToRoute('book_index');
         }
