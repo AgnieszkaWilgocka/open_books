@@ -10,10 +10,13 @@ use App\Repository\BookRepository;
 use App\Repository\RentalRepository;
 use App\Security\Voter\RentalVoter;
 use DateTimeImmutable;
+use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\FormType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Email;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\CurrentUser;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
@@ -21,7 +24,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 #[Route('/rentals')]
 class RentalController extends AbstractController
 {
-    public function __construct(private RentalRepository $rentalRepository, private BookRepository $bookRepository)
+    public function __construct(private RentalRepository $rentalRepository, private BookRepository $bookRepository, private MailerInterface $mailer)
     {}
 
     #[Route('/', name: 'rental_index', methods: ['GET'])]
@@ -69,6 +72,18 @@ class RentalController extends AbstractController
             $this->rentalRepository->save($rental);
 
             $this->addFlash('success', 'Rental created successfully');
+            $email = (new TemplatedEmail())
+                ->from('openbooksapp@example.com')
+                ->to($user->getEmail())
+                ->subject('Time for another adventure!')
+                ->htmlTemplate('mailer/rental_create.html.twig')
+                ->context([
+                    'deadline' => new \DateTime('+7 days'),
+                    'username' => $user->getEmail(),
+                    'book' => $book->getTitle()
+                ]);
+            
+            $this->mailer->send($email);
 
             return $this->redirectToRoute('rental_index');
         }
