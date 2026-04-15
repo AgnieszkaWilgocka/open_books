@@ -3,8 +3,6 @@
 namespace App\Entity;
 
 use App\Repository\FavoriteCategoryRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: FavoriteCategoryRepository::class)]
@@ -25,10 +23,12 @@ class FavoriteCategory
     private ?bool $notificationsEnabled = null;
 
     #[ORM\ManyToOne(inversedBy: 'favoriteCategories')]
-    private ?User $owner = null;
+    #[ORM\JoinColumn(nullable: false)]
+    private User $owner;
 
     #[ORM\ManyToOne]
-    private ?Category $category = null;
+    #[ORM\JoinColumn(nullable: false)]
+    private Category $category;
 
     public function getId(): ?int
     {

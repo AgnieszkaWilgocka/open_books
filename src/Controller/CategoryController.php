@@ -5,28 +5,36 @@ namespace App\Controller;
 use App\Entity\Category;
 use App\Form\Type\CategoryType;
 use App\Repository\CategoryRepository;
+use App\Repository\FavoriteCategoryRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\FormType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\CurrentUser;
 
 #[Route('/categories')]
 class CategoryController extends AbstractController
 {
 
-    public function __construct(private EntityManagerInterface $entityManager, private CategoryRepository $categoryRepository) {}
+    public function __construct(private EntityManagerInterface $entityManager, private CategoryRepository $categoryRepository, private FavoriteCategoryRepository $favoriteCategoryRepository) {}
 
     #[Route('/', name: 'category_index', methods: ['GET'])]
-    public function index() : Response
+    public function index(#[CurrentUser] $user) : Response
     {
         $categories = $this->categoryRepository->findAll();
+        $userFavCategoriesIds = [];
+        
+        foreach ($user->getFavoriteCategories() as $favorite) {
+            $userFavCategoriesIds[] = $favorite->getCategory()->getId();
+        }
 
         return $this->render(
             '/category/index.html.twig',
             [
-                'categories' => $categories
+                'categories' => $categories,
+                'favCategoriesIds' => $userFavCategoriesIds,
             ]
         );
     }

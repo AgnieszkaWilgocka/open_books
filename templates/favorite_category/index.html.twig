@@ -7,13 +7,11 @@
     <table class="table table-striped">
       <thead>
         <tr>
-          <th>created at</th>
+          <th>Created at</th>
           <th>Updated at</th>
           <th>Category</th>
           <th>Owner</th>
-          {% if is_granted('ROLE_USER') %}
-            <th>Notification enabled</th>
-          {% endif %}
+          <th>Notification enabled</th>
         </tr>
       </thead>
       <tbody>
@@ -23,9 +21,7 @@
             <td>{{ favCat.updatedAt|date('Y-m-d') }}</td>
             <td>{{ favCat.category.title }}</td>
             <td>{{ favCat.owner.email }}</td>
-            {% if is_granted('ROLE_USER') %}
-              <td>{{ favCat.notificationsEnabled ? 'yes' : 'no'}}</td>
-            {% endif %}
+            <td>{{ favCat.notificationsEnabled ? 'yes' : 'no'}}</td>
           </tr>
         {% endfor %}
       </tbody>

@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Entity\Category;
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -31,6 +32,15 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         $user->setPassword($newHashedPassword);
         $this->getEntityManager()->persist($user);
         $this->getEntityManager()->flush();
+    }
+
+    public function queryAll(): array
+    {
+        return $this->createQueryBuilder('user')
+            ->select('user', 'favoriteCategories')
+            ->join('user.favoriteCategories', 'favoriteCategory')
+            ->getQuery()
+            ->getResult();
     }
 
     //    /**

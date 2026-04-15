@@ -20,12 +20,31 @@ class FavoriteCategoryRepository extends ServiceEntityRepository
         parent::__construct($registry, FavoriteCategory::class);
     }
 
+    public function queryAll(User $owner): array
+    {
+        return $this->createQueryBuilder('fc')
+        ->select('fc', 'partial user.{id, email}', 'partial category.{id, title}')
+        ->join('fc.owner', 'user')
+        ->join('fc.category', 'category')
+        ->andWhere('fc.owner = :owner')
+        ->setParameter('owner', $owner)
+        ->orderBy('fc.createdAt', 'DESC')
+        ->getQuery()
+        ->getResult();
+    }
+
     public function save(FavoriteCategory $favoriteCategory): void
     {
         $favoriteCategory->setCreatedAt(new DateTimeImmutable());
         $favoriteCategory->setUpdatedAt(new DateTimeImmutable());
         
         $this->entityManager->persist($favoriteCategory);
+        $this->entityManager->flush();
+    }
+
+    public function delete(FavoriteCategory $favoriteCategory): void
+    {
+        $this->entityManager->remove($favoriteCategory);
         $this->entityManager->flush();
     }
 
