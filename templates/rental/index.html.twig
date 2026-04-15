@@ -13,18 +13,20 @@
           <th>Status</th>
           <th>Returned at</th>
           <th>Owner </th>
+          <th>Deadline</th>
         </tr>
       </thead>
       <tbody>
         {% for rental in rentals %}
           <tr>
             <td>{{ rental.id }}</td>
-            <td>{{ rental.rentedAt|date('Y-m-d') }}</td>
-            <td>{{ rental.updatedAt|date('Y-m-d') }}</td>
+            <td>{{ rental.rentedAt|date('F jS') }}</td>
+            <td>{{ rental.updatedAt|date('F jS') }}</td>
             <td>{{ rental.book.title }}</td>
             <td>{{ rental.returnedAt ? 'Returned' : 'Borrowed' }}</td>
             <td>{{ rental.returnedAt ? rental.returnedAt|date('Y-m-d') : '-' }}</td>
             <td>{{ rental.owner.email }}</td>
+            <td>{{ rental.deadline|date('F jS') }}</td>
           </tr>
         {% endfor %}
       </tbody>

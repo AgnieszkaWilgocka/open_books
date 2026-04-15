@@ -30,7 +30,7 @@ class RentalFixtures extends Fixture implements DependentFixtureInterface
             $book->addRental($rental);
             $rental->setOwner($this->getReference(UserFixtures::USER_REFERENCE . '_' . $this->faker->numberBetween(0, 2), User::class));
             // $rental->setBook($this->getReference(BookFixtures::BOOK_REFERENCE . '_' . $this->faker->numberBetween(0, 4), Book::class));
-
+            $rental->setDeadline(DateTimeImmutable::createFromMutable($this->faker->dateTimeBetween('now', '+30 days')));
             $manager->persist($rental);
         }
 

@@ -32,6 +32,9 @@ class Rental
     #[ORM\JoinColumn(nullable: false)]
     private ?User $owner;
 
+    #[ORM\Column(nullable: true)]
+    private ?\DateTimeImmutable $deadline = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -112,5 +115,17 @@ class Rental
     public function canBeReturned(): bool
     {
         return $this->returnedAt === null;
+    }
+
+    public function getDeadline(): ?\DateTimeImmutable
+    {
+        return $this->deadline;
+    }
+
+    public function setDeadline(?\DateTimeImmutable $deadline): static
+    {
+        $this->deadline = $deadline;
+
+        return $this;
     }
 }
