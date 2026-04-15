@@ -32,7 +32,6 @@ class RentalController extends AbstractController
     public function index(#[CurrentUser] User $user): Response
     {
         $rentals = $this->rentalRepository->queryAll($user);
-        // $rentals = $this->rentalRepository->findAll();
 
         return $this->render('/rental/index.html.twig',
         [
@@ -68,6 +67,7 @@ class RentalController extends AbstractController
             $rental->setCreatedAt(new DateTimeImmutable());
             $rental->setUpdatedAt(new DateTimeImmutable());
             $rental->setRentedAt(new DateTimeImmutable());
+            $rental->setDeadline(new DateTimeImmutable('+14 days'));
 
             $this->rentalRepository->save($rental);
 
@@ -101,8 +101,7 @@ class RentalController extends AbstractController
         if (!$rental->canBeReturned()) {
 
             $this->addFlash('warning', 'Rental already returned');
-            return $this->redirectToRoute('rental_index');
-            // throw new Exception('rental already returned');    
+            return $this->redirectToRoute('rental_index');   
         }
 
         $form = $this->createForm(FormType::class, $rental, 
