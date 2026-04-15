@@ -8,6 +8,7 @@
           <tr>
             <th>Id</th>
             <th>Name</th>
+            <th></th>
           </tr>
         </thead>
         <tbody>
@@ -15,6 +16,12 @@
             <tr>
               <td>{{ category.id }}</td>
               <td>{{ category.title }}</td>
+              {# <td><a href="{{ path('favorite_add', {id: category.id }) }}">Dodaj do ulubionych</a></td> #}
+              <td>
+                <form method="post" action="{{ path('favorite_add', {'id': category.id}) }}">
+                  <button type="submit"> Dodaj do ulubionych</button>
+                </form>
+              </td>
             </tr>
           {% endfor %}
         </tbody>
