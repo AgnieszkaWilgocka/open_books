@@ -38,9 +38,8 @@ class BookController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
 
-            $category = $form->get('category')->getData();
+            // $category = $form->get('category')->getData();
 
-            $this->bookNotification->sendNotification($category, $book);
             
             /** @var UploadedFile $uploadedFile */
             $uploadedFile = $form->get('fileName')->getData();
@@ -57,7 +56,11 @@ class BookController extends AbstractController
             $this->entityManager->persist($book);
             $this->entityManager->flush();
 
+            $this->bookNotification->sendNotification($book);
+
             $this->addFlash('success', 'Book created successfully');
+
+
 
             return $this->redirectToRoute('book_index');        
         }

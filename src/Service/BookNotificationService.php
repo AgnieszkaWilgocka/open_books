@@ -3,56 +3,40 @@
 namespace App\Service;
 
 use App\Entity\Book;
-use App\Entity\Category;
-use App\Entity\FavoriteCategory;
-use App\Entity\User;
-use App\Repository\UserRepository;
+use App\Repository\FavoriteCategoryRepository;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\Mailer\MailerInterface;
 
 class BookNotificationService
 {
 
-    public function __construct(private MailerInterface $mailer, private UserRepository $userRepository) {}
+    public function __construct(private FavoriteCategoryRepository $favoriteCategoryRepository, private MailerInterface $mailer) {}
 
-    public function sendNotification(Category $category, Book $book): void
+    public function sendNotification(Book $book): void
     {
-        $users = $this->prepareUserList($category);
+        $category = $book->getCategory();
 
-        // todo - check if users > 0
-        
-        foreach ($users as $user) {
-            $email = (new TemplatedEmail())
-            ->from('openbooks@example.com')
-            ->to($user->getEmail())
-            ->subject('Check this fresh book')
-            ->htmlTemplate('mailer/book_notification.html.twig')
-            ->context([
-                'username' => $user->getEmail(),
-                'book' => $book->getTitle()
-            ]);
+        $favoriteCategories = $this->favoriteCategoryRepository->findBy([
+            'category' => $category
+        ]);
 
-            $this->mailer->send($email);
-        }
-    }
+        if (empty($favoriteCategories)) return;
 
-    private function prepareUserList(Category $category): array
-    {
-        $usersToNotify = [];
+        foreach ($favoriteCategories as $favorite) {
+            if ($favorite->isNotificationsEnabled()) {
+                $user = $favorite->getOwner()->getEmail();
+                $email = (new TemplatedEmail())
+                    ->from('openbooks@example.com')
+                    ->to($user)
+                    ->subject('Check this new book')
+                    ->htmlTemplate('/mailer/book_notification.html.twig')
+                    ->context([
+                        'username' => $user,
+                        'book' => $book->getTitle()
+                    ]);
 
-        $users = $this->userRepository->findAll();
-
-            /** @var User $user */
-            foreach ($users as $user) {
-                $favCategories = $user->getFavoriteCategories();
-                /** @var FavoriteCategory $favorite */
-                foreach ($favCategories as $favorite) {
-                    if ($favorite->getCategory() === $category && $favorite->isNotificationsEnabled()) {
-                        $usersToNotify[] = $user;
-                    }
-                }
+                $this->mailer->send($email);
             }
-
-        return $usersToNotify;
+        }
     }
 }
