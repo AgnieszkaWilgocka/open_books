@@ -30,10 +30,10 @@ class Rental
 
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false)]
-    private ?User $owner;
+    private User $owner;
 
-    #[ORM\Column(nullable: true)]
-    private ?\DateTimeImmutable $deadline = null;
+    #[ORM\Column(nullable: false)]
+    private \DateTimeImmutable $deadline;
 
     public function getId(): ?int
     {

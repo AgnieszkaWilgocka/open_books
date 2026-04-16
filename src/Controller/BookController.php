@@ -4,6 +4,7 @@ namespace App\Controller;
 use App\Entity\Book;
 use App\Form\Type\BookType;
 use App\Repository\BookRepository;
+use App\Service\BookNotificationService;
 use App\Service\FileUploaderHelper;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
@@ -17,7 +18,7 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route('/books')]
 class BookController extends AbstractController
 {
-    public function __construct(private BookRepository $bookRepository, private EntityManagerInterface $entityManager, private FileUploaderHelper $fileUploaderHelper) {}
+    public function __construct(private BookRepository $bookRepository, private EntityManagerInterface $entityManager, private FileUploaderHelper $fileUploaderHelper, private BookNotificationService $bookNotification) {}
 
     #[Route('/', name: 'book_index', methods: ['GET'])]
     public function index(): Response
@@ -36,6 +37,9 @@ class BookController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+
+            // $category = $form->get('category')->getData();
+
             
             /** @var UploadedFile $uploadedFile */
             $uploadedFile = $form->get('fileName')->getData();
@@ -52,7 +56,11 @@ class BookController extends AbstractController
             $this->entityManager->persist($book);
             $this->entityManager->flush();
 
+            $this->bookNotification->sendNotification($book);
+
             $this->addFlash('success', 'Book created successfully');
+
+
 
             return $this->redirectToRoute('book_index');        
         }

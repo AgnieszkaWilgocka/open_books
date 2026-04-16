@@ -1,0 +1,30 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}FavCategories{% endblock %}
+
+{% block body %}
+  {% if favCategories is defined and favCategories|length %}
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>Created at</th>
+          <th>Updated at</th>
+          <th>Category</th>
+          <th>Owner</th>
+          <th>Notification enabled</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for favCat in favCategories %}
+          <tr>
+            <td>{{ favCat.createdAt|date('Y-m-d') }}</td>
+            <td>{{ favCat.updatedAt|date('Y-m-d') }}</td>
+            <td>{{ favCat.category.title }}</td>
+            <td>{{ favCat.owner.email }}</td>
+            <td>{{ favCat.notificationsEnabled ? 'yes' : 'no'}}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% endif %}
+{% endblock %}

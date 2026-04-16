@@ -8,6 +8,9 @@
           <tr>
             <th>Id</th>
             <th>Name</th>
+            {% if is_granted('ROLE_USER') %}
+            <th></th>
+            {% endif %}
           </tr>
         </thead>
         <tbody>
@@ -15,6 +18,25 @@
             <tr>
               <td>{{ category.id }}</td>
               <td>{{ category.title }}</td>
+              {% if is_granted('ROLE_USER') %}
+                {% if category.id in favCategoriesIds %}
+                  <td>
+                  <form method="post" action="{{ path('favorite_delete', {'id': category.id}) }}">
+                    <button type="submit">
+                      Usuń z ulubionych
+                    </button>
+                  </form>
+                </td>
+                {% else %}
+                <td>
+                  <form method="post" action="{{ path('favorite_add', {'id': category.id}) }}">
+                    <button type="submit">
+                      Dodaj do ulubionych
+                    </button>
+                  </form>
+                </td>
+                {% endif %}
+              {% endif %}
             </tr>
           {% endfor %}
         </tbody>
