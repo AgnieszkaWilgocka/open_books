@@ -1,0 +1,28 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Book Queues{% endblock %}
+
+{% block body %}
+  {% if bookQueues is defined and bookQueues|length %}
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>Created at</th>
+          <th>User</th>
+          <th>Book</th>
+          <th>Missing opportunities</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for bookQueue in bookQueues %}
+          <tr>
+            <td>{{ bookQueue.createdAt|date('Y-m-d') }}</td>
+            <td>{{ bookQueue.user.email }}</td>
+            <td>{{ bookQueue.book.title }}</td>
+            <td>{{ bookQueue.missingOpportunity }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% endif %}
+{% endblock %}

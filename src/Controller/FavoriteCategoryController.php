@@ -12,7 +12,7 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\CurrentUser;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-#[Route('/favorite', methods: ['GET'])]
+#[Route('/favorite')]
 #[IsGranted('ROLE_USER')]
 class FavoriteCategoryController extends AbstractController
 {
