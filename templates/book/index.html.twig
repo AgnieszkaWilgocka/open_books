@@ -5,8 +5,22 @@
 {% endblock %}
 
 {% block body %}
-  <h1>Books list</h1>
+  <h1>Most popular books</h1>
+  <div class="books-container popular-containers">
+    {% for popularBook in popularBooks %}
+    <div class="card" style="width: 18rem;">
+      <img src="{{ asset(popularBook[0].getImagePath) }}" alt="{{ popularBook[0].title }}" class="img-book">
+      <div class="card-body">
+        <h5 class="card-title">{{ popularBook[0].title }}</h5>
+        <p>id: {{popularBook[0].id}}</p>
+        <p class="card-text">{{ popularBook[0].yearOfRelease }}, Pages: {{ popularBook[0].pages }}</p>
+        <p class="card-text">Category: {{ popularBook[0].category.title }}</p>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
 
+  <h1>Books list</h1>
   <div class="books-container">
       {% for book in books %}
         <div class="card" style="width: 18rem;">
