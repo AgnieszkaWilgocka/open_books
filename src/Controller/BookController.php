@@ -2,10 +2,13 @@
 namespace App\Controller;
 
 use App\Entity\Book;
+use App\Entity\User;
 use App\Form\Type\BookType;
+use App\Repository\BookQueueRepository;
 use App\Repository\BookRepository;
 use App\Service\BookNotificationService;
 use App\Service\FileUploaderHelper;
+use App\Service\RentalTokenService;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -14,18 +17,33 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\CurrentUser;
 
 #[Route('/books')]
 class BookController extends AbstractController
 {
-    public function __construct(private BookRepository $bookRepository, private EntityManagerInterface $entityManager, private FileUploaderHelper $fileUploaderHelper, private BookNotificationService $bookNotification) {}
+    public function __construct(private BookRepository $bookRepository, private EntityManagerInterface $entityManager, private FileUploaderHelper $fileUploaderHelper, private BookNotificationService $bookNotification, private RentalTokenService $rentalTokenService, private BookQueueRepository $bookQueueRepository) {}
 
     #[Route('/', name: 'book_index', methods: ['GET'])]
-    public function index(): Response
+    public function index(#[CurrentUser] ?User $user): Response
     {
+        
+        $this->rentalTokenService->clearExpiredRentalTokens();
         $books = $this->bookRepository->queryAll();
+        $queuedBookIds = [];
 
-        return $this->render('/book/index.html.twig', ['books' => $books]);
+        if ($user) {
+            $queuedBooks = $this->bookQueueRepository->findBy([
+                'user' => $user
+            ]);
+
+            $queuedBookIds = array_map(fn($bookQueue) => $bookQueue->getBook()->getId(), $queuedBooks);
+        }
+        
+        return $this->render('/book/index.html.twig', [
+            'books' => $books,
+            'queuedBookIds' => $queuedBookIds
+            ]);
     }
 
     #[Route('/create', name: 'book_create', methods: 'GET|POST')]

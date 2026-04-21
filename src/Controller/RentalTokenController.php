@@ -10,7 +10,6 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route('/rental-tokens')]
 class RentalTokenController extends AbstractController
 {
-
     public function __construct(private RentalTokenRepository $rentalTokenRepository) {}
 
     #[Route('/', name: 'rental_tokens_index', methods: ['GET'])]
@@ -24,4 +23,5 @@ class RentalTokenController extends AbstractController
         ]);
     }
 
+    
 }

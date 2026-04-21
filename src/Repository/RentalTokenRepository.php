@@ -3,7 +3,9 @@
 namespace App\Repository;
 
 use App\Entity\RentalToken;
+use DateTimeImmutable;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -11,12 +13,12 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class RentalTokenRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
+    public function __construct(ManagerRegistry $registry, private EntityManagerInterface $entityManager)
     {
         parent::__construct($registry, RentalToken::class);
     }
 
-        public function queryAll(): array
+    public function queryAll(): array
     {
         return $this->createQueryBuilder('rt')
         ->select('rt', 'book', 'user')
@@ -25,6 +27,31 @@ class RentalTokenRepository extends ServiceEntityRepository
         ->orderBy('rt.createdAt', 'DESC')
         ->getQuery()
         ->getResult();
+    }
+
+    public function queryExpiredTokens(): array
+    {
+        return $this->createQueryBuilder('rt')
+        // ->select('rt')
+        ->andWhere('rt.expiration_date <= :date')
+        ->setParameter('date', new DateTimeImmutable())
+        ->getQuery()
+        ->getResult();
+    }
+
+    public function save(RentalToken $rentalToken): void
+    {
+        $rentalToken->setCreatedAt(new DateTimeImmutable());
+
+        $this->entityManager->persist($rentalToken);
+        $this->entityManager->flush();
+    }
+
+
+    public function delete(RentalToken $rentalToken): void
+    {
+        $this->entityManager->remove($rentalToken);
+        $this->entityManager->flush();
     }
     //    /**
     //     * @return RentalToken[] Returns an array of RentalToken objects

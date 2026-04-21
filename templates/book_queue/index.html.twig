@@ -11,6 +11,7 @@
           <th>User</th>
           <th>Book</th>
           <th>Missing opportunities</th>
+          <th>Position</th>
         </tr>
       </thead>
       <tbody>
@@ -20,6 +21,7 @@
             <td>{{ bookQueue.user.email }}</td>
             <td>{{ bookQueue.book.title }}</td>
             <td>{{ bookQueue.missingOpportunity }}</td>
+            <td>{{ bookQueue.position }}</td>
           </tr>
         {% endfor %}
       </tbody>

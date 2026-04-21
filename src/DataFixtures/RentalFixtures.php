@@ -20,8 +20,8 @@ class RentalFixtures extends Fixture implements DependentFixtureInterface
 	{ 
         $this->faker = Factory::create();
 
-        for ($i = 0; $i < 10; $i++) {
-            $book = $this->getReference(BookFixtures::BOOK_REFERENCE . '_' . 1, Book::class);
+        for ($i = 0; $i < 5; $i++) {
+            $book = $this->getReference(BookFixtures::BOOK_REFERENCE . '_' . $i, Book::class);
            	$rental = new Rental();
 
             $rental->setCreatedAt(DateTimeImmutable::createFromMutable($this->faker->dateTimeBetween('-30 days', 'now')));

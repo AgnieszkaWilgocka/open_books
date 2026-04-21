@@ -2,9 +2,8 @@
 
 namespace App\DataFixtures;
 
-use App\Entity\Book;
+use App\Entity\BookQueue;
 use App\Entity\RentalToken;
-use App\Entity\User;
 use DateTimeImmutable;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
@@ -20,14 +19,15 @@ class RentalTokenFixtures extends Fixture implements DependentFixtureInterface
 	{
         $this->faker = Factory::create();
 
-        for ($i = 0; $i < 10; $i++) {
+        for ($i = 0; $i < 5; $i++) {
+            $bookQueue = $this->getReference(BookQueueFixtures::BOOK_QUEUE_REFERENCE . '_' . $i, BookQueue::class);
             
 		    $rentalToken = new RentalToken();
             $rentalToken->setCreatedAt(DateTimeImmutable::createFromMutable($this->faker->dateTimeBetween('-30 days', 'now')));
             $rentalToken->setContent(bin2hex(random_bytes(32)));
-            $rentalToken->setExpirationDate(DateTimeImmutable::createFromMutable($this->faker->dateTimeBetween('now', '+24 hours')));
-            $rentalToken->setBook($this->getReference(BookFixtures::BOOK_REFERENCE . '_' . $this->faker->numberBetween(0, 4), Book::class));
-            $rentalToken->setUser($this->getReference(UserFixtures::USER_REFERENCE . '_' . $this->faker->numberBetween(0, 2), User::class));
+            $rentalToken->setExpirationDate(DateTimeImmutable::createFromMutable($this->faker->dateTimeBetween('-20 days', '+24 hours')));
+            $rentalToken->setBook($bookQueue->getBook());
+            $rentalToken->setUser($bookQueue->getUser());
 
             $manager->persist($rentalToken);
         }
@@ -37,6 +37,6 @@ class RentalTokenFixtures extends Fixture implements DependentFixtureInterface
 
     public function getDependencies(): array
     {
-        return [BookFixtures::class, UserFixtures::class];
+        return [BookQueueFixtures::class];
     }
 }

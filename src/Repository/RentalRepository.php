@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Rental;
 use App\Entity\User;
+use DateTimeImmutable;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
@@ -20,6 +21,9 @@ class RentalRepository extends ServiceEntityRepository
 
     public function save(Rental $rental): void
     {
+        $rental->setCreatedAt(new DateTimeImmutable());
+        $rental->setUpdatedAt(new DateTimeImmutable());
+        
         $this->entityManager->persist($rental);
         $this->entityManager->flush();
     }

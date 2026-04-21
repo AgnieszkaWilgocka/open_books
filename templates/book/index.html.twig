@@ -18,14 +18,30 @@
             <p class="card-text">{{ book.yearOfRelease }}, Pages: {{ book.pages }}</p>
             <p class="card-text">Category: {{ book.category.title }}</p>
 
-            {% if book.rentals|length %}
-                <a href="#" class="btn btn-primary">Powiadom</a>
+            {% if app.user %}
+              {% if book.rentals|length %}
+                {% set rental = book.getActiveRentalByUser(app.user) %}
+                {% if rental %}
+                  <a href="{{ path('rental_return', {'id': rental.id }) }}" class="btn btn-primary">Zwróć</a>
+                {% else %}
+                  {% if book.id in queuedBookIds %}
+                    <p class="btn btn-secondary"> Oczekujący</p>
+                  {% else %}
+                    <form method="post" action="{{ path('book_queue_create', {'id': book.id }) }}">
+                      <button type="submit" class="btn btn-primary">
+                        Powiadom
+                      </button>
+                    </form>
+                  {% endif %}
+                {% endif %}
+              {% else %}
+                  <a href="{{ path('rental_create_with_book', {'id': book.id }) }}" class="btn btn-primary">Wypożycz</a>
+              {% endif %}
             {% else %}
-                <a href="{{ url(name = 'rental_create_with_book', parameters = {id: book.id }) }}" class="btn btn-primary">Wypożycz</a>
+              <a href="{{ path('app_login') }}" class="btn btn-primary">Zaloguj się</a>
             {% endif %}
           </div>
         </div>
-
       {% endfor %}
   </div>
 {% endblock %}

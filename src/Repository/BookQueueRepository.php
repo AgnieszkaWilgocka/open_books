@@ -2,8 +2,11 @@
 
 namespace App\Repository;
 
+use App\Entity\Book;
 use App\Entity\BookQueue;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -11,7 +14,7 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class BookQueueRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
+    public function __construct(ManagerRegistry $registry, private EntityManagerInterface $entityManager)
     {
         parent::__construct($registry, BookQueue::class);
     }
@@ -25,6 +28,48 @@ class BookQueueRepository extends ServiceEntityRepository
         ->orderBy('bq.createdAt', 'DESC')
         ->getQuery()
         ->getResult();
+    }
+
+    public function getBookQueue(Book $book, ?User $user = null): array
+    {
+        $qb = $this->createQueryBuilder('bq')
+        ->select('bq')
+        ->join('bq.book', 'book')
+        ->andWhere('bq.book = :book')
+        ->setParameter('book', $book);
+
+        if ($user) {
+            $qb = $qb->join('bq.user', 'user')
+            ->andWhere('bq.user = :user')
+            ->setParameter('user', $user);
+        }
+        
+        return $qb->getQuery()->getResult();
+    }
+
+    public function getFirstPosition(Book $book): BookQueue
+    {
+        return $this->createQueryBuilder('bq')
+        ->select('bq')
+        ->join('bq.book', 'book')
+        ->andWhere('bq.book = :book')
+        ->andWhere('bq.position = :position')
+        ->setParameter('book', $book)
+        ->setParameter('position', 1)
+        ->getQuery()
+        ->getOneOrNullResult();
+    }
+
+    public function save(BookQueue $bookQueue): void
+    {
+        $this->entityManager->persist($bookQueue);
+        $this->entityManager->flush();
+    }
+
+    public function delete(BookQueue $bookQueue): void
+    {
+        $this->entityManager->remove($bookQueue);
+        $this->entityManager->flush();
     }
 
 //    /**
