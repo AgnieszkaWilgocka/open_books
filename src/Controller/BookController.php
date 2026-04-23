@@ -10,9 +10,7 @@ use App\Repository\BookRepository;
 use App\Service\BookNotificationService;
 use App\Service\FileUploaderHelper;
 use App\Service\RentalFlowService;
-use App\Service\RentalTokenService;
 use DateTimeImmutable;
-use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\FormType;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
@@ -32,6 +30,8 @@ class BookController extends AbstractController
         $this->rentalFlowService->handleClearedTokens();
         $books = $this->bookRepository->queryAll();
         
+        $popularBooks = $this->bookRepository->countRentalsForBook();
+
         $queuedBooks = $this->bookQueueRepository->queryAll();
         $queuedUserBooksIds = [];
 
@@ -43,20 +43,11 @@ class BookController extends AbstractController
         if (!empty($queuedBooks)) {
             $queuedBooksIds = array_map(fn(BookQueue $qbook) => $qbook->getBook()->getId(), $queuedBooks);
         }
-
-
-        //todo - zmienić żeby działało też nie dla usera tylko dla książki
-        //tzn. jesli ta ksiazka z book indexu jest w queueBook to ją tu dodaj
-        // if ($book) {
-        //     $queuedBooks = $this->bookQueueRepository->findBy([
-        //         'book' => $book
-        //     ]);
-
-        //     $queuedBookIds = array_map(fn($bookQueue) => $bookQueue->getBook()->getId(), $queuedBooks);
-        // }
         
         return $this->render('/book/index.html.twig', [
+            
             'books' => $books,
+            'popularBooks' => $popularBooks,
             'queuedBooksIds' => $queuedBooksIds,
             'queuedUserBooksIds' => $queuedUserBooksIds
             ]);

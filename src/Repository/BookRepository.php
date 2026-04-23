@@ -51,6 +51,18 @@ class BookRepository extends ServiceEntityRepository
             ->getOneOrNullResult();
     }
 
+    public function countRentalsForBook(): array
+    {
+        return $this->createQueryBuilder('book')
+        ->select('book', 'COUNT(rentals.id) AS rentalsCount')
+        ->join('book.rentals', 'rentals')
+        ->groupBy('book.id')
+        ->orderBy('rentalsCount', 'DESC')
+        ->setMaxResults(3)
+        ->getQuery()
+        ->getResult();
+    }
+
     public function save(Book $book): void
     {        
         $this->entityManager->persist($book);
