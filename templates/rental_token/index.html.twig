@@ -1,0 +1,30 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Tokens{% endblock %}
+
+{% block body %}
+  {% if rentalTokens is defined and rentalTokens|length %}
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>Created at</th>
+          <th>User</th>
+          <th>Book</th>
+          <th>Content</th>
+          <th>Expired at</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for token in rentalTokens %}
+          <tr>
+            <td>{{ token.createdAt|date('Y-m-d') }}</td>
+            <td>{{ token.user.email }}</td>
+            <td>{{ token.book.title }}</td>
+            <td>{{ token.content }}</td>
+            <td> {{ token.expirationDate|date('F jS H:i') }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% endif %}
+{% endblock %}

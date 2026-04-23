@@ -1,0 +1,14 @@
+<h1>Dear {{ username }}</h1>
+
+<p>
+    Your book: {{ book }} is now available!
+</p>
+<p>You can rent it by clicking the link below</p>
+<p>Important: your link will be active for 24 hours. After this time, the link will pass to another user from list. </p>
+
+<p>
+    <a href="{{ url('create_with_token', {'token': token }) }}">Rent a book</a>
+</p>
+<p>
+    Enjoy!
+</p>

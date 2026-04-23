@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Book;
+use DateTimeImmutable;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\QueryBuilder;
@@ -16,12 +17,6 @@ class BookRepository extends ServiceEntityRepository
     public function __construct(ManagerRegistry $registry, private EntityManagerInterface $entityManager)
     {
         parent::__construct($registry, Book::class);
-    }
-
-    public function save(Book $book): void
-    {
-        $this->entityManager->persist($book);
-        $this->entityManager->flush();
     }
 
     public function queryAll(): array
@@ -54,6 +49,18 @@ class BookRepository extends ServiceEntityRepository
             ->setMaxResults(1)
             ->getQuery()
             ->getOneOrNullResult();
+    }
+
+    public function save(Book $book): void
+    {        
+        $this->entityManager->persist($book);
+        $this->entityManager->flush();
+    }
+
+    public function delete(Book $book): void
+    {
+        $this->entityManager->remove($book);
+        $this->entityManager->flush();
     }
 
     //    /**

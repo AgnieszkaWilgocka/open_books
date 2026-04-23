@@ -7,6 +7,7 @@ use App\Service\FileUploaderHelper;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use phpDocumentor\Reflection\Types\Boolean;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: BookRepository::class)]
@@ -152,6 +153,19 @@ class Book
         return $this;
     }
 
+    public function getActiveRentals(): array
+    {
+        $activeRentals = [];
+        /** @var Rental $rental */
+        foreach ($this->rentals as $rental) {
+            if ($rental->getReturnedAt() === null) {
+                $activeRentals[] = $rental;
+            }
+        }
+
+        return $activeRentals;
+    }
+
     public function getImageFileName(): ?string
     {
         return $this->imageFileName;
@@ -167,5 +181,18 @@ class Book
     public function getImagePath(): string
     {
         return '/uploads/'. FileUploaderHelper::BOOK_IMAGE . '/' .  $this->getImageFileName();
+    }
+
+    public function getActiveRentalByUser(?User $user): ?Rental
+    {
+        if(!$user) return null;
+
+        /** @var Rental $rental */
+        foreach ($this->rentals as $rental) {
+            if ($rental->getOwner() === $user && $rental->getRentedAt() === null)
+                return $rental;
+        }
+
+        return null;
     }
 }

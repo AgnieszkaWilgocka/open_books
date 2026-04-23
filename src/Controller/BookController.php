@@ -2,10 +2,15 @@
 namespace App\Controller;
 
 use App\Entity\Book;
+use App\Entity\BookQueue;
+use App\Entity\User;
 use App\Form\Type\BookType;
+use App\Repository\BookQueueRepository;
 use App\Repository\BookRepository;
 use App\Service\BookNotificationService;
 use App\Service\FileUploaderHelper;
+use App\Service\RentalFlowService;
+use App\Service\RentalTokenService;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -14,18 +19,47 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\CurrentUser;
 
 #[Route('/books')]
 class BookController extends AbstractController
 {
-    public function __construct(private BookRepository $bookRepository, private EntityManagerInterface $entityManager, private FileUploaderHelper $fileUploaderHelper, private BookNotificationService $bookNotification) {}
+    public function __construct(private BookRepository $bookRepository, private FileUploaderHelper $fileUploaderHelper, private BookNotificationService $bookNotification, private BookQueueRepository $bookQueueRepository, private RentalFlowService $rentalFlowService) {}
 
     #[Route('/', name: 'book_index', methods: ['GET'])]
-    public function index(): Response
+    public function index(#[CurrentUser] ?User $user): Response
     {
+        $this->rentalFlowService->handleClearedTokens();
         $books = $this->bookRepository->queryAll();
+        
+        $queuedBooks = $this->bookQueueRepository->queryAll();
+        $queuedUserBooksIds = [];
 
-        return $this->render('/book/index.html.twig', ['books' => $books]);
+        if ($user) {
+            $queuedUserBooksIds = array_filter($queuedBooks, fn(BookQueue $qbook) => $qbook->getUser());
+        }
+        
+        $queuedBooksIds = [];
+        if (!empty($queuedBooks)) {
+            $queuedBooksIds = array_map(fn(BookQueue $qbook) => $qbook->getBook()->getId(), $queuedBooks);
+        }
+
+
+        //todo - zmienić żeby działało też nie dla usera tylko dla książki
+        //tzn. jesli ta ksiazka z book indexu jest w queueBook to ją tu dodaj
+        // if ($book) {
+        //     $queuedBooks = $this->bookQueueRepository->findBy([
+        //         'book' => $book
+        //     ]);
+
+        //     $queuedBookIds = array_map(fn($bookQueue) => $bookQueue->getBook()->getId(), $queuedBooks);
+        // }
+        
+        return $this->render('/book/index.html.twig', [
+            'books' => $books,
+            'queuedBooksIds' => $queuedBooksIds,
+            'queuedUserBooksIds' => $queuedUserBooksIds
+            ]);
     }
 
     #[Route('/create', name: 'book_create', methods: 'GET|POST')]
@@ -38,9 +72,6 @@ class BookController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
 
-            // $category = $form->get('category')->getData();
-
-            
             /** @var UploadedFile $uploadedFile */
             $uploadedFile = $form->get('fileName')->getData();
 
@@ -53,14 +84,10 @@ class BookController extends AbstractController
             $book->setCreatedAt(new DateTimeImmutable());
             $book->setUpdatedAt(new DateTimeImmutable());
 
-            $this->entityManager->persist($book);
-            $this->entityManager->flush();
-
-            $this->bookNotification->sendNotification($book);
+            $this->bookRepository->save($book);
+            $this->bookNotification->sendNewBookNotification($book);
 
             $this->addFlash('success', 'Book created successfully');
-
-
 
             return $this->redirectToRoute('book_index');        
         }
@@ -93,9 +120,7 @@ class BookController extends AbstractController
             
             $book->setUpdatedAt(new DateTimeImmutable());
 
-            $this->entityManager->persist($book);
-            $this->entityManager->flush();
-
+            $this->bookRepository->save($book); 
             $this->addFlash('success', 'Book updated successfully');
 
             return $this->redirectToRoute('book_index');
@@ -119,9 +144,7 @@ class BookController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() &&  $form->isValid()) {
-            $this->entityManager->remove($book);
-            $this->entityManager->flush();
-
+            $this->bookRepository->delete($book);
             $this->addFlash('success', 'Book deleted successfully');
 
             return $this->redirectToRoute('book_index');
