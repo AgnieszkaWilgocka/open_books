@@ -21,9 +21,6 @@ class RentalRepository extends ServiceEntityRepository
 
     public function save(Rental $rental): void
     {
-        $rental->setCreatedAt(new DateTimeImmutable());
-        $rental->setUpdatedAt(new DateTimeImmutable());
-        
         $this->entityManager->persist($rental);
         $this->entityManager->flush();
     }

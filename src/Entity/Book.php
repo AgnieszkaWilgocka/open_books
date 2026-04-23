@@ -153,6 +153,19 @@ class Book
         return $this;
     }
 
+    public function getActiveRentals(): array
+    {
+        $activeRentals = [];
+        /** @var Rental $rental */
+        foreach ($this->rentals as $rental) {
+            if ($rental->getReturnedAt() === null) {
+                $activeRentals[] = $rental;
+            }
+        }
+
+        return $activeRentals;
+    }
+
     public function getImageFileName(): ?string
     {
         return $this->imageFileName;

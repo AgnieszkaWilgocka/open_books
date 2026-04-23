@@ -10,7 +10,7 @@ class BookNotificationService
 
     public function __construct(private FavoriteCategoryRepository $favoriteCategoryRepository, private MailerService $mailerService) {}
 
-    public function sendNotification(Book $book): void
+    public function sendNewBookNotification(Book $book): void
     {
         $category = $book->getCategory();
 

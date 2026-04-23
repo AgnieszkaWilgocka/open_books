@@ -94,4 +94,14 @@ class BookQueue
 
         return $this;
     }
+
+    public function incrementMissingOpportunity(): void
+    {
+        $this->setMissingOpportunity($this->getMissingOpportunity() + 1);
+    }
+
+    public function decrementPosition(): void
+    {
+        $this->setPosition($this->getPosition() - 1);
+    }
 }

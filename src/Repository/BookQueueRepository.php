@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Entity\Book;
 use App\Entity\BookQueue;
 use App\Entity\User;
+use DateTimeImmutable;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
@@ -30,7 +31,7 @@ class BookQueueRepository extends ServiceEntityRepository
         ->getResult();
     }
 
-    public function getBookQueue(Book $book, ?User $user = null): array
+    public function queryQueuedBooks(Book $book, ?User $user = null): array
     {
         $qb = $this->createQueryBuilder('bq')
         ->select('bq')

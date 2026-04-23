@@ -30,7 +30,7 @@ class MailerService
                 'deadline' => $rental->getDeadline(),
                 'book' => $rental->getBook()->getTitle()
             ]
-            );
+        );
     }
 
     public function sendBookAvailableNotification(RentalToken $token): void
