@@ -92,7 +92,6 @@ class RentalController extends AbstractController
             return $this->redirectToRoute('book_index');
         }
 
-        // $this->rentalService->handleRentalCreationFromToken($token);
         $this->rentalFlowService->createRentalFromToken($token);
         $this->addFlash('success', 'Rental created successfully');
 

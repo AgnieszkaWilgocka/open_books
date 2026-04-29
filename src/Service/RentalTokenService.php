@@ -19,7 +19,7 @@ class RentalTokenService
         foreach ($expiredTokens as $expiredToken) {
             $this->rentalTokenRepository->delete($expiredToken);
 
-            $this->requestStack->getSession()->getFlashBag()->add('warning', 'wypisano userow z kolejki');
+            $this->requestStack->getSession()->getFlashBag()->add('warning', 'usunięto wygaśnięty token');
         }
     }
 

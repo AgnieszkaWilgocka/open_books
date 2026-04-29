@@ -27,7 +27,7 @@ class BookController extends AbstractController
     #[Route('/', name: 'book_index', methods: ['GET'])]
     public function index(#[CurrentUser] ?User $user): Response
     {
-        $this->rentalFlowService->handleClearedTokens();
+        // $this->rentalFlowService->handleClearedTokens();
         $books = $this->bookRepository->queryAll();
         
         $popularBooks = $this->bookRepository->countRentalsForBook();
