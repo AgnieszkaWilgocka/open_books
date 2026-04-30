@@ -6,77 +6,69 @@
 
 {% block body %}
   <div class="page-container">
-    <h1>Most popular books</h1>
+    <div class="search">Wyszukaj</div>
     <div class="outter-container">
-      <div class="popular-containers">
-        {% for popularBook in popularBooks %}
-          <div class="book-box">
-            {# <div class="img-box"> #}
-              <img class="img-box" src="{{ asset(popularBook[0].getImagePath) }}" alt="{{ popularBook[0].title }}">
-            {# </div> #}
-              <div class="book-title">
-                <p>{{ popularBook[0].title }}</p>
-              </div>  
-          </div>
-        {# <div class="card" style="width: 18rem;">
-          <img src="{{ asset(popularBook[0].getImagePath) }}" alt="{{ popularBook[0].title }}" class="img-book">
-          <div class="card-body">
-            <h5 class="card-title">{{ popularBook[0].title }}</h5>
-            <p>id: {{popularBook[0].id}}</p>
-            <p class="card-text">{{ popularBook[0].yearOfRelease }}, Pages: {{ popularBook[0].pages }}</p>
-            <p class="card-text">Category: {{ popularBook[0].category.title }}</p>
-          </div>
-        </div> #}
-        {% endfor %}
-      </div>
-      <div class="view-more">
-        <a href="">View more</a>
-      </div>
-    </div>
-
-    <h1>Books list</h1>
-    {# <div class="books-container">
+      <h1>Book list</h1>
+      <div class="books-container">
         {% for book in books %}
-          <div class="card" style="width: 18rem;">
-            <img src="{{ asset(book.getImagePath) }}" alt="{{ book.title }}" class="img-book">
-            <div class="card-body">
-              <h5 class="card-title">{{ book.title }}</h5>
-              <p>id: {{book.id}}</p>
-              <h6 class="card-subtitle mb-2 text-body-secondary">{{ book.rentals|length ? 'Borrowed' : 'Available' }}</h6>
-              <p class="card-text">{{ book.yearOfRelease }}, Pages: {{ book.pages }}</p>
-              <p class="card-text">Category: {{ book.category.title }}</p>
-
-              {% if app.user %}
-                {% if book.getActiveRentals|length %}
-                  {% set rental = book.getActiveRentalByUser(app.user) %}
-                  {% if rental %}
-                    <a href="{{ path('rental_return', {'id': rental.id }) }}" class="btn btn-primary">Zwróć</a>
-                  {% else %}
-                    <form method="post" action="{{ path('book_queue_create', {'id': book.id }) }}">
-                      <button type="submit" class="btn btn-primary">
-                        Powiadom
-                      </button>
-                    </form>
-                  {% endif %}
-                {% elseif book.id in queuedBooksIds %}
-                    {% if app.user in queuedUserBooksIds %}
-                      <p class="btn btn-secondary">Oczekujący</p>
-                    {% else %}
-                      <form method="post" action="{{ path('book_queue_create', {'id': book.id }) }}">
-                        <button type="submit" class="btn btn-primary">
-                          Powiadom
-                        </button>
-                      </form>
-                    {% endif %}
-                {% else %}
-                    <a href="{{ path('rental_create_with_book', {'id': book.id }) }}" class="btn btn-primary">Wypożycz</a>
-                {% endif %}
-              {% else %}
-                <a href="{{ path('app_login') }}" class="btn btn-primary">Zaloguj się</a>
-              {% endif %}
+          <div class="book-box">
+            <div class="book-top">
+              <div class="book-left">
+                <img src="{{ asset(book.getImagePath) }}" alt="{{ book.title }}" class="img-book">
+              </div>
+                <div class="book-right">
+                  <p class="p-title">{{ book.title }}</p>
+                  <p>Autor, <span class="release">{{ book.yearOfRelease }}</span></p>
+                  <p class="pages">Pages:{{ book.pages }}</p>
+                  {% set status = book.rentals|length ? 'borrowed' : 'available'  %}
+                  <div class="action {{ status }}">
+                    <p class="status">{{ status }}</p>
+                    <div class="last">
+                      {% if app.user %}
+                        {% if book.getActiveRentals|length %}
+                          {% set rental = book.getActiveRentalByUser(app.user) %}
+                          {% if rental %}
+                            <a href="{{ path('rental_return', {'id': rental.id }) }}">
+                              <i class="fa-solid fa-reply"></i>
+                            </a>
+                          {% elseif book.id in queuedUserBooksIds %}
+                            <i class="fa-solid fa-clock-rotate-left"></i>
+                          {% else %}
+                            <form method="post" action="{{ path('book_queue_create', {'id': book.id }) }}">
+                              <button type="submit" class="bell-btn action-btn">
+                                <i class="fa-solid fa-bell"></i>
+                              </button>
+                            </form>
+                          {% endif %}
+                        {% elseif book.id in queuedBooksIds %}
+                          {% if book.id in queuedUserBooksIds %}
+                            <i class="fa-solid fa-clock-rotate-left"></i>
+                          {% else %}
+                            <form method="post" action="{{ path('book_queue_create', {'id': book.id }) }}">
+                              <button type="submit" class="bell-btn action-btn">
+                                <i class="fa-solid fa-bell"></i>
+                              </button>
+                            </form>
+                          {% endif %}
+                        {% else %}
+                          <a href="{{ path('rental_create_with_book', {'id': book.id }) }}" class="action-btn">
+                            <i class="fa-solid fa-book"></i>
+                          </a>
+                        {% endif %}
+                      {% else %}
+                        <a href="{{ path('app_login') }}" class="action-btn">
+                          <i class="fa-solid fa-right-to-bracket"></i>
+                        </a>
+                      {% endif %}
+                    </div>
+                  </div>
+                </div>
             </div>
           </div>
-        {% endfor %} #}
-    {# </div> #}
+        {% endfor %} 
+      </div>
+    </div>
   </div>
 {% endblock %}
+
+{# <i class="fa-solid fa-book-open-reader"></i> #}

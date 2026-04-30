@@ -9,6 +9,7 @@
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Playwrite+NZ+Guides&display=swap" rel="stylesheet">
         <script src="https://kit.fontawesome.com/c4efa6e410.js" crossorigin="anonymous"></script>
+        <link rel="stylesheet" href="{{ asset('styles/home.css') }}">
         <link rel="stylesheet" href="{{ asset('styles/books.css') }}">
         {% block stylesheets %}
         {% endblock %}
@@ -49,13 +50,13 @@
                 </div>
             </div>
 
-            {# {% for type, messages in app.flashes %}
+            {% for type, messages in app.flashes %}
                 {% for message in messages %}
                     <div class="alert alert-{{ type }}">
                         {{ message }}
                     </div>
                 {% endfor %}
-            {% endfor %} #}
+            {% endfor %}
 
             <div class="right-container">
                 <div class="top-menu-container">

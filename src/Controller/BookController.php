@@ -33,19 +33,21 @@ class BookController extends AbstractController
         $popularBooks = $this->bookRepository->countRentalsForBook();
 
         $queuedBooks = $this->bookQueueRepository->queryAll();
+        $queuedUserBooks = [];
         $queuedUserBooksIds = [];
+        $queuedBooksIds = [];
+
 
         if ($user) {
-            $queuedUserBooksIds = array_filter($queuedBooks, fn(BookQueue $qbook) => $qbook->getUser());
+            $queuedUserBooks = $this->bookQueueRepository->findBy([
+                'user' => $user
+            ]);
         }
-        
-        $queuedBooksIds = [];
-        if (!empty($queuedBooks)) {
-            $queuedBooksIds = array_map(fn(BookQueue $qbook) => $qbook->getBook()->getId(), $queuedBooks);
-        }
-        
+
+        $queuedUserBooksIds = array_map(fn(BookQueue $qbook) => $qbook->getBook()->getId(), $queuedUserBooks);
+        $queuedBooksIds = array_map(fn(BookQueue $qbook) => $qbook->getBook()->getId(), $queuedBooks);
+
         return $this->render('/book/index.html.twig', [
-            
             'books' => $books,
             'popularBooks' => $popularBooks,
             'queuedBooksIds' => $queuedBooksIds,
