@@ -24,17 +24,17 @@ class CategoryController extends AbstractController
     public function index(#[CurrentUser] $user) : Response
     {
         $categories = $this->categoryRepository->findAll();
-        $userFavCategoriesIds = [];
+        // $userFavCategoriesIds = [];
         
-        foreach ($user->getFavoriteCategories() as $favorite) {
-            $userFavCategoriesIds[] = $favorite->getCategory()->getId();
-        }
+        // foreach ($user->getFavoriteCategories() as $favorite) {
+        //     $userFavCategoriesIds[] = $favorite->getCategory()->getId();
+        // }
 
         return $this->render(
             '/category/index.html.twig',
             [
                 'categories' => $categories,
-                'favCategoriesIds' => $userFavCategoriesIds,
+                // 'favCategoriesIds' => $userFavCategoriesIds,
             ]
         );
     }

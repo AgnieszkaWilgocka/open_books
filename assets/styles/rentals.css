@@ -1,0 +1,93 @@
+@import url('colors.css');
+
+.rentals-container {
+    margin-top: 20px;
+    padding: 30px 20px;
+    background-color: rgb(245,247,249);
+    font-family: "Roboto", sans-serif;
+}
+
+.box-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 20px;
+    background-color: #fff;
+    padding: 20px;
+    margin-bottom: 10px;
+    border-radius: 7px;
+}
+
+.box-header {
+    color: rgb(205,204,207);
+}
+
+.box-header p {
+    flex-basis: 18%;
+}
+
+.box-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 70px;
+    background-color: #fff;
+    padding: 20px;
+    margin-bottom: 5px;
+    
+}
+
+.box-content > * {
+    flex-basis: 18%;
+}
+
+.box-content p {
+    font-size: 18px;
+}
+
+.box-content span {
+    color: blue;
+}
+
+.box-header p:first-child, .box-content div:first-child {
+    flex-basis: 20%;
+}
+
+.img-title {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+}
+
+.img-title img {
+    width: 20%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.return-btn {
+    padding: 10px;
+    border: 1px solid var(--main-blue);
+    background-color: #fff;
+    color: var(--main-blue);
+    text-decoration: none;
+    border-radius: 7px;
+    transition: .2s;
+}
+
+.return-btn i {
+    color: var(--green);
+}
+
+.return-btn:hover {
+    background-color: var(--main-blue);
+    color: #fff;
+}
+
+.category-bgc {
+    width: 40%;
+    padding: 7px;
+    /* opacity: 0.3; */
+}

@@ -7,6 +7,7 @@ use App\Entity\Rental;
 use App\Entity\RentalToken;
 use App\Entity\User;
 use App\Form\Type\RentalType;
+use App\Repository\BookQueueRepository;
 use App\Repository\BookRepository;
 use App\Repository\RentalRepository;
 use App\Security\Voter\RentalVoter;
@@ -26,19 +27,27 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 #[Route('/rentals')]
 class RentalController extends AbstractController
 {
-    public function __construct(private RentalRepository $rentalRepository, private BookRepository $bookRepository, private RentalFlowService $rentalFlowService)
+    public function __construct(private RentalRepository $rentalRepository, private BookRepository $bookRepository, private RentalFlowService $rentalFlowService, private BookQueueRepository $bookQueueRepository)
     {}
 
     #[Route('/', name: 'rental_index', methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
     public function index(#[CurrentUser] User $user): Response
     {
-        $rentals = $this->rentalRepository->findAll();
-        // $rentals = $this->rentalRepository->queryAll($user);
+        $rentals = [];
+        $queues = [];
 
+        if ($this->isGranted('ROLE_ADMIN')) {
+            $rentals = $this->rentalRepository->findAll();
+        } else {
+            $rentals = $this->rentalRepository->queryActiveForUser($user);
+            $queues = $this->bookQueueRepository->queryAll($user);
+        }
+        
         return $this->render('/rental/index.html.twig',
         [
-            'rentals' => $rentals
+            'rentals' => $rentals,
+            'queues' => $queues
         ]);
     }
 

@@ -8,6 +8,7 @@ use App\Entity\User;
 use DateTimeImmutable;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -20,15 +21,21 @@ class BookQueueRepository extends ServiceEntityRepository
         parent::__construct($registry, BookQueue::class);
     }
 
-    public function queryAll(): array
+    public function queryAll(?User $user = null): array
     {
-        return $this->createQueryBuilder('bq')
+        /** @var QueryBuilder $qb */
+        $qb = $this->createQueryBuilder('bq')
         ->select('bq', 'book', 'user')
         ->join('bq.user', 'user')
         ->join('bq.book', 'book')
-        ->orderBy('bq.createdAt', 'DESC')
-        ->getQuery()
-        ->getResult();
+        ->orderBy('bq.createdAt', 'DESC');
+        
+        if ($user) {
+            $qb->andWhere('bq.user = :user')
+            ->setParameter('user', $user);
+        }
+        
+        return $qb->getQuery()->getResult();
     }
 
     public function queryQueuedBooks(Book $book, ?User $user = null): array

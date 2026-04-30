@@ -8,9 +8,10 @@
           <tr>
             <th>Id</th>
             <th>Name</th>
-            {% if is_granted('ROLE_USER') %}
+            <th>Color</th>
+            {# {% if is_granted('ROLE_USER') %}
             <th></th>
-            {% endif %}
+            {% endif %} #}
           </tr>
         </thead>
         <tbody>
@@ -18,7 +19,8 @@
             <tr>
               <td>{{ category.id }}</td>
               <td>{{ category.title }}</td>
-              {% if is_granted('ROLE_USER') %}
+              <td>{{ category.color }}</td>
+              {# {% if is_granted('ROLE_USER') %}
                 {% if category.id in favCategoriesIds %}
                   <td>
                   <form method="post" action="{{ path('favorite_delete', {'id': category.id}) }}">
@@ -36,7 +38,7 @@
                   </form>
                 </td>
                 {% endif %}
-              {% endif %}
+              {% endif %} #}
             </tr>
           {% endfor %}
         </tbody>
