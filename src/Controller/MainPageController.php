@@ -15,8 +15,8 @@ class MainPageController extends AbstractController
     #[Route('/', name: 'app_home')]
     public function index(): Response
     {
-        $popularBooks = $this->bookRepository->countRentalsForBook();
-        $categories = $this->categoryRepository->findAll();
+        $popularBooks = $this->bookRepository->queryMostRented(3);
+        $categories = $this->categoryRepository->queryByLimit(8);
 
         return $this->render('main/index.html.twig', [
             'popularBooks' => $popularBooks,

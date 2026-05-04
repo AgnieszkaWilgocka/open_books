@@ -9,6 +9,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -45,6 +46,24 @@ class BookType extends AbstractType
             ]
         )
         ->add(
+            'writer',
+            TextType::class,
+            [
+                'attr' => [
+                    'placeholder' => 'e.g Stephen King'
+                ],
+
+                'required' => true,
+            ]
+        )
+        ->add(
+            'description',
+            TextareaType::class,
+            [
+                'required' => true,
+            ]
+        )
+        ->add(
             'year_of_release',
             IntegerType::class,
             [
@@ -66,13 +85,6 @@ class BookType extends AbstractType
             ]
         )
         ->add(
-            'save',
-            SubmitType::class,
-            [
-                'label' => 'Save Book'
-            ]
-        )
-        ->add(
             'category',
             EntityType::class,
             [
@@ -87,6 +99,13 @@ class BookType extends AbstractType
                 'mapped' => false,
                 'required' => false,
                 'constraints' => $imageConstraints
+            ]
+        )
+         ->add(
+            'save',
+            SubmitType::class,
+            [
+                'label' => 'Save Book'
             ]
         );
     }

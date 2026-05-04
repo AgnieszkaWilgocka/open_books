@@ -1,11 +1,11 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-  <div class="page-container">
+  {# <div class="page-container"> #}
     <div class="outter-container">
       <h1>Rentals</h1>
       {% if rentals|length %}
-      <div class="rentals-container">
+      <div class="table-container">
         <div class="box-header">
           <p>Title</p>
           <p>Author</p>
@@ -21,9 +21,9 @@
               <img src="{{ asset(rental.book.getImagePath) }}" alt="book image">
               <p>{{ rental.book.title }}</p>
             </div>
-            <p>Autor</p>
-            <div>
-              <p style="background-color:#{{ rental.book.category.color }}30; color:#{{ rental.book.category.color }}" class="category-bgc">
+            <p>{{ rental.book.writer }}</p>
+            <div class="category-table-field">
+              <p style="background-color:#{{ rental.book.category.color }}30; color:#{{ rental.book.category.color }}">
                 {{ rental.book.category.title }}
               </p>
             </div>
@@ -46,7 +46,7 @@
     <div class="outter-container">
       <h1>Waiting</h1>
       {% if queues|length %}
-        <div class="rentals-container">
+        <div class="table-container">
           <div class="box-header">
             <p>Title</p>
             <p>Author</p>
@@ -61,9 +61,9 @@
                 <img src="{{ asset(queue.book.getImagePath) }}" alt="book image">
                 <p>{{ queue.book.title }}</p>
               </div>
-              <p>Autor</p>
-              <div>
-                <p style="background-color:#{{ queue.book.category.color }}30; color:#{{ queue.book.category.color }}" class="category-bgc">
+              <p>{{ queue.book.writer }}</p>
+              <div class="category-table-field">
+                <p style="background-color:#{{ queue.book.category.color }}30; color:#{{ queue.book.category.color }}">
                   {{ queue.book.category.title }}
                 </p>
               </div>
@@ -77,5 +77,5 @@
         <p>No rentals found</p>
       {% endif %}
     </div>
-  </div>
+  {# </div> #}
 {% endblock %}

@@ -1,41 +1,4 @@
-{% extends 'base.html.twig' %}
-
-{% block title %}
-    Books list
-{% endblock %}
-
-{% block body %}
-  {# <div class="page-container"> #}
-    <div class="popular-container">
-      <h2>Most popular</h2>
-      <div class="populars-box">
-        {% for popularBook in popularBooks %}
-          <div class="popular-content">
-            <div class="popular-book-img-boox">
-              <img src="{{ asset(popularBook[0].getImagePath) }}" alt="book image">
-            </div>
-            <div class="popular-text-content">
-              <div class="category-info">
-                <p class="popular-p" style="background-color:#{{ popularBook[0].category.color }}60">
-                  {{ popularBook[0].category.title}}
-                </p>
-              </div>
-              <h3>{{ popularBook[0].title }}</h3>
-              <h4>{{ popularBook[0].writer }}, {{ popularBook[0].yearOfRelease }}</h4>
-              <p>{{ popularBook[0].description }}</p>
-            </div>
-          </div>
-        {% endfor %}
-      </div>
-    </div>
-    <div class="search">Wyszukaj</div>
-
-    <div class="outter-container">
-      <h1>Book list</h1>
-      <div class="books-container">
-        {% for book in books %}
-        {% include "/book/_box.html.twig"  %}
-          {# <div class="book-box">
+          <div class="book-box">
             <div class="book-top">
               <div class="book-left">
                 <img src="{{ asset(book.getImagePath) }}" alt="{{ book.title }}" class="img-book">
@@ -95,11 +58,4 @@
                     </div>
                 </div>
             </div> 
-          </div> #}
-        {% endfor %} 
-      </div>
-    </div>
-  {# </div> #}
-{% endblock %}
-
-{# <i class="fa-solid fa-book-open-reader"></i> #}
+          </div>

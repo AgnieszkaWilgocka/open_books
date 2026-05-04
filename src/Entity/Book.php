@@ -36,14 +36,23 @@ class Book
     #[Assert\Positive]
     private ?int $pages = null;
 
-    #[ORM\ManyToOne(inversedBy: 'books')]
+    #[ORM\ManyToOne]
     private ?Category $category = null;
 
+    /**
+     * @var Collection<int, Rental>
+     */
     #[ORM\OneToMany(targetEntity: Rental::class, mappedBy: 'book')]
     private $rentals;
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $imageFileName = null;
+
+    #[ORM\Column(length: 255, nullable: false)]
+    private ?string $writer;
+
+    #[ORM\Column(length: 255, nullable: false)]
+    private ?string $description;
 
     public function __construct()
     {
@@ -194,5 +203,29 @@ class Book
         }
 
         return null;
+    }
+
+    public function getWriter(): ?string
+    {
+        return $this->writer;
+    }
+
+    public function setWriter(?string $writer): static
+    {
+        $this->writer = $writer;
+
+        return $this;
+    }
+
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    public function setDescription(?string $description): static
+    {
+        $this->description = $description;
+
+        return $this;
     }
 }

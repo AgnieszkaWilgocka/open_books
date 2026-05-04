@@ -5,7 +5,7 @@
 {% endblock %}
 
 {% block body %}
-  <div class="page-container">
+  {# <div class="page-container"> #}
     <div class="outter-container">
     <h1>Most popular books</h1>
       <div class="popular-containers">
@@ -27,21 +27,12 @@
       <h1>Categories</h1>
       <div class="categories-container">
         {% for category in categories %}
-          <div class="category-box">
-            <div class="on-top">
-              <div class="category-headers">
-                <img src="{{ asset('images/category.jpg') }}" alt="category image">
-                <p style="background-color:#{{ category.color }};">{{ category.title }}</p>
-              </div>
-              <div class="first-bg"></div>
-              <div class="second-bg"></div>
-            </div>
-          </div>
+          {% include '/category/_box.html.twig' with {'category': category} %}
         {% endfor %}
       </div>
       <div class="view-more">
         <a href="{{ url('category_index') }}">View more</a>
       </div>
     </div>
-  </div>
+  {# </div> #}
 {% endblock %}

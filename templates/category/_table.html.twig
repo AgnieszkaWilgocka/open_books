@@ -1,0 +1,30 @@
+<div class="table-container">
+  <div class="box-header">
+    <p>Title</p>
+    <p>Action</p>
+  </div>
+  {% if categories|length %}
+    {% for category in categories %}
+      <div class="box-content">
+        <div class="category-table-field">
+          <p style="background-color:#{{ category.color }}30; color:#{{ category.color }}">    
+            <a href="{{ url('category_show', {'id': category.id}) }}">{{ category.title }}</a>
+					</p>
+        </div>
+        <p>
+          {% if category.id in userFavCategoryIds %}
+            <a href="{{ url('favorite_delete', {'id': category.id}) }}" class="favorite-action">
+              <i class="fa-solid fa-heart-crack"></i>
+            </a>
+          {% else %}
+            <a href="{{ url('favorite_add', {'id': category.id }) }}" class="favorite-action">
+              <i class="fa-solid fa-heart"></i>
+            </a>
+          {% endif %}
+        </p>
+      </div>
+    {% endfor %}
+  {% else %}
+    <p>No categories found</p>
+  {% endif %}
+</div>

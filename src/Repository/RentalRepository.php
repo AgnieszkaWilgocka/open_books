@@ -39,7 +39,7 @@ class RentalRepository extends ServiceEntityRepository
     public function queryActiveForUser(User $owner): array
     {
         return $this->createQueryBuilder('rental')
-            ->select('rental', 'partial user.{id, email}', 'partial book.{id, title, imageFileName}')
+            ->select('rental', 'partial user.{id, email}', 'partial book.{id, title, imageFileName, writer}')
             ->join('rental.owner', 'user')
             ->join('rental.book', 'book')
             ->andWhere('rental.owner = :owner')

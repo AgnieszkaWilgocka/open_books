@@ -23,7 +23,7 @@ class FavoriteCategoryRepository extends ServiceEntityRepository
     public function queryAll(User $owner): array
     {
         return $this->createQueryBuilder('fc')
-        ->select('fc', 'partial user.{id, email}', 'partial category.{id, title}')
+        ->select('fc', 'partial user.{id, email}', 'partial category.{id, title, color}')
         ->join('fc.owner', 'user')
         ->join('fc.category', 'category')
         ->andWhere('fc.owner = :owner')
@@ -33,11 +33,22 @@ class FavoriteCategoryRepository extends ServiceEntityRepository
         ->getResult();
     }
 
+    public function queryRandom(User $user): FavoriteCategory
+    {
+        return $this->createQueryBuilder('fc')
+            // ->select('fc', 'partial user.{id}', 'partial category.{id}')
+            ->join('fc.owner', 'user')
+            // ->join('fc.category', 'category')
+            ->andWhere('fc.owner = :owner')
+            ->setParameter('owner', $user)
+            ->orderBy('RAND()', 'ASC')
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
     public function save(FavoriteCategory $favoriteCategory): void
     {
-        $favoriteCategory->setCreatedAt(new DateTimeImmutable());
-        $favoriteCategory->setUpdatedAt(new DateTimeImmutable());
-        
         $this->entityManager->persist($favoriteCategory);
         $this->entityManager->flush();
     }

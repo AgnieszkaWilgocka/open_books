@@ -2,14 +2,13 @@
 namespace App\Controller;
 
 use App\Entity\Book;
-use App\Entity\BookQueue;
 use App\Entity\User;
 use App\Form\Type\BookType;
 use App\Repository\BookQueueRepository;
 use App\Repository\BookRepository;
 use App\Service\BookNotificationService;
+use App\Service\BookQueueService;
 use App\Service\FileUploaderHelper;
-use App\Service\RentalFlowService;
 use DateTimeImmutable;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\FormType;
@@ -22,36 +21,24 @@ use Symfony\Component\Security\Http\Attribute\CurrentUser;
 #[Route('/books')]
 class BookController extends AbstractController
 {
-    public function __construct(private BookRepository $bookRepository, private FileUploaderHelper $fileUploaderHelper, private BookNotificationService $bookNotification, private BookQueueRepository $bookQueueRepository, private RentalFlowService $rentalFlowService) {}
+    public function __construct(private BookRepository $bookRepository, private FileUploaderHelper $fileUploaderHelper, private BookNotificationService $bookNotification, private BookQueueRepository $bookQueueRepository, private BookQueueService $bookQueueService) {}
 
     #[Route('/', name: 'book_index', methods: ['GET'])]
-    public function index(#[CurrentUser] ?User $user): Response
+    public function index(#[CurrentUser] ?User $user = null): Response
     {
         // $this->rentalFlowService->handleClearedTokens();
         $books = $this->bookRepository->queryAll();
         
-        $popularBooks = $this->bookRepository->countRentalsForBook();
+        $popularBooks = $this->bookRepository->queryMostRented(2);
+        // dd($popularBooks[1][0]->getCategory());
 
-        $queuedBooks = $this->bookQueueRepository->queryAll();
-        $queuedUserBooks = [];
-        $queuedUserBooksIds = [];
-        $queuedBooksIds = [];
-
-
-        if ($user) {
-            $queuedUserBooks = $this->bookQueueRepository->findBy([
-                'user' => $user
-            ]);
-        }
-
-        $queuedUserBooksIds = array_map(fn(BookQueue $qbook) => $qbook->getBook()->getId(), $queuedUserBooks);
-        $queuedBooksIds = array_map(fn(BookQueue $qbook) => $qbook->getBook()->getId(), $queuedBooks);
+        $queuedBooksData = $this->bookQueueService->prepareQueuedBooksData($user);
 
         return $this->render('/book/index.html.twig', [
             'books' => $books,
             'popularBooks' => $popularBooks,
-            'queuedBooksIds' => $queuedBooksIds,
-            'queuedUserBooksIds' => $queuedUserBooksIds
+            'queuedBooksIds' => $queuedBooksData['queuedBooksIds'],
+            'queuedUserBooksIds' => $queuedBooksData['queuedUserBooksIds']
             ]);
     }
 

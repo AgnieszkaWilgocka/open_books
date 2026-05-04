@@ -1,0 +1,20 @@
+{% extends 'base.html.twig' %}
+{% block title %} {{category.title}} {% endblock %}
+{% block body %}
+  <div class="outter-container">
+    {% if category is not defined %}
+      <p>Category not found</p>
+    {% endif %}
+
+    <h1>Przeglądaj książki dla: {{ category.title }}</h1>
+    <div class="books-container">
+      {% if categoryBooks is defined and categoryBooks|length %}
+        {% for book in categoryBooks %}
+          {% include "/book/_box.html.twig" with {book: book} %}
+        {% endfor %}
+      {% else %}
+        <p>Books not found</p>
+      {% endif %}
+    </div>
+  </div>
+{% endblock %}

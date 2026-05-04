@@ -1,8 +1,8 @@
 @import url('colors.css');
 
-.rentals-container {
+.table-container {
     margin-top: 20px;
-    padding: 30px 20px;
+    padding: 10px;
     background-color: rgb(245,247,249);
     font-family: "Roboto", sans-serif;
 }
@@ -86,8 +86,3 @@
     color: #fff;
 }
 
-.category-bgc {
-    width: 40%;
-    padding: 7px;
-    /* opacity: 0.3; */
-}
