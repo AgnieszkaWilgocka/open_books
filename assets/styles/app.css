@@ -4,6 +4,11 @@
 * {
     margin: 0;
     padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    height: 100%;
 }
 
 body {
@@ -274,4 +279,127 @@ ul.menu a {
 .search form button:hover {
     background-color: var(--hover-blue);
     color: var(--gray);
+}
+
+.auth-container {
+    height: 95.8%;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--main-blue);
+}
+
+.inner-auth-container {
+    width: 1150px;
+    height: 630px;
+    background-color: rgb(58,96,171);
+    backdrop-filter: blur(1px);
+    display: flex;
+    border-radius: 20px;
+    overflow: hidden;
+}
+
+.auth-user {
+    flex-basis: 40%;
+}
+
+.auth-app-info {
+    flex-basis: 60%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-image: url('/images/auth4-logo.jpg');
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+.app-text {
+    width: 70%;
+    height: 40%;
+    background-color: rgba(212, 193, 193, 0.3);
+    backdrop-filter: blur(5px);
+    border-radius: 14px;
+}
+
+.login-form {
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.blur-box {
+    margin-top: 10px;
+    width: 90%;
+    height: 80%;
+    margin: 0 auto;
+    background-color: rgba(212, 193, 193, 0.3);
+    backdrop-filter: blur(5px);
+    border-radius: 14px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.login-form h1,
+.login-form p {
+    color: #fff;
+    text-align: center;
+    padding: 7px;
+}
+
+.login-form form {
+    width: 80%;
+    margin: 0 auto;
+    padding: 25px 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+
+.login-form form input,
+.login-form form button {
+    padding: 15px 25px;
+    width: 100%;
+    border-radius: 7px;
+    border: none;
+}
+
+.login-form form input {
+    background-color: #fff;
+}
+.login-form form button {
+    background-color: rgb(142,232,162);
+}
+
+.app-about {
+    padding: 25px;
+}
+
+.app-about-header {
+    height: 60px;
+    display: flex;
+    gap: 15px;
+    align-items: center;
+    margin: 7px;
+}
+
+.app-about-header h1 {
+    color: var(--gray);
+}
+
+.app-about-header img {
+    width: 60px;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 14px;
+}
+
+.app-text p {
+    padding: 20px;
+    color: var(--gray);
+    text-align: center;
 }

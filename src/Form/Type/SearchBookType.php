@@ -42,9 +42,7 @@ class SearchBookType extends AbstractType
                 'required' => false,
                 'label' => false,
                 'choice_label' => 'title',
-                'attr' => [
-                    'placeholder' => 'Category'
-                ]
+                'placeholder' => 'Category'
             ]
         );
     }

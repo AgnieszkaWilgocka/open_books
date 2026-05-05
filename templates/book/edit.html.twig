@@ -1,8 +1,8 @@
-{% extends 'base.html.twig' %}
+{% extends 'app.html.twig' %}
 
 {% block body %}
-    {{ form_start(form, {'action': path('book_edit', {'id': book.id}), 'method': 'PUT'}) }}
-    {{ form_row(form.fileName) }}
-    {{ form_rest(form) }}
-    {{ form_end(form) }}
+	{{ form_start(form, {'action': path('book_edit', {'id': book.id}), 'method': 'PUT'}) }}
+	{{ form_row(form.fileName) }}
+	{{ form_rest(form) }}
+	{{ form_end(form) }}
 {% endblock %}

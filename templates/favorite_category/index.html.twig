@@ -1,98 +1,94 @@
-{% extends 'base.html.twig' %}
+{% extends 'app.html.twig' %}
 
-{% block title %}FavCategories{% endblock %}
+{% block title %}FavCategories
+{% endblock %}
 
 {% block body %}
-  <div class="outter-container">
-    <h1>Ulubione</h1>
-    <div class="flex-favorite-container">
-      <div class="table-container">
-        <div class="box-header">
-          <p>Title</p>
-          <p>Notifications</p>
-        </div>
-        {% if favCategories|length %}
-          {% for favCategory in favCategories %}
-            <div class="box-content">
-              <div class="category-table-field">
-                <p style="background-color:#{{ favCategory.category.color }}30; color:#{{ favCategory.category.color }}">{{ favCategory.category.title }}</p>
-              </div>
-              <div class="toggle-form">
-                <form method="post" action="{{ path('toggle_notifications', {'id': favCategory.id}) }}">
-                  <input
-                    type="checkbox"
-                    name="notifications"
-                    value="1"
-                    {% if favCategory.notificationsEnabled %}checked{% endif %}
-                    onchange="this.form.submit()"
-                  >
-                </form>
-              </div>
-            </div>
-          {% endfor %}
-        {% else %}
-          <p>Add category to your favorites</p>
-        {% endif %}
-      </div>
-      <div class="recomendation-container">
-        <h3>Recommended For You</h3>
-        <div class="recommended-box">
-          {% if recommendedBook %}
-            <div class="category-table-field">
-              <p style="background-color:#{{ recommendedBook.category.color }}30; color:#{{ recommendedBook.category.color }}">{{ recommendedBook.category.title }}</p>
-            </div>
-            <h2>{{ recommendedBook.title }}</h2>
-            <div class="img-recommened-box">
-              <img src="{{ asset(recommendedBook.getImagePath) }}" alt="book image">
-            </div>
-            <div class="recommended-info">
-              <div>
-                <p>Writer</p>
-                <p> {{ recommendedBook.writer }}</p>
-              </div>
-              <div>
-                <p>Year</p>
-                <p>{{ recommendedBook.yearOfRelease|date('F-Js') }}</p>
-              </div>
-              <div>
-                <p>Pages</p>
-                <p>{{ recommendedBook.pages }}</p>
-              </div>
-            </div>
-          {% else %}
-            <p>No recommendation yet</p>
-          {% endif %}
-        </div>
-      </div>
-    </div>
-  </div>
+	<div class="outter-container">
+		<h1>Ulubione</h1>
+		<div class="flex-favorite-container">
+			<div class="table-container">
+				<div class="box-header">
+					<p>Title</p>
+					<p>Notifications</p>
+				</div>
+				{% if favCategories|length %}
+					{% for favCategory in favCategories %}
+						<div class="box-content">
+							<div class="category-table-field">
+								<p style="background-color:#{{ favCategory.category.color }}30; color:#{{ favCategory.category.color }}">{{ favCategory.category.title }}</p>
+							</div>
+							<div class="toggle-form">
+								<form method="post" action="{{ path('toggle_notifications', {'id': favCategory.id}) }}">
+									<input type="checkbox" name="notifications" value="1" {% if favCategory.notificationsEnabled %} checked {% endif %} onchange="this.form.submit()">
+								</form>
+							</div>
+						</div>
+					{% endfor %}
+				{% else %}
+					<p>Add category to your favorites</p>
+				{% endif %}
+			</div>
+			<div class="recomendation-container">
+				<h3>Recommended For You</h3>
+				<div class="recommended-box">
+					{% if recommendedBook %}
+						<div class="category-table-field">
+							<p style="background-color:#{{ recommendedBook.category.color }}30; color:#{{ recommendedBook.category.color }}">{{ recommendedBook.category.title }}</p>
+						</div>
+						<h2>{{ recommendedBook.title }}</h2>
+						<div class="img-recommened-box">
+							<img src="{{ asset(recommendedBook.getImagePath) }}" alt="book image">
+						</div>
+						<div class="recommended-info">
+							<div>
+								<p>Writer</p>
+								<p>
+									{{ recommendedBook.writer }}</p>
+							</div>
+							<div>
+								<p>Year</p>
+								<p>{{ recommendedBook.yearOfRelease|date('F-Js') }}</p>
+							</div>
+							<div>
+								<p>Pages</p>
+								<p>{{ recommendedBook.pages }}</p>
+							</div>
+						</div>
+					{% else %}
+						<p>No recommendation yet</p>
+					{% endif %}
+				</div>
+			</div>
+		</div>
+	</div>
 
-  <div class="outter-container">
-    <h1>Categories</h1>
-    {% include "category/_table.html.twig" with {categories: categories, userFavCategoryIds: userFavCategoryIds} %}
-  </div>
-  {# {% if favCategories is defined and favCategories|length %}
-    <table class="table table-striped">
-      <thead>
-        <tr>
-          <th>Created at</th>
-          <th>Updated at</th>
-          <th>Category</th>
-          <th>Owner</th>
-          <th>Notification enabled</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for favCat in favCategories %}
-          <tr>
-            <td>{{ favCat.createdAt|date('Y-m-d') }}</td>
-            <td>{{ favCat.updatedAt|date('Y-m-d') }}</td>
-            <td>{{ favCat.category.title }}</td>
-            <td>{{ favCat.owner.email }}</td>
-            <td>{{ favCat.notificationsEnabled ? 'yes' : 'no'}}</td>
-          </tr>
-        {% endfor %}
-      </tbody>
-    </table>
-  {% endif %} #}
+	<div class="outter-container">
+		<h1>Categories</h1>
+		{% include "category/_table.html.twig" with {categories: categories, userFavCategoryIds: userFavCategoryIds} %}
+	</div>
+	{# {% if favCategories is defined and favCategories|length %}
+		    <table class="table table-striped">
+		      <thead>
+		        <tr>
+		          <th>Created at</th>
+		          <th>Updated at</th>
+		          <th>Category</th>
+		          <th>Owner</th>
+		          <th>Notification enabled</th>
+		        </tr>
+		      </thead>
+		      <tbody>
+		        {% for favCat in favCategories %}
+		          <tr>
+		            <td>{{ favCat.createdAt|date('Y-m-d') }}</td>
+		            <td>{{ favCat.updatedAt|date('Y-m-d') }}</td>
+		            <td>{{ favCat.category.title }}</td>
+		            <td>{{ favCat.owner.email }}</td>
+		            <td>{{ favCat.notificationsEnabled ? 'yes' : 'no'}}</td>
+		          </tr>
+		        {% endfor %}
+		      </tbody>
+		    </table>
+		  {% endif %} #}
 {% endblock %}

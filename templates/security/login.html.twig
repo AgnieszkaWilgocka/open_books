@@ -1,33 +1,53 @@
-{% extends 'base.html.twig' %}
+{% extends 'auth.html.twig' %}
 
 {% block title %}Log In!{% endblock %}
 
 {% block body %}
-<div class="container">
-    <div class="row">
-        <div class="login-form bg-light mt-4 p-4">
-            <form method="post" class="row g-3">
-                <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}"></input>
-                {% if error %}
-                    <div class="alert alert-danger">{{ error.messageKey }}</div>
-                {% endif %}
-                <h1 class="h3 mb-3 font-weight-normal">Please sign in</h1>
-                <div class="col-12">
-                    <label for="inputEmail">Email</label>
-                    <input type="email" name="email" id="inputEmail" value="{{ last_email }}" class="form-control" required autofocus>
-                </div>
-                <div class="col-12">
-                    <label for="inputPassword">Password</label>
-                    <input type="password" name="password" id="inputPassword" class="form-control" required>
-                </div>
+{# <div class="container"> #}
+    {# <div class="row"> #}
+    <div class="inner-auth-container">
+        <div class="auth-user">
+            {# <div class="login-box">
+                <img src="{{ asset('/images/logo.jpg') }}" alt="">
+            </div> #}
+            <div class="login-form">
+                <div class="blur-box">
+                    <div class="introduce">
+                        <h1>Hello!</h1>
+                        <p>To Log In To Your Account, Enter Your Email And Password </p>
+                    </div>
+                    <form method="post">
+                        <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}"></input>
+                        {% if error %}
+                            <div class="alert alert-danger">{{ error.messageKey }}</div>
+                        {% endif %}
+                        <div>
+                            <input type="email" name="email" id="inputEmail" value="{{ last_email }}" placeholder="Your Email" class="form-control" required autofocus>
+                        </div>
+                        <div>
 
-                <div class="col-12">
-                    <button class="btn btn-lg btn-primary float-end" type="submit">
-                        Sign in
-                    </button>
+                            <input type="password" name="password" id="inputPassword" placeholder="Your Password" class="form-control" required>
+                        </div>
+                        <div>
+                            <button class="btn btn-lg btn-primary float-end" type="submit">
+                                Sign in
+                            </button>
+                        </div>
+                    </form>
                 </div>
-            </form>
+            </div>
+        </div>
+        <div class="auth-app-info">
+            <div class="app-text">
+                <div class="app-about-header">
+
+                    <img src="{{ asset('images/logo.jpg') }}" alt="logo app">
+                    <h1>Open B<span style="color: rgb(11, 152, 68)";>oo</span>ks</h1>
+                
+                </div>
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque suscipit malesuada iaculis. Maecenas suscipit suscipit urna at eleifend. Integer blandit suscipit magna et dictum. Donec mattis porttitor nunc a ullamcorper. Praesent lectus ex, tempor at accumsan a, faucibus nec ligula.</p>
+            </div>
         </div>
     </div>
-</div>
+{# </div> #}
 {% endblock %}

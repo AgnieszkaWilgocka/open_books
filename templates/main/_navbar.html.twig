@@ -1,0 +1,65 @@
+<div class="left-menu-container">
+                <div class="logo-headers">
+                    <div class="img-logo-box">
+                        <img src="{{ asset('images/logo.jpg') }}" alt="logo">
+                    </div>
+                    <h1 class="logo-text"><span>O</span>pen<span>B</span>ooks</h1>
+                </div>
+                <div class="menu-box">
+                    <ul class="menu">
+                        <li>
+                            <i class="fa-regular fa-heart"></i>
+                            <a href="{{ url('favorite_index') }}">Ulubione</a>
+                        </li>
+                        <li>
+                            <i class="fa-solid fa-table-cells-large"></i>
+                            <a href="{{ url('category_index') }}">Kategorie</a></li>
+                        <li>
+                            <i class="fa-solid fa-book"></i>
+                            <a href="{{ url('book_index') }}">Książki</a>
+                        </li>
+                        <hr>
+                        <li>
+                            <i class="fa-brands fa-readme"></i>
+                            <a href="{{ url('rental_index') }}">Wypożyczenia</a>
+                        </li>
+                    </ul>
+                </div>
+                {% if newestBook %}
+                    <div class="new-book-box">
+                        <div class="header-box">
+                            <h2>Nowość</h2>
+                            <div class="category-info">
+                                <p style="background-color:#{{newestBook.category.color}}70">{{ newestBook.category.title }}</p>
+                            </div>
+                        </div>
+                        <div class="flex-box">
+                            <div class="white-bg">
+                                <div class="img-title-content">
+                                    <div class="new-book-img">
+                                        <img src="{{ asset(newestBook.getImagePath) }}" alt="book image">
+                                    </div>
+                                    <p>{{ newestBook.title }} &#9679; {{ newestBook.writer }} &#9679; {{ newestBook.yearOfRelease }}</p>
+                                </div>
+                            </div>
+                            <p>{{ newestBook.description }}</p>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+<div class="right-container">
+                <div class="top-menu-container">
+                    <ul>
+                        <li><i class="fa-regular fa-circle-user"></i></li>
+                        {% if app.user %}
+                            <li>
+                                <a href="{{ url('app_logout') }}">
+                                    <i class="fa-solid fa-right-from-bracket"></i>
+                                </a>
+                            </li>
+                            <li><a href="">{{ app.user.email }}</a></li>
+                        {% else %}
+                            <li><a href="{{ url('app_login') }}">Zaloguj</a></li>
+                        {% endif %}
+                    </ul>
+                </div>
