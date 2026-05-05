@@ -20,10 +20,22 @@ class CategoryRepository extends ServiceEntityRepository
     {
         return $this->createQueryBuilder('category')
             ->select('category')
-            // ->orderBy('category.createdAt', 'DESC')
             ->setMaxResults($limit)
             ->getQuery()
             ->getResult();
+    }
+
+    public function searchByParams(?string $title): array
+    {
+        $qb = $this->createQueryBuilder('category')
+            ->orderBy('category.title', 'DESC');
+        
+        if ($title !== null) {
+            $qb = $qb->andWhere('category.title LIKE :q')
+                ->setParameter('q', '%' . $title . '%');
+        }
+
+        return $qb->getQuery()->getResult();
     }
 
     //    /**

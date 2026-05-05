@@ -98,6 +98,32 @@ class BookRepository extends ServiceEntityRepository
             ->getOneOrNullResult();
     }
 
+    public function searchByParams(?string $title, ?int $yearOfRelease, ?Category $category): array
+    {
+        $qb = $this->createQueryBuilder('book')
+            ->select('book', 'partial rentals.{id, returnedAt}')
+            ->leftJoin('book.rentals', 'rentals', 'WITH', 'rentals.returnedAt IS NULL')
+            ->orderBy('book.title', 'ASC');
+
+        if ($title !== null) {
+            $qb = $qb->andWhere('book.title LIKE :q' )
+                ->setParameter('q', '%' . $title . '%');
+        }
+
+        if ($yearOfRelease !== null) {
+            $qb = $qb->andWhere('book.yearOfRelease = :year')
+                ->setParameter('year', $yearOfRelease);
+        }
+
+        if ($category !== null) {
+            $qb = $qb->andWhere('book.category = :category')
+            ->join('book.category', 'category')
+            ->setParameter('category', $category);
+        }
+        
+        return $qb->getQuery()->getResult();
+    }
+
     public function save(Book $book): void
     {        
         $this->entityManager->persist($book);

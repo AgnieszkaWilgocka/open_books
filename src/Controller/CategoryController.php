@@ -6,6 +6,7 @@ use App\Entity\Category;
 use App\Entity\FavoriteCategory;
 use App\Entity\User;
 use App\Form\Type\CategoryType;
+use App\Form\Type\SearchCategoryType;
 use App\Repository\BookRepository;
 use App\Repository\CategoryRepository;
 use App\Service\BookQueueService;
@@ -24,9 +25,16 @@ class CategoryController extends AbstractController
     public function __construct(private EntityManagerInterface $entityManager, private CategoryRepository $categoryRepository, private BookRepository $bookRepository, private BookQueueService $bookQueueService) {}
 
     #[Route('/', name: 'category_index', methods: ['GET'])]
-    public function index(#[CurrentUser] ?User $user = null) : Response
+    public function index(Request $request, #[CurrentUser] ?User $user = null) : Response
     {
-        $categories = $this->categoryRepository->findAll();
+
+        $form = $this->createForm(SearchCategoryType::class, null, [
+            'method' => 'GET'
+        ]);
+        $form->handleRequest($request);
+        $data = $form->getData();
+
+        $categories = $this->categoryRepository->searchByParams($data['title'] ?? null);
 
         if ($user) {
             $userFavCategories = array_map(fn(FavoriteCategory $fc) => $fc->getCategory(), $user->getFavoriteCategories()->toArray());
@@ -36,10 +44,13 @@ class CategoryController extends AbstractController
             $userFavCategoryIds = [];
         }
 
+        
+
         return $this->render(
             '/category/index.html.twig',
             [
                 'categories' => $categories,
+                'form' => $form->createView(),
                 'userFavCategories' => $userFavCategories,
                 'userFavCategoryIds' => $userFavCategoryIds
             ]

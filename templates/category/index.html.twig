@@ -15,6 +15,14 @@
       </div>
     </div>
   {% endif %}
+  <div class="search">
+    {{ form_start(form) }}
+      {{ form_row(form.title) }}
+      <button>
+        <i class="fa-solid fa-magnifying-glass"></i>
+      </button>
+    {{ form_end(form) }}
+  </div>
     <div class="outter-container category-container">
       <h1>Categories</h1>
       {% include "/category/_table.html.twig" with {categories: categories, userFavCategoryIds: userFavCategoryIds}%}

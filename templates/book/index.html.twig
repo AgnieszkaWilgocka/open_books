@@ -28,8 +28,16 @@
         {% endfor %}
       </div>
     </div>
-    <div class="search">Wyszukaj</div>
-
+    <div class="search">
+      {{ form_start(form) }}
+        {{ form_row(form.title) }}
+        {{ form_row(form.year) }}
+        {{ form_row(form.category) }}
+        <button>
+          <i class="fa-solid fa-magnifying-glass"></i>
+        </button>
+      {{ form_end(form) }}
+    </div>
     <div class="outter-container">
       <h1>Book list</h1>
       <div class="books-container">

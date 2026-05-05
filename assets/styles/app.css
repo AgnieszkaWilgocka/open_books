@@ -224,3 +224,54 @@ ul.menu a {
     color: #fff;
 }
 
+.search {
+    background-color: #fff;
+    margin: 30px 20px;
+    padding: 20px;
+    border-radius: 15px;
+}
+
+.rentals-container .search {
+    margin: 20px 0;
+    padding: 0;
+}
+
+.search form {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+}
+
+.search form input,
+.search form select {
+    padding: 10px 15px;
+    border-radius: 7px;
+    background-color: var(--hover-blue);
+    border: none;
+    color: rgb(200,191,205);
+}
+
+.search form input::placeholder {
+    color: rgb(200,191,205);
+}
+
+.search form input:focus,
+.search form select:focus {
+    color: var(--gray);
+}
+
+.search form button {
+    background-color: var(--main-blue);
+    color: #fff;
+    padding: 7px 12px;
+    border-radius: 14px;
+    border: none;
+    font-size: 18px;
+    cursor: pointer;
+    transition: .2s;
+}
+
+.search form button:hover {
+    background-color: var(--hover-blue);
+    color: var(--gray);
+}

@@ -7,6 +7,7 @@ use App\Entity\Rental;
 use App\Entity\RentalToken;
 use App\Entity\User;
 use App\Form\Type\RentalType;
+use App\Form\Type\SearchRentalType;
 use App\Repository\BookQueueRepository;
 use App\Repository\BookRepository;
 use App\Repository\RentalRepository;
@@ -32,22 +33,30 @@ class RentalController extends AbstractController
 
     #[Route('/', name: 'rental_index', methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
-    public function index(#[CurrentUser] User $user): Response
+    public function index(Request $request, #[CurrentUser] User $user): Response
     {
         $rentals = [];
         $queues = [];
 
+        $form = $this->createForm(SearchRentalType::class, null, [
+            'method' => 'GET'
+        ]);
+
+        $form->handleRequest($request);
+        $data = $form->getData();
+
         if ($this->isGranted('ROLE_ADMIN')) {
-            $rentals = $this->rentalRepository->findAll();
+            $rentals = $this->rentalRepository->searchByParams($data['bookTitle'] ?? null, $data['writer'] ?? null, $data['deadline'] ?? null, $data['bookCategory'] ?? null);
         } else {
-            $rentals = $this->rentalRepository->queryActiveForUser($user);
+            $rentals = $this->rentalRepository->searchByParams($data['bookTitle'] ?? null, $data['writer'] ?? null, $data['deadline'] ?? null, $data['bookCategory'] ?? null, $user);
             $queues = $this->bookQueueRepository->queryAll($user);
         }
         
         return $this->render('/rental/index.html.twig',
         [
             'rentals' => $rentals,
-            'queues' => $queues
+            'queues' => $queues,
+            'form' => $form->createView()
         ]);
     }
 

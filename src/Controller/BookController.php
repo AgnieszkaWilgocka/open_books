@@ -4,6 +4,7 @@ namespace App\Controller;
 use App\Entity\Book;
 use App\Entity\User;
 use App\Form\Type\BookType;
+use App\Form\Type\SearchBookType;
 use App\Repository\BookQueueRepository;
 use App\Repository\BookRepository;
 use App\Service\BookNotificationService;
@@ -24,18 +25,24 @@ class BookController extends AbstractController
     public function __construct(private BookRepository $bookRepository, private FileUploaderHelper $fileUploaderHelper, private BookNotificationService $bookNotification, private BookQueueRepository $bookQueueRepository, private BookQueueService $bookQueueService) {}
 
     #[Route('/', name: 'book_index', methods: ['GET'])]
-    public function index(#[CurrentUser] ?User $user = null): Response
+    public function index(Request $request, #[CurrentUser] ?User $user = null): Response
     {
         // $this->rentalFlowService->handleClearedTokens();
-        $books = $this->bookRepository->queryAll();
         
-        $popularBooks = $this->bookRepository->queryMostRented(2);
-        // dd($popularBooks[1][0]->getCategory());
+        $form = $this->createForm(SearchBookType::class, null, [
+            'method' => 'GET',
+        ]);
 
+        $form->handleRequest($request);
+        $data = $form->getData();
+
+        $books = $this->bookRepository->searchByParams($data['title'] ?? null, $data['year'] ?? null, $data['category'] ?? null);
+        $popularBooks = $this->bookRepository->queryMostRented(2);
         $queuedBooksData = $this->bookQueueService->prepareQueuedBooksData($user);
 
         return $this->render('/book/index.html.twig', [
             'books' => $books,
+            'form' => $form->createView(),
             'popularBooks' => $popularBooks,
             'queuedBooksIds' => $queuedBooksData['queuedBooksIds'],
             'queuedUserBooksIds' => $queuedBooksData['queuedUserBooksIds']
@@ -136,4 +143,11 @@ class BookController extends AbstractController
             'book' => $book,
         ]);
     }
+
+    // #[Route('/search', name: 'search_book', methods: ['POST'])]
+    // public function search(Request $request): Response
+    // {
+    //     $title = $request->request->
+    //     $books = $this->bookRepository->searchByParams()
+    // }
 }
