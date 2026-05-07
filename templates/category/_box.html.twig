@@ -2,7 +2,7 @@
   <div class="on-top">
     <div class="category-headers">
       <img src="{{ asset('images/category.jpg') }}" alt="category image">
-      <p style="background-color:#{{ category.color }};">
+      <p style="background-color:{{ category.color }};">
         <a href="{{ url('category_show', {'id': category.id}) }}">{{ category.title }}</a>
       </p>
     </div>

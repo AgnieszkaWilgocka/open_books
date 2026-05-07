@@ -1,0 +1,33 @@
+<div class="form-rental-box">
+    <div class="form-header">
+        <div>
+            <i class="fa-solid fa-pen-clip"></i>
+        </div>
+        <p>{{ action_title }}</p>
+        <div></div>
+    </div>
+    <h1 class="rent-title">Realizacja wypożyczenia</h1>
+    <div class="rental-info">
+        <div class="book-img-form">
+            <img src="{{ asset(book.getImagePath) }}" alt="book image">
+        </div>
+        <div class="book-info-form">
+            <h3>{{ book.title }}</h3>
+            <p class="book-writer">{{ book.writer }}</p>
+            <hr>
+            <p class="book-description">{{ book.description }}</p>
+            <hr>
+            <p><span>Year:</span> {{ book.yearOfRelease }}</p>
+            <p><span>Pages:</span> {{ book.pages }}</p>
+        </div>
+    </div>
+    <p class="book-deadline"><span><i class="fa-regular fa-calendar-days"></i></span>Termin zwrotu: {{ deadline|date('F j') }}</p>
+    {{ form_start(form) }}
+        {{ form_row(form.book, {
+            attr: {class: 'rental-hidden'}
+        }) }}
+        <div class="rent-btn-box">
+            <button class="rent-btn">Rent</button>
+        </div>
+    {{ form_end(form) }}
+</div>

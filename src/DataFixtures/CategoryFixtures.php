@@ -20,7 +20,7 @@ class CategoryFixtures extends Fixture
         for ($i = 0; $i < 10; $i++) {
 		    $category = new Category();
             $category->setTitle($this->faker->colorName());
-            $category->setColor(sprintf('%06x', random_int(0, 0xFFFFFF)));
+            $category->setColor('#' . sprintf('%06x', random_int(0, 0xFFFFFF)));
             
             $manager->persist($category);
             $this->addReference(self::CATEGORY_REFERENCE . '_' . $i, $category);

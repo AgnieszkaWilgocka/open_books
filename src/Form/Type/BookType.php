@@ -61,6 +61,9 @@ class BookType extends AbstractType
             TextareaType::class,
             [
                 'required' => true,
+                'attr' => [
+                    'placeholder' => 'Brief description'
+                ]
             ]
         )
         ->add(
@@ -70,7 +73,7 @@ class BookType extends AbstractType
                 'attr' => [
                     'min' => 1800,
                     'max' => 2026,
-                    'placeholder' => 'Enter the year of book release',
+                    'placeholder' => 'Enter the year',
                 ]
             ]
         )
@@ -80,7 +83,7 @@ class BookType extends AbstractType
             [
                 'attr' => [
                     'min' => 1,
-                    'placeholder' => 'Enter pages number',
+                    'placeholder' => 'Enter number',
                 ]
             ]
         )
@@ -99,13 +102,6 @@ class BookType extends AbstractType
                 'mapped' => false,
                 'required' => false,
                 'constraints' => $imageConstraints
-            ]
-        )
-         ->add(
-            'save',
-            SubmitType::class,
-            [
-                'label' => 'Save Book'
             ]
         );
     }

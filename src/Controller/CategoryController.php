@@ -31,6 +31,7 @@ class CategoryController extends AbstractController
         $form = $this->createForm(SearchCategoryType::class, null, [
             'method' => 'GET'
         ]);
+        
         $form->handleRequest($request);
         $data = $form->getData();
 

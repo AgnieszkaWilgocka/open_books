@@ -1,0 +1,17 @@
+<div class="form-container">
+	<div class="form-box">
+		<div class="form-header">
+			<div>
+				<i class="fa-solid fa-pen-clip"></i>
+			</div>
+			<p>Delete</p>
+			<div></div>
+		</div>
+		<div class="form-content form-delete-content">
+			<h3>Czy na pewno usunąć: {{ entity_title }}</h3>
+			{{ form_start(form)}}
+				<button class="right">Delete</button>
+			{{ form_end(form) }}
+		</div>
+	</div>
+</div>

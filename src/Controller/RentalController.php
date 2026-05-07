@@ -60,18 +60,22 @@ class RentalController extends AbstractController
         ]);
     }
 
-    #[Route('/create', name: 'rental_create', methods: ['GET', 'POST'])]
+    // #[Route('/create', name: 'rental_create', methods: ['GET', 'POST'])]
     #[Route('/create/{id}', name: 'rental_create_with_book', requirements: ['id' => '[1-9]\d*'], methods: ['GET', 'POST'])]
     #[IsGranted('ROLE_USER')]
     public function create(Request $request, #[CurrentUser] User $user, ?Book $book = null): Response
     {
         $rental = new Rental();
         
-        if ($book) {
-            $rental->setBook($book);
-        }
+        // if ($book) {
+        //     $rental->setBook($book);
+        // }
 
-        $form = $this->createForm(RentalType::class, $rental, ['lock_book' => $book !== null]);
+        $rental->setBook($book);
+
+        // $form = $this->createForm(RentalType::class, $rental, ['lock_book' => $book !== null]);
+        $form = $this->createForm(RentalType::class, $rental);
+
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $selectedBook = $form->get('book')->getData();
@@ -92,6 +96,8 @@ class RentalController extends AbstractController
         return $this->render('/rental/create.html.twig',
         [
             'form' => $form,
+            'book' => $book,
+            'deadline' => new DateTimeImmutable('+14 days')
         ]);
     }
 

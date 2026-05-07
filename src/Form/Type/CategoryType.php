@@ -19,8 +19,9 @@ class CategoryType extends AbstractType
             TextType::class,
             [
                 'required' => true,
+                'label' => false,
                 'attr' => [
-                    'placehoder' => 'e.g Fantasy'
+                    'placeholder' => 'e.g Fantasy'
                 ]
             ]
         )
@@ -29,15 +30,16 @@ class CategoryType extends AbstractType
             ColorType::class,
             [
                 'required' => true,
-            ]
-        )
-        ->add(
-            'save',
-            SubmitType::class,
-            [
-                'label' => 'Save category'
+                'label' => 'Choose color'
             ]
         );
+        // ->add(
+        //     'save',
+        //     SubmitType::class,
+        //     [
+        //         'label' => 'Save category'
+        //     ]
+        // );
     }
 
     public function configureOptions(OptionsResolver $resolver): void

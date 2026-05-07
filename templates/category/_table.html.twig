@@ -7,7 +7,7 @@
     {% for category in categories %}
       <div class="box-content">
         <div class="category-table-field">
-          <p style="background-color:#{{ category.color }}30; color:#{{ category.color }}">    
+          <p style="background-color:{{ category.color }}30; color:{{ category.color }}">    
             <a href="{{ url('category_show', {'id': category.id}) }}">{{ category.title }}</a>
 					</p>
         </div>

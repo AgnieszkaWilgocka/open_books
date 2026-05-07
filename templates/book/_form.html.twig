@@ -1,0 +1,49 @@
+<div class="form-book-box">
+	<div class="form-header">
+		<div>
+			<i class="fa-solid fa-pen-clip"></i>
+		</div>
+		<p>{{ action_title }}</p>
+		<div></div>
+	</div>
+	<div class="form-content">
+        {{ form_start(form) }}
+            <div class="author-group">
+                {{ form_row(form.title, {
+                    row_attr: { class: 'column-row title-box' },
+                    attr: { class: 'field-input' }
+                }) }}
+                {{ form_row(form.writer, {
+                    row_attr: { class: 'column-row writer-box' },
+                    attr: { class: 'field-input' }
+                }) }}
+            </div>
+            {{ form_row(form.description, {
+                row_attr: { class: 'column-row' },
+                attr: { class: 'field-input' }
+            }) }}
+            <div class="book-info">
+                {{ form_row(form.year_of_release, {
+                    row_attr: { class: 'column-row year-release-box' },
+                    attr: { class: 'field-input' }
+                }) }}
+                {{ form_row(form.pages, {
+                    row_attr: { class: 'column-row pages-box' },
+                    attr: { class: 'field-input' }
+                }) }}
+                {{ form_row(form.category, {
+                    row_attr: { class: 'column-row category-form-box' },
+                    attr: { class: 'field-input' }
+                }) }}
+            </div>
+            {# <div class="bottom-content"> #}
+                {{ form_row(form.fileName, {
+                    row_attr: { class: 'column-row file-box' },
+                }) }}
+                <div class="right-side">
+                    <button class="right">Save</button>
+                </div>
+            {# </div> #}
+        {{ form_end(form) }}
+    </div>
+</div>

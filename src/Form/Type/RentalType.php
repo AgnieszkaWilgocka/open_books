@@ -20,28 +20,29 @@ class RentalType extends AbstractType
             EntityType::class,
             [
                 'class' => Book::class,
+                'label' => false,
                 'query_builder' => fn(BookRepository $bookRepository) => 
                     $bookRepository->queryAvailable(),
                 'choice_label' => 'title',
-                'disabled' => $options['lock_book']
-            ]
-        )
-        ->add(
-            'save',
-            SubmitType::class,
-            [
-                'label' => 'Save rental'
+                // 'disabled' => $options['lock_book']
             ]
         );
+        // ->add(
+        //     'save',
+        //     SubmitType::class,
+        //     [
+        //         'label' => 'Save rental'
+        //     ]
+        // );
     }
 
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'data_class' => Rental::class,
-            'lock_book' => false
+            // 'lock_book' => false
         ]);
 
-        $resolver->setAllowedTypes('lock_book', 'bool');
+        // $resolver->setAllowedTypes('lock_book', 'bool');
     }
 }

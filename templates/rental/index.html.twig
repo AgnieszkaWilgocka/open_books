@@ -39,7 +39,7 @@
 							</p>
 						</div>
 						<p>till:
-							<span>{{ rental.deadline|date('F-jS') }}</span>
+							<span>{{ rental.deadline|date('F-Js') }}</span>
 						</p>
 						<p>
 							<a href="{{ url('rental_return', {'id': rental.id}) }}" class="return-btn">
