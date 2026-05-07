@@ -33,7 +33,7 @@ class FavoriteCategoryRepository extends ServiceEntityRepository
         ->getResult();
     }
 
-    public function queryRandom(User $user): FavoriteCategory
+    public function queryRandom(User $user): ?FavoriteCategory
     {
         return $this->createQueryBuilder('fc')
             // ->select('fc', 'partial user.{id}', 'partial category.{id}')

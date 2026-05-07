@@ -1,12 +1,10 @@
 @import url('colors.css');
 
-.favorite-action {
-    text-decoration: none;
+ .favorite-add-action {
     color: var(--main-blue);
-    transition: .2s;
 }
 
-.favorite-action:hover {
+.favorite-add-action:hover {
     color: var(--green);
 }
 

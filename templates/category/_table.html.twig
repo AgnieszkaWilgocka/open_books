@@ -11,15 +11,24 @@
             <a href="{{ url('category_show', {'id': category.id}) }}">{{ category.title }}</a>
 					</p>
         </div>
-        <p>
+        <p class="icon-action">
           {% if category.id in userFavCategoryIds %}
-            <a href="{{ url('favorite_delete', {'id': category.id}) }}" class="favorite-action">
-              <i class="fa-solid fa-heart-crack"></i>
+            <a href="{{ url('favorite_delete', {'id': category.id}) }}">
+              <i class="fa-solid fa-heart-crack favorite-add-action"></i>
             </a>
           {% else %}
-            <a href="{{ url('favorite_add', {'id': category.id }) }}" class="favorite-action">
-              <i class="fa-solid fa-heart"></i>
+            <a href="{{ url('favorite_add', {'id': category.id }) }}">
+              <i class="fa-solid fa-heart favorite-add-action"></i>
             </a>
+          {% if is_granted('ROLE_ADMIN') %}
+            <a href="{{ url('category_edit', {'id': category.id}) }}">
+              <i class="fa-solid fa-pen-to-square edit-icon"></i>
+            </a>
+            <a href="{{ url('category_delete', {'id': category.id}) }}">
+              <i class="fa-solid fa-circle-xmark delete-icon"></i>
+            </a>
+          {% endif %}
+            
           {% endif %}
         </p>
       </div>

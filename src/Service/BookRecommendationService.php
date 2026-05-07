@@ -12,8 +12,11 @@ class BookRecommendationService
     public function __construct(private FavoriteCategoryRepository $favoriteCategoryRepository, private BookRepository $bookRepository) {}
     public function recommendBook(User $user): ?Book
     {
+        $randomBook = null;
         $randomFavCategory = $this->favoriteCategoryRepository->queryRandom($user);
-        $randomBook = $this->bookRepository->findRandomByCategory($randomFavCategory->getCategory());
+        if ($randomFavCategory !== null) {
+            $randomBook = $this->bookRepository->findRandomByCategory($randomFavCategory->getCategory());
+        }
 
         return $randomBook;
     }

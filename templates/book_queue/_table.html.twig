@@ -1,0 +1,27 @@
+<div class="table-container">
+  <div class="box-header">
+    <p>Created at</p>
+    <p>User</p>
+    <p>Book</p>
+    <p>Missed opportunity</p>
+    <p>Position</p>
+    <p>Action</p>
+  </div>
+
+  {% if bookQueues is defined and bookQueues|length %}
+    {% for bookQueue in bookQueues %}
+        <div class="admin-content">
+            <p>{{ bookQueue.createdAt|date('Y-m-d') }}</p>
+            <p>{{ bookQueue.user.email }}</p>
+            <p>{{ bookQueue.book.title }}</p>
+            <p>{{ bookQueue.missingOpportunity }}</p>
+            <p>{{ bookQueue.position }}</p>
+            <p>
+              <a href="">
+                <i class="fa-solid fa-circle-xmark"></i>
+              </a>
+            </p>
+        </div>
+    {% endfor %}
+  {% endif %}
+</div>

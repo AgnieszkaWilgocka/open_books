@@ -18,6 +18,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\CurrentUser;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/books')]
 class BookController extends AbstractController
@@ -141,6 +142,17 @@ class BookController extends AbstractController
         [
             'form' => $form,
             'book' => $book,
+        ]);
+    }
+
+    #[Route('/admin', name: 'book_admin', methods: ['GET'])]
+    #[IsGranted('ROLE_ADMIN')]
+    public function admin(): Response
+    {
+        $books = $this->bookRepository->queryAll();
+
+        return $this->render('/book/admin.html.twig', [
+            'books' => $books
         ]);
     }
 

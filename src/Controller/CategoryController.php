@@ -45,8 +45,6 @@ class CategoryController extends AbstractController
             $userFavCategoryIds = [];
         }
 
-        
-
         return $this->render(
             '/category/index.html.twig',
             [

@@ -1,0 +1,19 @@
+<div class="table-container">
+  <div class="box-header">
+    <p>Created at</p>
+    <p>User</p>
+    <p>Book</p>
+    <p>Expired at</p>
+  </div>
+
+  {% if rentalTokens is defined and rentalTokens|length %}
+    {% for rentalToken in rentalTokens %}
+        <div class="admin-content">
+            <p>{{ rentalToken.createdAt|date('Y-m-d') }}</p>
+            <p>{{ rentalToken.user.email }}</p>
+            <p>{{ rentalToken.book.title }}</p>
+            <p>{{ rentalToken.expirationDate|date('Y-m-d') }}</p>
+        </div>
+    {% endfor %}
+  {% endif %}
+</div>

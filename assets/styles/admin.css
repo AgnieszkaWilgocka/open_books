@@ -1,0 +1,21 @@
+/* .icon-action a {
+    text-decoration: none;
+    color: inherit;
+} */
+
+.icon-action i {
+    transition: .2s;
+    font-size: 22px;
+}
+
+.icon-action i:hover {
+    transform: scale(1.1);
+}
+
+.edit-icon {
+    color: rgb(197, 145, 3);
+}
+
+.delete-icon {
+    color: rgb(132, 2, 2);
+}

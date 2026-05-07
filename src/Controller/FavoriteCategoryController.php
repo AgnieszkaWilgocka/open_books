@@ -27,13 +27,14 @@ class FavoriteCategoryController extends AbstractController
     {
         $userFavCategoryIds = [];
         $categories = [];
+        $favCategories = [];
 
         /** @var User $user */
-        if ($this->isGranted('ROLE_ADMIN')) {
-            $favCategories = $this->favoriteCategoryRepository->findAll();
-        } else {
-            $favCategories = $this->favoriteCategoryRepository->queryAll($user);
-        }
+        // if ($this->isGranted('ROLE_ADMIN')) {
+            // $favCategories = $this->favoriteCategoryRepository->findAll();
+        // } else {
+        $favCategories = $this->favoriteCategoryRepository->queryAll($user);
+        // }
 
         $userFavCategories = array_map(fn(FavoriteCategory $fc) => $fc->getCategory(), $user->getFavoriteCategories()->toArray());
         $userFavCategoryIds = array_map(fn(Category $category) => $category->getId(), $userFavCategories);
