@@ -1,9 +1,9 @@
-{% extends 'base.html.twig' %}
+{% extends 'app.html.twig' %}
 
 {% block body %}
-    {{ form_start(form, {'action': path('rental_return', {'id': rental.id}), 'method': 'PUT'}) }}
-                {# <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}"></input> #}
+	{{ form_start(form, {'action': path('rental_return', {'id': rental.id}), 'method': 'PUT'}) }}
+	{# <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}"></input> #}
 
-        <button>Save</button>
-    {{ form_end(form) }}
+	<button>Save</button>
+	{{ form_end(form) }}
 {% endblock %}

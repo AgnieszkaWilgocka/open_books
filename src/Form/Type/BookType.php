@@ -9,6 +9,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -45,13 +46,34 @@ class BookType extends AbstractType
             ]
         )
         ->add(
+            'writer',
+            TextType::class,
+            [
+                'attr' => [
+                    'placeholder' => 'e.g Stephen King'
+                ],
+
+                'required' => true,
+            ]
+        )
+        ->add(
+            'description',
+            TextareaType::class,
+            [
+                'required' => true,
+                'attr' => [
+                    'placeholder' => 'Brief description'
+                ]
+            ]
+        )
+        ->add(
             'year_of_release',
             IntegerType::class,
             [
                 'attr' => [
                     'min' => 1800,
                     'max' => 2026,
-                    'placeholder' => 'Enter the year of book release',
+                    'placeholder' => 'Enter the year',
                 ]
             ]
         )
@@ -61,15 +83,8 @@ class BookType extends AbstractType
             [
                 'attr' => [
                     'min' => 1,
-                    'placeholder' => 'Enter pages number',
+                    'placeholder' => 'Enter number',
                 ]
-            ]
-        )
-        ->add(
-            'save',
-            SubmitType::class,
-            [
-                'label' => 'Save Book'
             ]
         )
         ->add(

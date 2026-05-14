@@ -45,6 +45,8 @@ class BookFixtures extends Fixture implements DependentFixtureInterface
             $book->setCategory($this->getReference(CategoryFixtures::CATEGORY_REFERENCE . '_' . $this->faker->numberBetween(0, 9), Category::class));
             $imageFilename = $this->fakeFileUpload();
             $book->setImageFileName($imageFilename);
+            $book->setWriter($this->faker->lastName());
+            $book->setDescription($this->faker->text());
 
             $this->addReference(self::BOOK_REFERENCE . '_' . $i, $book);
             $manager->persist($book);

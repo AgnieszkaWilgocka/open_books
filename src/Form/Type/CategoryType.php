@@ -4,6 +4,7 @@ namespace App\Form\Type;
 
 use App\Entity\Category;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ColorType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -18,18 +19,27 @@ class CategoryType extends AbstractType
             TextType::class,
             [
                 'required' => true,
+                'label' => false,
                 'attr' => [
-                    'placehoder' => 'e.g Fantasy'
+                    'placeholder' => 'e.g Fantasy'
                 ]
             ]
         )
         ->add(
-            'save',
-            SubmitType::class,
+            'color',
+            ColorType::class,
             [
-                'label' => 'Save category'
+                'required' => true,
+                'label' => 'Choose color'
             ]
         );
+        // ->add(
+        //     'save',
+        //     SubmitType::class,
+        //     [
+        //         'label' => 'Save category'
+        //     ]
+        // );
     }
 
     public function configureOptions(OptionsResolver $resolver): void

@@ -82,4 +82,27 @@ class BookQueueService
     {
         $this->bookQueueRepository->delete($bookQueue);
     }
+
+    public function prepareQueuedBooksData(?User $user = null): array
+    {
+        $queuedBooks = $this->bookQueueRepository->queryAll();
+        $queuedUserBooks = [];
+        $queuedUserBooksIds = [];
+        $queuedBooksIds = [];
+
+
+        if ($user) {
+            $queuedUserBooks = $this->bookQueueRepository->findBy([
+                'user' => $user
+            ]);
+        }
+
+        $queuedUserBooksIds = array_map(fn(BookQueue $qbook) => $qbook->getBook()->getId(), $queuedUserBooks);
+        $queuedBooksIds = array_map(fn(BookQueue $qbook) => $qbook->getBook()->getId(), $queuedBooks);
+
+        return [
+            'queuedUserBooksIds' => $queuedUserBooksIds,
+            'queuedBooksIds' => $queuedBooksIds
+        ];
+    }
 }

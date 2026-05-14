@@ -7,6 +7,8 @@ use App\Entity\Rental;
 use App\Entity\RentalToken;
 use App\Entity\User;
 use App\Form\Type\RentalType;
+use App\Form\Type\SearchRentalType;
+use App\Repository\BookQueueRepository;
 use App\Repository\BookRepository;
 use App\Repository\RentalRepository;
 use App\Security\Voter\RentalVoter;
@@ -26,34 +28,54 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 #[Route('/rentals')]
 class RentalController extends AbstractController
 {
-    public function __construct(private RentalRepository $rentalRepository, private BookRepository $bookRepository, private RentalFlowService $rentalFlowService)
+    public function __construct(private RentalRepository $rentalRepository, private BookRepository $bookRepository, private RentalFlowService $rentalFlowService, private BookQueueRepository $bookQueueRepository)
     {}
 
     #[Route('/', name: 'rental_index', methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
-    public function index(#[CurrentUser] User $user): Response
+    public function index(Request $request, #[CurrentUser] User $user): Response
     {
-        $rentals = $this->rentalRepository->findAll();
-        // $rentals = $this->rentalRepository->queryAll($user);
+        // $rentals = [];
+        // $queues = [];
 
+        $form = $this->createForm(SearchRentalType::class, null, [
+            'method' => 'GET'
+        ]);
+
+        $form->handleRequest($request);
+        $data = $form->getData();
+
+        // if ($this->isGranted('ROLE_ADMIN')) {
+            // $rentals = $this->rentalRepository->searchByParams($data['bookTitle'] ?? null, $data['writer'] ?? null, $data['deadline'] ?? null, $data['bookCategory'] ?? null);
+        // } else {
+        $rentals = $this->rentalRepository->searchByParams($data['bookTitle'] ?? null, $data['writer'] ?? null, $data['deadline'] ?? null, $data['bookCategory'] ?? null, $user);
+        $queues = $this->bookQueueRepository->queryAll($user);
+        // }
+        
         return $this->render('/rental/index.html.twig',
         [
-            'rentals' => $rentals
+            'rentals' => $rentals,
+            'queues' => $queues,
+            'form' => $form->createView()
         ]);
     }
 
-    #[Route('/create', name: 'rental_create', methods: ['GET', 'POST'])]
+    // #[Route('/create', name: 'rental_create', methods: ['GET', 'POST'])]
     #[Route('/create/{id}', name: 'rental_create_with_book', requirements: ['id' => '[1-9]\d*'], methods: ['GET', 'POST'])]
     #[IsGranted('ROLE_USER')]
     public function create(Request $request, #[CurrentUser] User $user, ?Book $book = null): Response
     {
         $rental = new Rental();
         
-        if ($book) {
-            $rental->setBook($book);
-        }
+        // if ($book) {
+        //     $rental->setBook($book);
+        // }
 
-        $form = $this->createForm(RentalType::class, $rental, ['lock_book' => $book !== null]);
+        $rental->setBook($book);
+
+        // $form = $this->createForm(RentalType::class, $rental, ['lock_book' => $book !== null]);
+        $form = $this->createForm(RentalType::class, $rental);
+
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $selectedBook = $form->get('book')->getData();
@@ -74,6 +96,8 @@ class RentalController extends AbstractController
         return $this->render('/rental/create.html.twig',
         [
             'form' => $form,
+            'book' => $book,
+            'deadline' => new DateTimeImmutable('+14 days')
         ]);
     }
 
@@ -126,6 +150,26 @@ class RentalController extends AbstractController
         [
             'form' => $form,
             'rental' => $rental
+        ]);
+    }
+
+
+    #[Route('/admin', name: 'rental_admin', methods: ['GET'])]
+    #[IsGranted('ROLE_ADMIN')]
+    public function admin(Request $request): Response
+    {
+        $form = $this->createForm(SearchRentalType::class, null, [
+            'method' => 'GET'
+        ]);
+
+        $form->handleRequest($request);
+        $data = $form->getData();
+
+        $rentals = $this->rentalRepository->searchByParams($data['bookTitle'] ?? null, $data['writer'] ?? null, $data['deadline'] ?? null, $data['bookCategory'] ?? null);
+
+        return $this->render('/rental/admin.html.twig', [
+            'rentals' => $rentals,
+            'form' => $form->createView()
         ]);
     }
 }

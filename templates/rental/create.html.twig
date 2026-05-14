@@ -1,5 +1,8 @@
-{% extends 'base.html.twig' %}
+{% extends 'app.html.twig' %}
 
 {% block body %}
-    {{ form(form) }}
+	<div class="form-container">
+		{% include "rental/_form.html.twig" with {action_title: 'Wypożyczenie'} %}
+	</div>
 {% endblock %}
+	{# {{ form(form) }}{% endblock %} #}

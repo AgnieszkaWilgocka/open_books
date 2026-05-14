@@ -7,9 +7,15 @@
         {# <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous"> #}
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Playwrite+NZ+Guides&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Playwrite+NZ+Guides&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
         <script src="https://kit.fontawesome.com/c4efa6e410.js" crossorigin="anonymous"></script>
+        <link rel="stylesheet" href="{{ asset('styles/home.css') }}">
         <link rel="stylesheet" href="{{ asset('styles/books.css') }}">
+        <link rel="stylesheet" href="{{ asset('styles/rentals.css') }}">
+        <link rel="stylesheet" href="{{ asset('styles/categories.css') }}">
+        <link rel="stylesheet" href="{{ asset('styles/forms.css') }}">
+        <link rel="stylesheet" href="{{ asset('styles/admin.css') }}">
+
         {% block stylesheets %}
         {% endblock %}
 
@@ -18,60 +24,11 @@
         {% endblock %}
     </head>
     <body>
-        <div class="app-container">
-            <div class="left-menu-container">
-                <div class="logo-headers">
-                    <div class="img-logo-box">
-                        <img src="{{ asset('images/logo.jpg') }}" alt="logo">
-                    </div>
-                    <h1 class="logo-text"><span>O</span>pen<span>B</span>ooks</h1>
-                </div>
-                <div class="menu-box">
-                    <ul class="menu">
-                        <li>
-                            <i class="fa-regular fa-heart"></i>
-                            <a href="{{ url('favorite_index') }}">Ulubione</a>
-                        </li>
-                        <li>
-                            <i class="fa-solid fa-table-cells-large"></i>
-                            <a href="{{ url('category_index') }}">Kategorie</a></li>
-                        <li>
-                            <i class="fa-solid fa-book"></i>
-                            <a href="{{ url('book_index') }}">Książki</a>
-                        </li>
-                        <hr>
-                        <li>
-                            <i class="fa-brands fa-readme"></i>
-                            <a href="{{ url('rental_index') }}">Wypożyczenia</a>
-                        </li>
-                        
-                    </ul>
-                </div>
-            </div>
-
-            {# {% for type, messages in app.flashes %}
-                {% for message in messages %}
-                    <div class="alert alert-{{ type }}">
-                        {{ message }}
-                    </div>
-                {% endfor %}
-            {% endfor %} #}
-
-            <div class="right-container">
-                <div class="top-menu-container">
-                    <ul>
-                        <li><i class="fa-regular fa-circle-user"></i></li>
-                        {% if app.user %}
-                            <li><a href="">{{ app.user.email }}</a></li>
-                        {% else %}
-                            <li><a href="{{ url('app_login') }}">Zaloguj</a></li>
-                        {% endif %}
-                    </ul>
-                </div>
-
+        {% block layout %}
+            <div class="page-container">
                 {% block body %}{% endblock %}
             </div>
-        </div>
+        {% endblock %}
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
     </body>
 </html>

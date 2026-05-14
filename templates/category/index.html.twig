@@ -1,47 +1,61 @@
-{% extends 'base.html.twig' %}
+{% extends 'app.html.twig' %}
 
 {% block body %}
-    <h1>Categories</h1>
-    {% if categories|length %}
-      <table class="table table-striped">
-        <thead>
-          <tr>
-            <th>Id</th>
-            <th>Name</th>
-            {% if is_granted('ROLE_USER') %}
-            <th></th>
-            {% endif %}
-          </tr>
-        </thead>
-        <tbody>
-          {% for category in categories %}
-            <tr>
-              <td>{{ category.id }}</td>
-              <td>{{ category.title }}</td>
-              {% if is_granted('ROLE_USER') %}
-                {% if category.id in favCategoriesIds %}
-                  <td>
-                  <form method="post" action="{{ path('favorite_delete', {'id': category.id}) }}">
-                    <button type="submit">
-                      Usuń z ulubionych
-                    </button>
-                  </form>
-                </td>
-                {% else %}
-                <td>
-                  <form method="post" action="{{ path('favorite_add', {'id': category.id}) }}">
-                    <button type="submit">
-                      Dodaj do ulubionych
-                    </button>
-                  </form>
-                </td>
-                {% endif %}
-              {% endif %}
-            </tr>
-          {% endfor %}
-        </tbody>
-      </table>
-    {% else %}
-      <p>No categories found</p>
-    {% endif %}
+	{% if app.user %}
+		<div class="outter-container">
+			<h1>Ulubione</h1>
+			<div class="categories-container">
+				{% if userFavCategories is defined and userFavCategories|length %}
+					{% for favCategory in userFavCategories %}
+						{% include '/category/_box.html.twig' with {'category': favCategory} %}
+					{% endfor %}
+				{% else %}
+					<p>Add to your favorites</p>
+				{% endif %}
+			</div>
+		</div>
+	{% endif %}
+	<div class="search">
+		{{ form_start(form) }}
+		{{ form_row(form.title) }}
+		<button>
+			<i class="fa-solid fa-magnifying-glass"></i>
+		</button>
+		{{ form_end(form) }}
+	</div>
+	<div class="outter-container category-container">
+		<h1>Categories</h1>
+		{% include "app/_pagination.html.twig" with {pager: pager, path: 'category_index'} %}
+		{% include "/category/_table.html.twig" with {pager: pager, userFavCategoryIds: userFavCategoryIds}%}
+		{# <div class="table-container">
+				        <div class="box-header">
+				          <p>Title</p>
+				          <p>Action</p>
+				        </div>
+				        {% if categories|length %}
+				          {% for category in categories %}
+				            <div class="box-content">
+				              <div class="category-table-field">
+				                <p style="background-color:#{{ category.color }}30; color:#{{ category.color }}">
+				                
+				                <a href="{{ url('category_show', {'id': category.id}) }}">{{ category.title }}</a></p>
+				              </div>
+				              <p>
+				                {% if category.id in userFavCategoryIds %}
+				                  <a href="{{ url('favorite_delete', {'id': category.id}) }}" class="favorite-action">
+				                    <i class="fa-solid fa-heart-crack"></i>
+				                  </a>
+				                {% else %}
+				                  <a href="{{ url('favorite_add', {'id': category.id }) }}" class="favorite-action">
+				                    <i class="fa-solid fa-heart"></i>
+				                  </a>
+				                {% endif %}
+				              </p>
+				            </div>
+				          {% endfor %}
+				        {% else %}
+				          <p>No categories found</p>
+				        {% endif %}
+				      </div> #}
+	</div>
 {% endblock %}

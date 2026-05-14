@@ -1,0 +1,45 @@
+{% extends "app.html.twig" %}
+
+{% block body %}
+  {% include "app/_pagination.html.twig" with {pager: pager, path: 'book_admin'} %}
+  <div class="table-container">
+    <div class="box-header">
+      <p>Created at</p>
+      <p>Updated at</p>
+      <p>Book</p>
+      <p>Writer</p>
+      <p>Category</p>
+      <p>Status</p>
+      <p>Actions</p>
+    </div>
+
+    {% if pager is defined and pager|length %}
+      {% for book in pager %}
+          <div class="admin-content">
+              <p>{{ book.createdAt|date('Y-m-d') }}</p>
+              <p>{{ book.updatedAt|date('Y-m-d') }}</p>
+              <div class="img-title">
+							  <img src="{{ asset(book.getImagePath) }}" alt="book image">
+							  <p>{{ book.title }}</p>
+						  </div>
+              <p>{{ book.writer }}</p>
+              <div class="category-table-field">
+                <p style="background-color:{{ book.category.color }}30; color:{{ book.category.color }}">    
+                  <a href="{{ url('category_show', {'id': book.category.id}) }}">{{ book.category.title }}</a>
+                </p>
+              </div>
+              {# <p>{{ book.category.title }}</p> #}
+              <p>status</p>
+              <p class="icon-action">
+                <a href="{{ url('book_edit', {'id': book.id}) }}">
+                  <i class="fa-solid fa-pen-to-square edit-icon"></i>
+                </a>
+                <a href="{{ url('book_delete', {'id': book.id}) }}">
+                  <i class="fa-solid fa-circle-xmark delete-icon"></i>
+                </a> 
+                </p>
+          </div>
+      {% endfor %}
+    {% endif %}
+  </div>
+{% endblock %}

@@ -1,0 +1,113 @@
+@import url('colors.css');
+
+.table-container {
+    margin-top: 20px;
+    padding: 10px;
+    background-color: rgb(245,247,249);
+    font-family: "Roboto", sans-serif;
+}
+
+.table-container a {
+    text-decoration: none;
+    color: inherit;
+}
+
+.box-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 20px;
+    background-color: #fff;
+    padding: 20px;
+    margin-bottom: 10px;
+    border-radius: 7px;
+}
+
+.box-header {
+    color: rgb(205,204,207);
+}
+
+.box-header p {
+    flex-basis: 18%;
+}
+
+.box-content,
+.admin-content {
+    display: flex;
+    justify-content: space-between;
+    padding: 20px;
+    align-items: center;
+    background-color: #fff;
+    margin-bottom: 5px;
+    transition: .2s;
+}
+
+/* .admin-content p i {
+    color: rgb(105, 2, 2);
+    transition: .2s;
+} */
+
+.admin-content:hover {
+    background-color: var(--hover-blue);
+}
+
+/* .admin-content:hover p i {
+    transform: scale(1.1);
+    color: rgb(94, 3, 3);
+} */
+
+.box-content {
+    height: 125px;
+}
+
+.box-content > *,
+.admin-content > * {
+    flex-basis: 18%;
+}
+
+.box-content p,
+.admin-content p {
+    font-size: 18px;
+}
+
+.box-content span {
+    color: blue;
+}
+
+.box-header p:first-child, .box-content div:first-child {
+    flex-basis: 20%;
+}
+
+.img-title {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+    width: 100%;
+    height: 85px;
+}
+
+.img-title img {
+    width: 60px;
+    height: 100%;
+    object-fit: cover;
+}
+
+.return-btn {
+    padding: 10px;
+    border: 1px solid var(--main-blue);
+    background-color: #fff;
+    color: var(--main-blue);
+    text-decoration: none;
+    border-radius: 7px;
+    transition: .2s;
+}
+
+.return-btn i {
+    color: var(--green);
+}
+
+.return-btn:hover {
+    background-color: var(--main-blue);
+    color: #fff;
+}
+

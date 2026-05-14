@@ -1,37 +1,94 @@
-{% extends 'base.html.twig' %}
+{% extends 'app.html.twig' %}
 
 {% block body %}
-  <h1>Rentals</h1>
-  {% if rentals|length %}
-    <table class="table table-striped">
-      <thead>
-        <tr>
-          <th>Id</th>
-          <th>Rented at</th>
-          <th>Updated at</th>
-          <th>Book</th>
-          <th>Status</th>
-          <th>Returned at</th>
-          <th>Owner </th>
-          <th>Deadline</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for rental in rentals %}
-          <tr>
-            <td>{{ rental.id }}</td>
-            <td>{{ rental.rentedAt|date('F jS') }}</td>
-            <td>{{ rental.updatedAt|date('F jS') }}</td>
-            <td>{{ rental.book.title }}</td>
-            <td>{{ rental.returnedAt ? 'Returned' : 'Borrowed' }}</td>
-            <td>{{ rental.returnedAt ? rental.returnedAt|date('Y-m-d') : '-' }}</td>
-            <td>{{ rental.owner.email }}</td>
-            <td>{{ rental.deadline|date('F jS') }}</td>
-          </tr>
-        {% endfor %}
-      </tbody>
-    </table>
-  {% else %}
-    <p>No rentals found</p>
-  {% endif %}
+	{# <div class="page-container"> #}
+	<div class="outter-container rentals-container">
+		<h1>Your Rentals</h1>
+		<div class="search">
+			{{ form_start(form) }}
+			{{ form_row(form.bookTitle) }}
+			{{ form_row(form.writer) }}
+			{{ form_row(form.deadline) }}
+			{{ form_row(form.bookCategory) }}
+			<button>
+				<i class="fa-solid fa-magnifying-glass"></i>
+			</button>
+			{{ form_end(form) }}
+		</div>
+		{% if rentals|length %}
+			<div class="table-container">
+				<div class="box-header">
+					<p>Title</p>
+					<p>Author</p>
+					<p>Category</p>
+					<p>Deadline</p>
+					<p>Action</p>
+					{# <p>Returned</p> #}
+				</div>
+
+				{% for rental in rentals %}
+					<div class="box-content">
+						<div class="img-title">
+							<img src="{{ asset(rental.book.getImagePath) }}" alt="book image">
+							<p>{{ rental.book.title }}</p>
+						</div>
+						<p>{{ rental.book.writer }}</p>
+						<div class="category-table-field">
+							<p style="background-color:#{{ rental.book.category.color }}30; color:#{{ rental.book.category.color }}">
+								{{ rental.book.category.title }}
+							</p>
+						</div>
+						<p>till:
+							<span>{{ rental.deadline|date('F-Js') }}</span>
+						</p>
+						<p>
+							<a href="{{ url('rental_return', {'id': rental.id}) }}" class="return-btn">
+								<i class="fa-solid fa-reply"></i>
+								Zwróć
+							</a>
+						</p>
+						{# <p>{{ rental.returnedAt ? 'yes' : 'no' }}</p> #}
+					</div>
+				{% endfor %}
+			</div>
+		{% else %}
+			<p>No rentals found</p>
+		{% endif %}
+	</div>
+
+	<div class="outter-container">
+		<h1>Waiting</h1>
+		{% if queues|length %}
+			<div class="table-container">
+				<div class="box-header">
+					<p>Title</p>
+					<p>Author</p>
+					<p>Category</p>
+					<p>Position</p>
+					<p>Missed opportunities</p>
+				</div>
+
+				{% for queue in queues %}
+					<div class="box-content">
+						<div class="img-title">
+							<img src="{{ asset(queue.book.getImagePath) }}" alt="book image">
+							<p>{{ queue.book.title }}</p>
+						</div>
+						<p>{{ queue.book.writer }}</p>
+						<div class="category-table-field">
+							<p style="background-color:#{{ queue.book.category.color }}30; color:#{{ queue.book.category.color }}">
+								{{ queue.book.category.title }}
+							</p>
+						</div>
+						<p>{{ queue.position }}</p>
+						<p>{{ queue.missingOpportunity }}</p>
+						{# <p>{{ rental.returnedAt ? 'yes' : 'no' }}</p> #}
+					</div>
+				{% endfor %}
+			</div>
+		{% else %}
+			<p>No rentals found</p>
+		{% endif %}
+	</div>
+	{# </div> #}
 {% endblock %}

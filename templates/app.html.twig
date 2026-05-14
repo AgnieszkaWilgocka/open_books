@@ -1,0 +1,10 @@
+{% extends 'base.html.twig' %}
+
+{% block layout %}
+    <div class="app-container">
+        {% include "/main/_navbar.html.twig" %}
+        <div class="page-container">
+            {% block body %}{% endblock %}
+        </div>
+    </div>
+{% endblock %}

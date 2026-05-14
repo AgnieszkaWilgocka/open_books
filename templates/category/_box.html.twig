@@ -1,0 +1,12 @@
+<div class="category-box">
+  <div class="on-top">
+    <div class="category-headers">
+      <img src="{{ asset('images/category.jpg') }}" alt="category image">
+      <p style="background-color:{{ category.color }};">
+        <a href="{{ url('category_show', {'id': category.id}) }}">{{ category.title }}</a>
+      </p>
+    </div>
+    <div class="first-bg"></div>
+    <div class="second-bg"></div>
+  </div>
+</div>

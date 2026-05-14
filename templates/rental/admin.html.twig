@@ -1,0 +1,52 @@
+{% extends "app.html.twig" %}
+
+{% block body %}
+  <h1>Rentals</h1>
+  <div class="search">
+		{{ form_start(form) }}
+		  {{ form_row(form.bookTitle) }}
+		  {{ form_row(form.writer) }}
+		  {{ form_row(form.deadline) }}
+		  {{ form_row(form.bookCategory) }}
+		  <button>
+			  <i class="fa-solid fa-magnifying-glass"></i>
+		  </button>
+		{{ form_end(form) }}
+	</div>
+  <div class="table-container">
+		<div class="box-header">
+		  <p>Book</p>
+			<p>Author</p>
+			<p>Category</p>
+			<p>Deadline</p>
+      <p>Owner</p>
+			{# <p>Returned</p> #}
+		</div>
+
+		{% for rental in rentals %}
+			<div class="admin-content">
+				<div class="img-title">
+					<img src="{{ asset(rental.book.getImagePath) }}" alt="book image">
+					<p>{{ rental.book.title }}</p>
+				</div>
+				<p>{{ rental.book.writer }}</p>
+				<div class="category-table-field">
+					<p style="background-color:#{{ rental.book.category.color }}30; color:#{{ rental.book.category.color }}">
+						{{ rental.book.category.title }}
+					</p>
+				</div>
+				<p>till:
+					<span>{{ rental.deadline|date('F-Js') }}</span>
+				</p>
+        <p>{{ rental.owner.email }}</p>
+				{# <p>
+					<a href="{{ url('rental_return', {'id': rental.id}) }}" class="return-btn">
+						<i class="fa-solid fa-reply"></i>
+						Zwróć
+					</a>
+				</p> #}
+				{# <p>{{ rental.returnedAt ? 'yes' : 'no' }}</p> #}
+			</div>
+		{% endfor %}
+	</div>
+{% endblock %}

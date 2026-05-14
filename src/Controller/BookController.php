@@ -2,15 +2,17 @@
 namespace App\Controller;
 
 use App\Entity\Book;
-use App\Entity\BookQueue;
 use App\Entity\User;
 use App\Form\Type\BookType;
+use App\Form\Type\SearchBookType;
 use App\Repository\BookQueueRepository;
 use App\Repository\BookRepository;
 use App\Service\BookNotificationService;
+use App\Service\BookQueueService;
 use App\Service\FileUploaderHelper;
-use App\Service\RentalFlowService;
 use DateTimeImmutable;
+use Pagerfanta\Doctrine\ORM\QueryAdapter;
+use Pagerfanta\Pagerfanta;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\FormType;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
@@ -18,38 +20,41 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\CurrentUser;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/books')]
 class BookController extends AbstractController
 {
-    public function __construct(private BookRepository $bookRepository, private FileUploaderHelper $fileUploaderHelper, private BookNotificationService $bookNotification, private BookQueueRepository $bookQueueRepository, private RentalFlowService $rentalFlowService) {}
+    public function __construct(private BookRepository $bookRepository, private FileUploaderHelper $fileUploaderHelper, private BookNotificationService $bookNotification, private BookQueueRepository $bookQueueRepository, private BookQueueService $bookQueueService) {}
 
     #[Route('/', name: 'book_index', methods: ['GET'])]
-    public function index(#[CurrentUser] ?User $user): Response
+    public function index(Request $request, #[CurrentUser] ?User $user = null): Response
     {
         // $this->rentalFlowService->handleClearedTokens();
-        $books = $this->bookRepository->queryAll();
         
-        $popularBooks = $this->bookRepository->countRentalsForBook();
+        $form = $this->createForm(SearchBookType::class, null, [
+            'method' => 'GET',
+        ]);
 
-        $queuedBooks = $this->bookQueueRepository->queryAll();
-        $queuedUserBooksIds = [];
+        $form->handleRequest($request);
+        $data = $form->getData();
 
-        if ($user) {
-            $queuedUserBooksIds = array_filter($queuedBooks, fn(BookQueue $qbook) => $qbook->getUser());
-        }
+        $queryBuilder = $this->bookRepository->searchByParams($data['title'] ?? null, $data['year'] ?? null, $data['category'] ?? null);
         
-        $queuedBooksIds = [];
-        if (!empty($queuedBooks)) {
-            $queuedBooksIds = array_map(fn(BookQueue $qbook) => $qbook->getBook()->getId(), $queuedBooks);
-        }
+        $pagerfanta = new Pagerfanta(new QueryAdapter($queryBuilder));
+        $pagerfanta->setMaxPerPage(9);
+        $pagerfanta->setCurrentPage($request->query->get('page', 1));
         
+        $popularBooks = $this->bookRepository->queryMostRented(2);
+        $queuedBooksData = $this->bookQueueService->prepareQueuedBooksData($user);
+
         return $this->render('/book/index.html.twig', [
-            
-            'books' => $books,
+            // 'books' => $books,
+            'pager' => $pagerfanta,
+            'form' => $form->createView(),
             'popularBooks' => $popularBooks,
-            'queuedBooksIds' => $queuedBooksIds,
-            'queuedUserBooksIds' => $queuedUserBooksIds
+            'queuedBooksIds' => $queuedBooksData['queuedBooksIds'],
+            'queuedUserBooksIds' => $queuedBooksData['queuedUserBooksIds']
             ]);
     }
 
@@ -147,4 +152,27 @@ class BookController extends AbstractController
             'book' => $book,
         ]);
     }
+
+    #[Route('/admin', name: 'book_admin', methods: ['GET'])]
+    #[IsGranted('ROLE_ADMIN')]
+    public function admin(Request $request): Response
+    {
+        // $books = $this->bookRepository->queryAll();
+        $queryBuilder = $this->bookRepository->queryAllQueryBuilder();
+
+        $pagerfanta = new Pagerfanta(new QueryAdapter($queryBuilder));
+        $pagerfanta->setMaxPerPage(8);
+        $pagerfanta->setCurrentPage($request->query->get('page', 1));
+
+        return $this->render('/book/admin.html.twig', [
+            'pager' => $pagerfanta
+        ]);
+    }
+
+    // #[Route('/search', name: 'search_book', methods: ['POST'])]
+    // public function search(Request $request): Response
+    // {
+    //     $title = $request->request->
+    //     $books = $this->bookRepository->searchByParams()
+    // }
 }
