@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Category;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -25,7 +26,7 @@ class CategoryRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    public function searchByParams(?string $title): array
+    public function searchByParams(?string $title): QueryBuilder
     {
         $qb = $this->createQueryBuilder('category')
             ->orderBy('category.title', 'DESC');
@@ -35,7 +36,8 @@ class CategoryRepository extends ServiceEntityRepository
                 ->setParameter('q', '%' . $title . '%');
         }
 
-        return $qb->getQuery()->getResult();
+        return $qb;
+        // return $qb->getQuery()->getResult();
     }
 
     //    /**

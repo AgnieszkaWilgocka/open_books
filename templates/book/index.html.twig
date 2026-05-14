@@ -40,9 +40,32 @@
     </div>
     <div class="outter-container">
       <h1>Book list</h1>
+      {% include "app/_pagination.html.twig" with {pager: pager, path: 'book_index'} %}
+      {# <div class="pagination-box">
+        {% if pager.haveToPaginate %}
+          <div class="flex justify-around mt-3 underline font-semibold">
+            {% if pager.hasPreviousPage %}
+              <a href="{{ path('book_index', {page: pager.getPreviousPage}) }}" class="text">Back</a>
+            {% endif %}
+            {% for page in range(1, pager.nbPages) %}
+              {% if page === pager.currentPage %}
+                <span class="active">{{ page }}</span>
+              {% else %}
+                <a href="{{ path('book_index', {page: page}) }}"><span>{{ page }}</span></a>
+              {% endif %}
+              
+              
+            {% endfor %}
+            {% if pager.hasNextPage %}
+              <a href="{{ path('book_index', {page: pager.getNextPage}) }}" class="text">Next</a>
+            {% endif %}
+          </div>
+        {% endif %}
+      </div> #}
+      
       <div class="books-container">
-        {% for book in books %}
-        {% include "/book/_box.html.twig"  %}
+        {% for book in pager %}
+          {% include "/book/_box.html.twig" %}
           {# <div class="book-box">
             <div class="book-top">
               <div class="book-left">
@@ -106,6 +129,7 @@
           </div> #}
         {% endfor %} 
       </div>
+
     </div>
   {# </div> #}
 {# {% endblock %} #}

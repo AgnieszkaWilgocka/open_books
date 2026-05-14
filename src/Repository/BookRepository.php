@@ -30,6 +30,15 @@ class BookRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    public function queryAllQueryBuilder(): QueryBuilder
+    {
+        return $this->createQueryBuilder('book')
+            ->select('book', 'partial rentals.{id, returnedAt}', 'partial category.{id, title, color}')
+            ->join('book.category', 'category')
+            ->leftJoin('book.rentals', 'rentals', 'WITH', 'rentals.returnedAt IS NULL')
+            ->orderBy('book.title', 'ASC');
+    }
+
     public function queryAvailable(): QueryBuilder
     {
         return $this->createQueryBuilder('book')
@@ -98,7 +107,7 @@ class BookRepository extends ServiceEntityRepository
             ->getOneOrNullResult();
     }
 
-    public function searchByParams(?string $title, ?int $yearOfRelease, ?Category $category): array
+    public function searchByParams(?string $title, ?int $yearOfRelease, ?Category $category): QueryBuilder
     {
         $qb = $this->createQueryBuilder('book')
             ->select('book', 'partial rentals.{id, returnedAt}')
@@ -121,7 +130,8 @@ class BookRepository extends ServiceEntityRepository
             ->setParameter('category', $category);
         }
         
-        return $qb->getQuery()->getResult();
+        // return $qb->getQuery()->getResult();
+        return $qb;
     }
 
     public function save(Book $book): void

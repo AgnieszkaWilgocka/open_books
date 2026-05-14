@@ -16,7 +16,7 @@
 					{% for favCategory in favCategories %}
 						<div class="box-content">
 							<div class="category-table-field">
-								<p style="background-color:#{{ favCategory.category.color }}30; color:#{{ favCategory.category.color }}">{{ favCategory.category.title }}</p>
+								<p style="background-color:{{ favCategory.category.color }}30; color:{{ favCategory.category.color }}">{{ favCategory.category.title }}</p>
 							</div>
 							<div class="toggle-form">
 								<form method="post" action="{{ path('toggle_notifications', {'id': favCategory.id}) }}">
@@ -34,7 +34,7 @@
 				<div class="recommended-box">
 					{% if recommendedBook %}
 						<div class="category-table-field">
-							<p style="background-color:#{{ recommendedBook.category.color }}30; color:#{{ recommendedBook.category.color }}">{{ recommendedBook.category.title }}</p>
+							<p style="background-color:{{ recommendedBook.category.color }}30; color:{{ recommendedBook.category.color }}">{{ recommendedBook.category.title }}</p>
 						</div>
 						<h2>{{ recommendedBook.title }}</h2>
 						<div class="img-recommened-box">
@@ -47,8 +47,8 @@
 									{{ recommendedBook.writer }}</p>
 							</div>
 							<div>
-								<p>Year</p>
-								<p>{{ recommendedBook.yearOfRelease|date('F-Js') }}</p>
+								<p>Release</p>
+								<p>{{ recommendedBook.yearOfRelease|date('Y-m') }}</p>
 							</div>
 							<div>
 								<p>Pages</p>
@@ -65,7 +65,8 @@
 
 	<div class="outter-container">
 		<h1>Categories</h1>
-		{% include "category/_table.html.twig" with {categories: categories, userFavCategoryIds: userFavCategoryIds} %}
+		{% include "app/_pagination.html.twig" with {pager: pager, path: 'favorite_index'} %}
+		{% include "category/_table.html.twig" with {pager: pager, userFavCategoryIds: userFavCategoryIds} %}
 	</div>
 	{# {% if favCategories is defined and favCategories|length %}
 		    <table class="table table-striped">

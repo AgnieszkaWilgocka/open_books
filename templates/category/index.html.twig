@@ -25,7 +25,8 @@
 	</div>
 	<div class="outter-container category-container">
 		<h1>Categories</h1>
-		{% include "/category/_table.html.twig" with {categories: categories, userFavCategoryIds: userFavCategoryIds}%}
+		{% include "app/_pagination.html.twig" with {pager: pager, path: 'category_index'} %}
+		{% include "/category/_table.html.twig" with {pager: pager, userFavCategoryIds: userFavCategoryIds}%}
 		{# <div class="table-container">
 				        <div class="box-header">
 				          <p>Title</p>

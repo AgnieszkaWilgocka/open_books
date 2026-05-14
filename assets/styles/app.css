@@ -412,3 +412,40 @@ ul.menu a {
     text-align: center;
     font-size: 18px;
 }
+
+.pagination-box {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.pagination-box .text {
+    font-size: 18px;
+    margin: 0 7px;
+    color: var(--main-blue);
+}
+
+.pagination-box span {
+    padding: 10px 7px;
+    /* background-color: var(--main-blue); */
+    border: 1px solid var(--main-blue);
+    color: var(--main-blue);
+    border-radius: 7px;
+    transition: .2s;
+    font-size: 18px;
+    cursor: pointer;
+}
+
+.pagination-box span:hover {
+    background-color: var(--hover-blue);
+}
+
+.pagination-box a {
+    text-decoration: none;
+}
+
+.pagination-box .active {
+    color: var(--main-blue);
+    background-color: var(--hover-blue);
+    font-weight: bold;
+}

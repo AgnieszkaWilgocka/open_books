@@ -1,6 +1,7 @@
 {% extends "app.html.twig" %}
 
 {% block body %}
+  {% include "app/_pagination.html.twig" with {pager: pager, path: 'book_admin'} %}
   <div class="table-container">
     <div class="box-header">
       <p>Created at</p>
@@ -12,8 +13,8 @@
       <p>Actions</p>
     </div>
 
-    {% if books is defined and books|length %}
-      {% for book in books %}
+    {% if pager is defined and pager|length %}
+      {% for book in pager %}
           <div class="admin-content">
               <p>{{ book.createdAt|date('Y-m-d') }}</p>
               <p>{{ book.updatedAt|date('Y-m-d') }}</p>

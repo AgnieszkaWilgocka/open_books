@@ -11,6 +11,8 @@ use App\Repository\BookRepository;
 use App\Repository\CategoryRepository;
 use App\Service\BookQueueService;
 use Doctrine\ORM\EntityManagerInterface;
+use Pagerfanta\Doctrine\ORM\QueryAdapter;
+use Pagerfanta\Pagerfanta;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\FormType;
 use Symfony\Component\HttpFoundation\Request;
@@ -35,7 +37,13 @@ class CategoryController extends AbstractController
         $form->handleRequest($request);
         $data = $form->getData();
 
-        $categories = $this->categoryRepository->searchByParams($data['title'] ?? null);
+        // $categories = $this->categoryRepository->searchByParams($data['title'] ?? null);
+        $queryBuilder = $this->categoryRepository->searchByParams($data['title'] ?? null);
+
+        $pagerfanta = new Pagerfanta(new QueryAdapter($queryBuilder));
+        $pagerfanta->setMaxPerPage(6);
+        $pagerfanta->setCurrentPage($request->query->get('page', 1));
+        // dd($pagerfanta);
 
         if ($user) {
             $userFavCategories = array_map(fn(FavoriteCategory $fc) => $fc->getCategory(), $user->getFavoriteCategories()->toArray());
@@ -48,7 +56,8 @@ class CategoryController extends AbstractController
         return $this->render(
             '/category/index.html.twig',
             [
-                'categories' => $categories,
+                // 'categories' => $categories,
+                'pager' => $pagerfanta,
                 'form' => $form->createView(),
                 'userFavCategories' => $userFavCategories,
                 'userFavCategoryIds' => $userFavCategoryIds

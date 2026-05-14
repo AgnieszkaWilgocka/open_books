@@ -5,10 +5,13 @@ namespace App\Controller;
 use App\Entity\Category;
 use App\Entity\FavoriteCategory;
 use App\Entity\User;
+use App\Form\Type\SearchCategoryType;
 use App\Repository\CategoryRepository;
 use App\Repository\FavoriteCategoryRepository;
 use App\Service\BookRecommendationService;
 use DateTimeImmutable;
+use Pagerfanta\Doctrine\ORM\QueryAdapter;
+use Pagerfanta\Pagerfanta;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -23,22 +26,30 @@ class FavoriteCategoryController extends AbstractController
     public function __construct(private FavoriteCategoryRepository $favoriteCategoryRepository, private BookRecommendationService $bookRecommendationService, private CategoryRepository $categoryRepository) {}
 
     #[Route('/', name: 'favorite_index')]
-    public function index(#[CurrentUser] User $user): Response
+    public function index(Request $request, #[CurrentUser] User $user): Response
     {
+        $form = $this->createForm(SearchCategoryType::class, null, [
+            'method' => 'GET'
+        ]);
+        
+        $form->handleRequest($request);
+        $data = $form->getData();
+        
         $userFavCategoryIds = [];
-        $categories = [];
-        $favCategories = [];
 
-        /** @var User $user */
-        // if ($this->isGranted('ROLE_ADMIN')) {
-            // $favCategories = $this->favoriteCategoryRepository->findAll();
-        // } else {
+        $queryBuilder = $this->categoryRepository->searchByParams($data['title'] ?? null);
+        $pagerfanta = new Pagerfanta(new QueryAdapter($queryBuilder));
+        $pagerfanta->setMaxPerPage(4);
+        $pagerfanta->setCurrentPage($request->query->get('page', 1));
+
         $favCategories = $this->favoriteCategoryRepository->queryAll($user);
-        // }
+
 
         $userFavCategories = array_map(fn(FavoriteCategory $fc) => $fc->getCategory(), $user->getFavoriteCategories()->toArray());
         $userFavCategoryIds = array_map(fn(Category $category) => $category->getId(), $userFavCategories);
-        $categories = $this->categoryRepository->findAll();
+        // $categories = $this->categoryRepository->findAll();
+        // $categories = $this->categoryRepository->fi();
+
 
 
         $recommendedBook = $this->bookRecommendationService->recommendBook($user);
@@ -47,7 +58,8 @@ class FavoriteCategoryController extends AbstractController
             'favCategories' => $favCategories,
             'recommendedBook' => $recommendedBook ?? null,
             'userFavCategoryIds' => $userFavCategoryIds,
-            'categories' => $categories
+            'pager' => $pagerfanta
+            // 'categories' => $categories
             ]
         );
     }

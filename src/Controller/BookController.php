@@ -11,6 +11,8 @@ use App\Service\BookNotificationService;
 use App\Service\BookQueueService;
 use App\Service\FileUploaderHelper;
 use DateTimeImmutable;
+use Pagerfanta\Doctrine\ORM\QueryAdapter;
+use Pagerfanta\Pagerfanta;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\FormType;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
@@ -37,12 +39,18 @@ class BookController extends AbstractController
         $form->handleRequest($request);
         $data = $form->getData();
 
-        $books = $this->bookRepository->searchByParams($data['title'] ?? null, $data['year'] ?? null, $data['category'] ?? null);
+        $queryBuilder = $this->bookRepository->searchByParams($data['title'] ?? null, $data['year'] ?? null, $data['category'] ?? null);
+        
+        $pagerfanta = new Pagerfanta(new QueryAdapter($queryBuilder));
+        $pagerfanta->setMaxPerPage(9);
+        $pagerfanta->setCurrentPage($request->query->get('page', 1));
+        
         $popularBooks = $this->bookRepository->queryMostRented(2);
         $queuedBooksData = $this->bookQueueService->prepareQueuedBooksData($user);
 
         return $this->render('/book/index.html.twig', [
-            'books' => $books,
+            // 'books' => $books,
+            'pager' => $pagerfanta,
             'form' => $form->createView(),
             'popularBooks' => $popularBooks,
             'queuedBooksIds' => $queuedBooksData['queuedBooksIds'],
@@ -147,12 +155,17 @@ class BookController extends AbstractController
 
     #[Route('/admin', name: 'book_admin', methods: ['GET'])]
     #[IsGranted('ROLE_ADMIN')]
-    public function admin(): Response
+    public function admin(Request $request): Response
     {
-        $books = $this->bookRepository->queryAll();
+        // $books = $this->bookRepository->queryAll();
+        $queryBuilder = $this->bookRepository->queryAllQueryBuilder();
+
+        $pagerfanta = new Pagerfanta(new QueryAdapter($queryBuilder));
+        $pagerfanta->setMaxPerPage(8);
+        $pagerfanta->setCurrentPage($request->query->get('page', 1));
 
         return $this->render('/book/admin.html.twig', [
-            'books' => $books
+            'pager' => $pagerfanta
         ]);
     }
 

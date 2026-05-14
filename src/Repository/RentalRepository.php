@@ -60,13 +60,6 @@ class RentalRepository extends ServiceEntityRepository
             ->join('rental.owner', 'user')
             ->join('book.category', 'category')
             ->orderBy('rental.rentedAt', 'ASC');
-        
-        if ($user !== null) {
-            $qb = $qb
-                ->andWhere('rental.returnedAt IS NULL')
-                ->andWhere('rental.owner = :owner')
-                ->setParameter('owner', $user);
-        }
 
         if ($title !== null) {
             $qb = $qb->andWhere('book.title LIKE :qtitle')
@@ -86,6 +79,13 @@ class RentalRepository extends ServiceEntityRepository
         if ($category !== null) {
             $qb = $qb->andWhere('category.title LIKE :qcategory')
                 ->setParameter('qcategory', '%' . $category . '%');
+        }
+
+        if ($user !== null) {
+            $qb = $qb
+                ->andWhere('rental.returnedAt IS NULL')
+                ->andWhere('rental.owner = :owner')
+                ->setParameter('owner', $user);
         }
 
         return $qb->getQuery()->getResult();
