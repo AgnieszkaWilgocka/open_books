@@ -5,6 +5,8 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+
+    /* outline: 1px solid red; */
 }
 
 html, body {
@@ -30,6 +32,17 @@ body {
     color: var(--gray);
 }
 
+@media (max-width: 1024px) {
+    .page-container h1 {
+        font-size: 22px;
+        padding: 10px;
+    }
+
+    .page-container h2 {
+        font-size: 20px;
+    }
+}
+
 .left-menu-container {
     flex-basis: 20%;
     display: flex;
@@ -45,15 +58,37 @@ body {
     flex-direction: column;
 }
 
+@media (max-width: 1024px) {
+    .left-menu-container {
+        display: none;
+    }
+
+    .right-container {
+        flex-basis: 100%;
+    }
+   
+}
+
+@media (max-width: 768px) {
+    
+    .page-container h1 {
+        font-size: 16px;
+        text-align: center;
+    }
+}
+
 .top-menu-container {
+    position: relative;
     display: flex;
     justify-content: flex-end;
     align-items: center;
     width: 100%;
     background-color: var(--main-blue);
+    height: 65px;
+    padding: 10px 15px;
 }
 
-.top-menu-container ul {
+.desktop-menu {
     display: flex;
     align-items: center;
     list-style: none;
@@ -79,6 +114,107 @@ body {
     font-size: 26px;
     color: var(--opacity-green);
 }
+
+.mobile-menu {
+    position: absolute;
+    /* display: none; */
+    right: 0;
+    top: -400%;
+    border-radius: 7px;
+    background-color: var(--main-blue);
+    width: 250px;
+    opacity: 0;
+    transition: top 0.3s ease, opacity 0.3s ease;
+}
+
+.drop-down {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+.drop-down ul {
+    list-style: none;
+}
+
+.drop-down ul li {
+
+    padding: 20px 10px;
+    font-size: 16px;
+}
+
+.drop-down ul li.flex {
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: space-between;
+}
+
+.drop-down li i {
+    font-size: 20px;
+}
+
+.hamburger-icon {
+    display: none;
+    color: var(--green);
+    font-size: 22px;
+    padding: 10px;
+    cursor: pointer;
+    transition: .2s;
+}
+
+.active {
+    transform: rotate(90deg);
+}
+
+.mobile-menu.visible {
+    /* display: block; */
+    opacity: 1;
+    top: 64px;
+}
+
+.hide-until-768px {
+    display: none;
+}
+
+@media (max-width: 1024px) {
+    /* .desktop-menu {
+        display: none;
+    } */
+     .top-menu-container ul li {
+        font-size: 18px;
+    }
+
+    .hamburger-icon {
+        display: block;
+    }
+
+    .top-menu-container li i {
+        font-size: 22px;
+    }
+}
+
+@media (max-width: 768px) {
+    /* .desktop-menu {
+        display: none;
+    } */
+     .login-icon {
+        display: none;
+     }
+
+    .top-menu-container ul li {
+        font-size: 16px;
+    }
+
+     .top-menu-container li i {
+        font-size: 18px;
+    }
+
+    .hide-until-768px {
+        display: block;
+    }
+}
+
+
     
 /* Logo */
 .logo-headers {
@@ -281,6 +417,23 @@ ul.menu a {
     color: var(--gray);
 }
 
+@media (max-width: 1024px) {
+    .search form select,
+    .search form input {
+        padding: 8px 15px;
+    }
+
+    .search form button {
+        font-size: 16px;
+    }
+}
+
+@media (max-width: 768px) {
+    .search form button {
+        font-size: 14px;
+    }
+}
+
 .auth-container {
     height: 95.8%;
     width: 100%;
@@ -298,6 +451,22 @@ ul.menu a {
     display: flex;
     border-radius: 20px;
     overflow: hidden;
+}
+
+@media (max-width: 1024px) {
+    .inner-auth-container {
+        width: 800px;
+        height: 530px;
+    }
+}
+
+@media (max-width: 768px) {
+    .inner-auth-container {
+        flex-direction: column-reverse;
+        width: 400px;
+        height: 650px;
+        gap: 30px;
+    }
 }
 
 .auth-user {
@@ -323,6 +492,16 @@ ul.menu a {
     border-radius: 14px;
 }
 
+@media (max-width: 768px) {
+    .auth-app-info {
+        flex-basis: 58%;
+    }
+
+    .app-text {
+        width: 100%;
+    }
+}
+
 .login-form {
     height: 100%;
     display: flex;
@@ -344,11 +523,44 @@ ul.menu a {
     align-items: center;
 }
 
+@media (max-width: 768px) {
+    .blur-box {
+        width: 100%;
+        height: 100%;
+    }
+}
+
 .login-form h1,
 .login-form p {
     color: #fff;
     text-align: center;
     padding: 7px;
+}
+
+@media (max-width: 1024px) {
+    .login-form h1 {
+        font-size: 26px;
+    }
+
+    .login-form p {
+        font-size: 16px;
+    }
+}
+
+@media (max-width: 768px) {
+    .login-form p {
+        font-size: 16px;
+    }
+}
+
+@media (max-width: 768px) {
+    .login-form h1 {
+        font-size: 22px;
+    }
+
+    .login-form p {
+        font-size: 12px;
+    }
 }
 
 .login-form form {
@@ -366,6 +578,13 @@ ul.menu a {
     width: 100%;
     border-radius: 7px;
     border: none;
+}
+
+@media (max-width: 1024px) {
+    .login-form form input,
+    .login-form form button {
+        padding: 10px 25px;
+    }
 }
 
 .login-form form input {
@@ -413,10 +632,47 @@ ul.menu a {
     font-size: 18px;
 }
 
+@media (max-width: 1024px) {
+    .app-about-header h1 {
+        font-size: 30px;
+    }
+
+    .app-about-header img {
+        width: 50px;
+    }
+
+    .app-text p {
+        padding: 10px;
+        font-size: 14px;
+    }
+}
+
+@media (max-width: 768px) {
+    .app-about-header {
+        height: 40px;
+        justify-content: center;
+    }
+
+    .app-about-header img {
+        width: 40px;
+    }
+
+    .app-about-header h1 {
+        font-size: 26px;
+    }
+
+    .app-text p {
+        padding: 0;
+        font-size: 12px
+    }
+}
+
+
+
 .pagination-box {
     display: flex;
     gap: 10px;
-    margin-top: 15px;
+    margin: 15px 0;
 }
 
 .pagination-box .text {
@@ -448,4 +704,18 @@ ul.menu a {
     color: var(--main-blue);
     background-color: var(--hover-blue);
     font-weight: bold;
+}
+
+@media (max-width: 1024px) {
+    .pagination-box span,
+    .pagination-box .text {
+        font-size: 16px;
+    }
+}
+
+@media (max-width: 768px) {
+    .pagination-box span,
+    .pagination-box .text {
+        font-size: 14px;
+    }
 }

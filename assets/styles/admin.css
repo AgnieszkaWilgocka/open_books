@@ -19,3 +19,9 @@
 .delete-icon {
     color: rgb(132, 2, 2);
 }
+
+@media (max-width: 1024px) {
+    .icon-action i {
+        font-size: 18px;
+    }
+}

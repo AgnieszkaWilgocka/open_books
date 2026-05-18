@@ -11,7 +11,7 @@
                         </p>
                     </div>
                     <p class="p-title">{{ book.title }}</p>
-                    <p>{{ book.writer }}, <span class="release">{{ book.yearOfRelease }}</span></p>
+                    <p class="writer">{{ book.writer }}, <span class="release">{{ book.yearOfRelease }}</span></p>
                     <p class="pages">Pages:{{ book.pages }}</p>
                   </div>
                   {% set status = book.rentals|length ? 'borrowed' : 'available'  %}

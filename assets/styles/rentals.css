@@ -23,6 +23,13 @@
     border-radius: 7px;
 }
 
+@media (max-width: 1024px) {
+    .box-header {
+        font-size: 12px;
+    }
+    
+}
+
 .box-header {
     color: rgb(205,204,207);
 }
@@ -92,6 +99,37 @@
     object-fit: cover;
 }
 
+@media (max-width: 1024px) {
+    .box-content,
+    .admin-content {
+        height: 80px;
+    }
+
+    .img-title {
+        height: 65px;
+    }
+
+    .box-content p,
+    .admin-content p {
+        font-size: 12px;
+        width: 90px;
+    }
+}
+
+@media (max-width: 768px) {
+    .box-content {
+        height: 60px;
+    }
+
+    .box-content p,
+    .admin-content p {
+        font-size: 12px;
+    }
+
+    .img-title {
+        height: 45px;
+    }
+}
 .return-btn {
     padding: 10px;
     border: 1px solid var(--main-blue);

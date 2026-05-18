@@ -1,9 +1,7 @@
 {% extends 'app.html.twig' %}
 
 {% block body %}
-	{{ form_start(form, {'action': path('rental_return', {'id': rental.id}), 'method': 'PUT'}) }}
-	{# <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}"></input> #}
-
-	<button>Save</button>
-	{{ form_end(form) }}
+	<div class="form-container">
+		{% include "rental/_form.html.twig" with {action_title: 'Zwrot', rent_action: 'Zwrot wypożyczenia', btn_action: 'Zwróć', rent_create: false} %}
+	</div>
 {% endblock %}
