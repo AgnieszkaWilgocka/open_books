@@ -52,7 +52,7 @@ class RentalRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    public function searchByParams(?string $title, ?string $writer, ?DateTime $deadline, ?string $category, ?User $user = null): array
+    public function searchByParams(?string $title, ?string $writer, ?DateTime $deadline, ?string $category, ?User $owner = null): array
     {
         $qb = $this->createQueryBuilder('rental')
             ->select('rental', 'partial book.{id, title, writer, imageFileName, description}', 'partial user.{id, email}', 'partial category.{id, title, color}')
@@ -81,11 +81,11 @@ class RentalRepository extends ServiceEntityRepository
                 ->setParameter('qcategory', '%' . $category . '%');
         }
 
-        if ($user !== null) {
+        if ($owner !== null) {
             $qb = $qb
                 ->andWhere('rental.returnedAt IS NULL')
                 ->andWhere('rental.owner = :owner')
-                ->setParameter('owner', $user);
+                ->setParameter('owner', $owner);
         }
 
         return $qb->getQuery()->getResult();

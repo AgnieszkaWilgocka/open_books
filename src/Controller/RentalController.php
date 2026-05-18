@@ -149,7 +149,8 @@ class RentalController extends AbstractController
         return $this->render('/rental/rental_return.html.twig',
         [
             'form' => $form,
-            'rental' => $rental
+            'rental' => $rental,
+            'book' => $rental->getBook()
         ]);
     }
 

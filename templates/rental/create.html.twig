@@ -2,7 +2,6 @@
 
 {% block body %}
 	<div class="form-container">
-		{% include "rental/_form.html.twig" with {action_title: 'Wypożyczenie'} %}
+		{% include "rental/_form.html.twig" with {action_title: 'Wypożyczenie', rent_action: 'Realizacja wypożyczenia', btn_action: 'Wypożycz', rent_create: true} %}
 	</div>
 {% endblock %}
-	{# {{ form(form) }}{% endblock %} #}

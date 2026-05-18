@@ -6,7 +6,7 @@
         <p>{{ action_title }}</p>
         <div></div>
     </div>
-    <h1 class="rent-title">Realizacja wypożyczenia</h1>
+    <h1 class="rent-title">{{ rent_action }}</h1>
     <div class="rental-info">
         <div class="book-img-form">
             <img src="{{ asset(book.getImagePath) }}" alt="book image">
@@ -21,13 +21,17 @@
             <p><span>Pages:</span> {{ book.pages }}</p>
         </div>
     </div>
-    <p class="book-deadline"><span><i class="fa-regular fa-calendar-days"></i></span>Termin zwrotu: {{ deadline|date('F j') }}</p>
+    {% if deadline is defined %}
+        <p class="book-deadline"><span><i class="fa-regular fa-calendar-days"></i></span>Termin zwrotu: {{ deadline|date('F j') }}</p>
+    {% endif %}
     {{ form_start(form) }}
-        {{ form_row(form.book, {
-            attr: {class: 'rental-hidden'}
-        }) }}
+        {% if rent_create is defined and rent_create %}
+            {{ form_row(form.book, {
+                attr: {class: 'rental-hidden'}
+            }) }}
+        {% endif %}
         <div class="rent-btn-box">
-            <button class="rent-btn">Rent</button>
+            <button class="rent-btn">{{ btn_action }}</button>
         </div>
     {{ form_end(form) }}
 </div>
