@@ -1,61 +1,51 @@
-          <div class="book-box">
-            <div class="book-top">
-              <div class="book-left">
-                <img src="{{ asset(book.getImagePath) }}" alt="{{ book.title }}" class="img-book">
-              </div>
-                <div class="book-right">
-                  <div class="info">
-                    <div class="category" >
-                        <p style="background-color: {{ book.category.color }}30">
-                          {{ book.category.title }}
-                        </p>
-                    </div>
-                    <p class="p-title">{{ book.title }}</p>
-                    <p class="writer">{{ book.writer }}, <span class="release">{{ book.yearOfRelease }}</span></p>
-                    <p class="pages">Pages:{{ book.pages }}</p>
-                  </div>
-                  {% set status = book.rentals|length ? 'borrowed' : 'available'  %}
-                    <div class="action {{ status }}">
-                      <p class="status">{{ status }}</p>
-                      <div class="last">
-                        {% if app.user %}
-                          {% if book.getActiveRentals|length %}
-                            {% set rental = book.getActiveRentalByUser(app.user) %}
-                            {% if rental %}
-                              <a href="{{ path('rental_return', {'id': rental.id }) }}">
-                                <i class="fa-solid fa-reply"></i>
-                              </a>
-                            {% elseif book.id in queuedUserBooksIds %}
-                              <i class="fa-solid fa-clock-rotate-left"></i>
-                            {% else %}
-                              <form method="post" action="{{ path('book_queue_create', {'id': book.id }) }}">
-                                <button type="submit" class="bell-btn action-btn">
-                                  <i class="fa-solid fa-bell"></i>
-                                </button>
-                              </form>
-                            {% endif %}
-                          {% elseif book.id in queuedBooksIds %}
-                            {% if book.id in queuedUserBooksIds %}
-                              <i class="fa-solid fa-clock-rotate-left"></i>
-                            {% else %}
-                              <form method="post" action="{{ path('book_queue_create', {'id': book.id }) }}">
-                                <button type="submit" class="bell-btn action-btn">
-                                  <i class="fa-solid fa-bell"></i>
-                                </button>
-                              </form>
-                            {% endif %}
-                          {% else %}
-                            <a href="{{ path('rental_create_with_book', {'id': book.id }) }}" class="action-btn">
-                              <i class="fa-solid fa-book"></i>
-                            </a>
-                          {% endif %}
-                        {% else %}
-                          <a href="{{ path('app_login') }}" class="action-btn">
-                            <i class="fa-solid fa-right-to-bracket"></i>
-                          </a>
-                        {% endif %}
-                      </div>
-                    </div>
-                </div>
-            </div> 
-          </div>
+
+<div class="book-box">
+  <div class="book-top">
+    <div class="book-left">
+      <img src="{{ asset(book.getImagePath) }}" alt="{{ book.title }}" class="img-book">
+    </div>
+    <div class="book-right">
+      <div class="info">
+        <div class="category" >
+          <p style="background-color: {{ book.category.color }}30">
+            {{ book.category.title }}
+          </p>
+        </div>
+        <p class="p-title">{{ book.title }}</p>
+        <p class="writer">{{ book.writer }}, <span class="release">{{ book.yearOfRelease }}</span></p>
+        <p class="pages">Pages:{{ book.pages }}</p>
+      </div>
+      {% set bookState = bookStates[book.id] %}
+      <div class="action {{ bookState.status }}">
+        <p class="status">{{ bookState.status }}</p>
+        <div class="last">
+          {% if bookState.action === 'login' %}
+            <a href="{{ path('app_login') }}" class="action-btn">
+              <i class="fa-solid fa-right-to-bracket"></i>
+            </a>
+          {% endif %}
+          {% if bookState.action === 'return' %}
+            <a href="{{ path('rental_return', {'id': bookState.rentalId }) }}">
+              <i class="fa-solid fa-reply"></i>
+            </a>
+          {% endif %}
+          {% if bookState.action === 'waiting' %}
+            <i class="fa-solid fa-clock-rotate-left"></i>
+          {% endif %}
+          {% if bookState.action === 'notify' %}
+            <form method="post" action="{{ path('book_queue_create', {'id': book.id }) }}">
+              <button type="submit" class="bell-btn action-btn">
+                <i class="fa-solid fa-bell"></i>
+              </button>
+            </form>
+          {% endif %}
+          {% if bookState.action === 'borrow' %}
+            <a href="{{ path('rental_create_with_book', {'id': book.id }) }}" class="action-btn">
+              <i class="fa-solid fa-book"></i>
+            </a>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div> 
+</div>

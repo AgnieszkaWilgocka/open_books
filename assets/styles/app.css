@@ -119,7 +119,7 @@ body {
     position: absolute;
     /* display: none; */
     right: 0;
-    top: -400%;
+    top: -500%;
     border-radius: 7px;
     background-color: var(--main-blue);
     width: 250px;

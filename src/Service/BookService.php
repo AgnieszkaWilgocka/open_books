@@ -2,34 +2,63 @@
 
 namespace App\Service;
 
-use App\Entity\BookQueue;
+use App\Entity\Book;
 use App\Entity\User;
-use App\Repository\BookQueueRepository;
 
 class BookService
 {
-    // public function __construct(private BookQueueRepository $bookQueueRepository) {}
-    
-    // public function prepareBookData(?User $user = null): array
-    // {
-    //     $queuedBooks = $this->bookQueueRepository->queryAll();
-    //     $queuedUserBooks = [];
-    //     $queuedUserBooksIds = [];
-    //     $queuedBooksIds = [];
+   public function prepareBookState(Book $book, array $queuedUserBooksIds, array $queuedBooksIds, User $user): array
+   {
+        if (!$user) {
+            return [
+                'status' => 'guest',
+                'action' => 'login'
+            ];
+        }
 
+        if (count($book->getActiveRentals())) {
 
-    //     if ($user) {
-    //         $queuedUserBooks = $this->bookQueueRepository->findBy([
-    //             'user' => $user
-    //         ]);
-    //     }
+            $userRental = $book->getActiveRentalByUser($user);
 
-    //     $queuedUserBooksIds = array_map(fn(BookQueue $qbook) => $qbook->getBook()->getId(), $queuedUserBooks);
-    //     $queuedBooksIds = array_map(fn(BookQueue $qbook) => $qbook->getBook()->getId(), $queuedBooks);
+            if ($userRental) {
+                return [
+                    'status' => 'borrowed',
+                    'action' => 'return',
+                    'rentalId' => $userRental->getId()
+                ];
+            }
 
-    //     return [
-    //         'queuedUserBooksIds' => $queuedUserBooksIds,
-    //         'queuedBooksIds' => $queuedBooksIds
-    //     ];
-    // }
+            if (in_array($book->getId(), $queuedUserBooksIds)) {
+                return [
+                    'status' => 'borrowed',
+                    'action' => 'waiting'
+                ];
+            }
+
+            return [
+                'status' => 'borrowed',
+                'action' => 'notify'
+            ];
+
+        } 
+
+        if (in_array($book->getId(), $queuedBooksIds)) {
+            if(in_array($book->getId(), $queuedUserBooksIds)) {
+                return [
+                    'status' => 'borrowed',
+                    'action' => 'waiting'
+                ];
+            }
+
+            return [
+                'status' => 'borrowed',
+                'action' => 'notify'
+            ];
+        }
+        
+        return [
+            'status' => 'available',
+            'action' => 'borrow'
+        ];
+   }
 }

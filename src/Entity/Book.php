@@ -7,7 +7,6 @@ use App\Service\FileUploaderHelper;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use phpDocumentor\Reflection\Types\Boolean;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: BookRepository::class)]
@@ -198,7 +197,7 @@ class Book
 
         /** @var Rental $rental */
         foreach ($this->rentals as $rental) {
-            if ($rental->getOwner() === $user && $rental->getRentedAt() === null)
+            if ($rental->getOwner() === $user && $rental->getReturnedAt() === null)
                 return $rental;
         }
 

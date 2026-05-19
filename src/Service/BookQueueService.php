@@ -88,7 +88,6 @@ class BookQueueService
         $queuedBooks = $this->bookQueueRepository->queryAll();
         $queuedUserBooks = [];
         $queuedUserBooksIds = [];
-        $queuedBooksIds = [];
 
 
         if ($user) {

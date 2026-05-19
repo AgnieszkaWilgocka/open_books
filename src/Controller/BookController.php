@@ -5,10 +5,10 @@ use App\Entity\Book;
 use App\Entity\User;
 use App\Form\Type\BookType;
 use App\Form\Type\SearchBookType;
-use App\Repository\BookQueueRepository;
 use App\Repository\BookRepository;
 use App\Service\BookNotificationService;
 use App\Service\BookQueueService;
+use App\Service\BookService;
 use App\Service\FileUploaderHelper;
 use DateTimeImmutable;
 use Pagerfanta\Doctrine\ORM\QueryAdapter;
@@ -25,7 +25,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 #[Route('/books')]
 class BookController extends AbstractController
 {
-    public function __construct(private BookRepository $bookRepository, private FileUploaderHelper $fileUploaderHelper, private BookNotificationService $bookNotification, private BookQueueRepository $bookQueueRepository, private BookQueueService $bookQueueService) {}
+    public function __construct(private BookRepository $bookRepository, private FileUploaderHelper $fileUploaderHelper, private BookNotificationService $bookNotification, private BookQueueService $bookQueueService, private BookService $bookService) {}
 
     #[Route('/', name: 'book_index', methods: ['GET'])]
     public function index(Request $request, #[CurrentUser] ?User $user = null): Response
@@ -48,13 +48,17 @@ class BookController extends AbstractController
         $popularBooks = $this->bookRepository->queryMostRented(2);
         $queuedBooksData = $this->bookQueueService->prepareQueuedBooksData($user);
 
+        $bookStates = [];
+
+        foreach($pagerfanta->getCurrentPageResults() as $book) {
+            $bookStates[$book->getId()] = $this->bookService->prepareBookState($book, $queuedBooksData['queuedUserBooksIds'], $queuedBooksData['queuedBooksIds'], $user);
+        }
+
         return $this->render('/book/index.html.twig', [
-            // 'books' => $books,
             'pager' => $pagerfanta,
             'form' => $form->createView(),
             'popularBooks' => $popularBooks,
-            'queuedBooksIds' => $queuedBooksData['queuedBooksIds'],
-            'queuedUserBooksIds' => $queuedBooksData['queuedUserBooksIds']
+            'bookStates' => $bookStates
             ]);
     }
 
@@ -157,7 +161,6 @@ class BookController extends AbstractController
     #[IsGranted('ROLE_ADMIN')]
     public function admin(Request $request): Response
     {
-        // $books = $this->bookRepository->queryAll();
         $queryBuilder = $this->bookRepository->queryAllQueryBuilder();
 
         $pagerfanta = new Pagerfanta(new QueryAdapter($queryBuilder));
@@ -168,11 +171,4 @@ class BookController extends AbstractController
             'pager' => $pagerfanta
         ]);
     }
-
-    // #[Route('/search', name: 'search_book', methods: ['POST'])]
-    // public function search(Request $request): Response
-    // {
-    //     $title = $request->request->
-    //     $books = $this->bookRepository->searchByParams()
-    // }
 }
