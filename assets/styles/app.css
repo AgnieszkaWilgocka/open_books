@@ -20,6 +20,28 @@ body {
 .app-container {
     display: flex;
     justify-content: space-between;
+    position: relative;
+}
+
+.flash {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    padding: 25px;
+    font-size: 22px;
+    border-radius: 8px;
+    z-index: 100;
+}
+
+.flash-success {
+    background-color: #22c55e;
+    color: white;
+}
+
+.flash-warning {
+    background-color: #f59e0b;
+    color: white;
 }
 
 .page-container {
@@ -33,6 +55,11 @@ body {
 }
 
 @media (max-width: 1024px) {
+    .flash {
+        padding: 20px;
+        font-size: 18x;
+    }
+
     .page-container h1 {
         font-size: 22px;
         padding: 10px;
@@ -40,6 +67,12 @@ body {
 
     .page-container h2 {
         font-size: 20px;
+    }
+}
+
+@media (max-width: 768px) {
+    .flash {
+        font-size: 16px;
     }
 }
 

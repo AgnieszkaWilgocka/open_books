@@ -31,7 +31,6 @@ class BookController extends AbstractController
     public function index(Request $request, #[CurrentUser] ?User $user = null): Response
     {
         // $this->rentalFlowService->handleClearedTokens();
-        
         $form = $this->createForm(SearchBookType::class, null, [
             'method' => 'GET',
         ]);
