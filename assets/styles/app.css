@@ -152,7 +152,7 @@ body {
     position: absolute;
     /* display: none; */
     right: 0;
-    top: -500%;
+    top: -1000%;
     border-radius: 7px;
     background-color: var(--main-blue);
     width: 250px;

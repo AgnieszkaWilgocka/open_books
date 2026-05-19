@@ -18,6 +18,16 @@
                 <i class="fa-solid fa-book"></i>
                 <a href="{{ url('book_index') }}">Książki</a>
             </li>
+            {% if is_granted('ROLE_ADMIN') %}
+                <li>
+                    <i class="fa-solid fa-users"></i>
+                    <a href="{{ url('book_queue_index') }}">Kolejka</a>
+                </li>
+                <li>
+                    <i class="fa-solid fa-ticket"></i>
+                    <a href="{{ url('rental_tokens_index') }}">Tokeny</a>
+                </li>
+            {% endif %}
              <hr>
             <li>
                 <i class="fa-brands fa-readme"></i>
@@ -89,6 +99,16 @@
                         <i class="fa-solid fa-angle-right"></i>
                         <a href="{{ url('rental_index') }}">Wypożyczenia</a>
                     </li>
+                    {% if is_granted('ROLE_ADMIN') %}
+                        <li class="flex">
+                            <i class="fa-solid fa-angle-right"></i>
+                            <a href="{{ url('book_queue_index') }}">Kolejka</a>
+                        </li>
+                        <li class="flex">
+                            <i class="fa-solid fa-angle-right"></i>
+                            <a href="{{ url('rental_tokens_index') }}">Tokeny</a>
+                        </li>
+                    {% endif %}
                     <li class="hide-until-768px">
                         {% if app.user %}
                         {# <a href="">{{ app.user.email }}</a> #}
