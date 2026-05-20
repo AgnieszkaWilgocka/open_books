@@ -31,7 +31,6 @@ class CategoryController extends AbstractController
     #[Route('/', name: 'category_index', methods: ['GET'])]
     public function index(Request $request, #[CurrentUser] ?User $user = null) : Response
     {
-
         $form = $this->createForm(SearchCategoryType::class, null, [
             'method' => 'GET'
         ]);
@@ -146,7 +145,7 @@ class CategoryController extends AbstractController
 
             return $this->redirectToRoute('category_index');
         }
-        
+
         $form = $this->createForm(FormType::class, $category, [
             'action' => $this->generateUrl('category_delete', ['id' => $category->getId()]),
             'method' => 'DELETE'

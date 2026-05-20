@@ -9,7 +9,6 @@
       <p>Book</p>
       <p>Writer</p>
       <p>Category</p>
-      <p>Status</p>
       <p>Actions</p>
     </div>
 
@@ -28,8 +27,6 @@
                   <a href="{{ url('category_show', {'id': book.category.id}) }}">{{ book.category.title }}</a>
                 </p>
               </div>
-              {# <p>{{ book.category.title }}</p> #}
-              <p>status</p>
               <p class="icon-action">
                 <a href="{{ url('book_edit', {'id': book.id}) }}">
                   <i class="fa-solid fa-pen-to-square edit-icon"></i>
