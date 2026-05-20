@@ -380,8 +380,10 @@ ul.menu a {
 }
 
 .img-title-content p {
+    font-size: 14px;
     color: var(--gray);
 }
+
 .new-book-img {
     width: 90%;
     height: 90%;

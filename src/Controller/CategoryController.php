@@ -10,6 +10,7 @@ use App\Form\Type\SearchCategoryType;
 use App\Repository\BookRepository;
 use App\Repository\CategoryRepository;
 use App\Service\BookQueueService;
+use App\Service\BookService;
 use Doctrine\ORM\EntityManagerInterface;
 use Pagerfanta\Doctrine\ORM\QueryAdapter;
 use Pagerfanta\Pagerfanta;
@@ -24,7 +25,7 @@ use Symfony\Component\Security\Http\Attribute\CurrentUser;
 class CategoryController extends AbstractController
 {
 
-    public function __construct(private EntityManagerInterface $entityManager, private CategoryRepository $categoryRepository, private BookRepository $bookRepository, private BookQueueService $bookQueueService) {}
+    public function __construct(private EntityManagerInterface $entityManager, private CategoryRepository $categoryRepository, private BookRepository $bookRepository, private BookQueueService $bookQueueService, private BookService $bookService) {}
 
     #[Route('/', name: 'category_index', methods: ['GET'])]
     public function index(Request $request, #[CurrentUser] ?User $user = null) : Response
@@ -66,19 +67,24 @@ class CategoryController extends AbstractController
     }
 
     #[Route('/show/{id}', name: 'category_show', requirements: ['id' => '[1-9]\d*'], methods: ['GET'])]
-    public function show(Category $category): Response
+    public function show(Category $category, #[CurrentUser] ?User $user): Response
     {
         $categoryBooks = $this->bookRepository->findByCategory($category);
-        // dd($categoryBooks);
         $queuedBooksData = $this->bookQueueService->prepareQueuedBooksData();
-        
-        // dd('he');
+
+        $bookStates = [];
+
+        foreach($categoryBooks as $book) {
+            $bookStates[$book->getId()] = $this->bookService->prepareBookState($book, $queuedBooksData['queuedUserBooksIds'], $queuedBooksData['queuedBooksIds'], $user);
+        }
+
         return $this->render('/category/show.html.twig',
         [
             'category' => $category,
             'categoryBooks' => $categoryBooks,
-            'queuedBooksIds' => $queuedBooksData['queuedBooksIds'],
-            'queuedUserBooksIds' => $queuedBooksData['queuedUserBooksIds']
+            'bookStates' => $bookStates
+            // 'queuedBooksIds' => $queuedBooksData['queuedBooksIds'],
+            // 'queuedUserBooksIds' => $queuedBooksData['queuedUserBooksIds']
         ]);
     }
 

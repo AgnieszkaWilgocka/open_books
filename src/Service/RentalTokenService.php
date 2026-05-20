@@ -13,7 +13,7 @@ class RentalTokenService
 {
     public function __construct(private RentalTokenRepository $rentalTokenRepository, private RequestStack $requestStack) {}
 
-    public function clearExpiredRentalTokens($expiredTokens): void
+    public function clearExpiredRentalTokens(array $expiredTokens): void
     {
         /** @var RentalToken $expiredToken */
         foreach ($expiredTokens as $expiredToken) {

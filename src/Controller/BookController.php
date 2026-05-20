@@ -10,6 +10,7 @@ use App\Service\BookNotificationService;
 use App\Service\BookQueueService;
 use App\Service\BookService;
 use App\Service\FileUploaderHelper;
+use App\Service\RentalFlowService;
 use DateTimeImmutable;
 use Pagerfanta\Doctrine\ORM\QueryAdapter;
 use Pagerfanta\Pagerfanta;
@@ -25,12 +26,12 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 #[Route('/books')]
 class BookController extends AbstractController
 {
-    public function __construct(private BookRepository $bookRepository, private FileUploaderHelper $fileUploaderHelper, private BookNotificationService $bookNotification, private BookQueueService $bookQueueService, private BookService $bookService) {}
+    public function __construct(private BookRepository $bookRepository, private FileUploaderHelper $fileUploaderHelper, private RentalFlowService $rentalFlowService, private BookNotificationService $bookNotification, private BookQueueService $bookQueueService, private BookService $bookService) {}
 
     #[Route('/', name: 'book_index', methods: ['GET'])]
     public function index(Request $request, #[CurrentUser] ?User $user = null): Response
     {
-        // $this->rentalFlowService->handleClearedTokens();
+        $this->rentalFlowService->handleClearedTokens();
         $form = $this->createForm(SearchBookType::class, null, [
             'method' => 'GET',
         ]);

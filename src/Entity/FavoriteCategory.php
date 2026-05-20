@@ -27,7 +27,7 @@ class FavoriteCategory
     private User $owner;
 
     #[ORM\ManyToOne]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: false, onDelete: "CASCADE")]
     private Category $category;
 
     public function getId(): ?int

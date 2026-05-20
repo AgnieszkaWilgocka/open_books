@@ -7,7 +7,7 @@ use App\Entity\User;
 
 class BookService
 {
-   public function prepareBookState(Book $book, array $queuedUserBooksIds, array $queuedBooksIds, User $user): array
+   public function prepareBookState(Book $book, array $queuedUserBooksIds, array $queuedBooksIds, ?User $user = null): array
    {
         if (!$user) {
             return [
