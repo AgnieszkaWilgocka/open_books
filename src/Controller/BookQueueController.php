@@ -6,7 +6,6 @@ use App\Entity\Book;
 use App\Entity\User;
 use App\Repository\BookQueueRepository;
 use App\Service\BookQueueFlowService;
-use App\Service\MailerService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -32,6 +31,12 @@ class BookQueueController extends AbstractController
     #[Route('/create/{id}', name:'book_queue_create', requirements: ['id' => '[1-9]\d*'], methods: ['GET', 'POST'])]
     public function create(Book $book, #[CurrentUser] User $user): Response
     {
+        if ($this->bookQueueRepository->isUserInWaitingList($user, $book)) {
+            $this->addFlash('warning', 'You are already signed in this queue');
+
+            return $this->redirectToRoute('book_index');
+        }
+
         $this->bookQueueFlowService->joinToQueue($book, $user);
         $this->addFlash('success', 'Submitted to queue successully');
 

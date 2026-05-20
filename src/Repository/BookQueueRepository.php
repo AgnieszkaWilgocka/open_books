@@ -68,6 +68,19 @@ class BookQueueRepository extends ServiceEntityRepository
         ->getOneOrNullResult();
     }
 
+    public function isUserInWaitingList(User $user, Book $book): bool
+    {
+        return (bool) $this->createQueryBuilder('bq')
+            ->select('1')
+            ->andWhere('bq.user = :user')
+            ->andWhere('bq.book = :book')
+            ->setParameter('user', $user)
+            ->setParameter('book', $book)
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
     public function save(BookQueue $bookQueue): void
     {
         $this->entityManager->persist($bookQueue);

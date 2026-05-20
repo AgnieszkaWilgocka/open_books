@@ -18,6 +18,9 @@ class Book
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank()]
+    #[Assert\Type('string')]
+    #[Assert\Length(min: 2)]
     private ?string $title = null;
 
     #[ORM\Column]
