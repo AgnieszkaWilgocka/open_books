@@ -22,6 +22,4 @@ class RentalTokenController extends AbstractController
             'rentalTokens' => $rental_tokens
         ]);
     }
-
-    
 }

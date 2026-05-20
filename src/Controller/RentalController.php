@@ -35,9 +35,6 @@ class RentalController extends AbstractController
     #[IsGranted('ROLE_USER')]
     public function index(Request $request, #[CurrentUser] User $user): Response
     {
-        // $rentals = [];
-        // $queues = [];
-
         $form = $this->createForm(SearchRentalType::class, null, [
             'method' => 'GET'
         ]);
@@ -45,12 +42,8 @@ class RentalController extends AbstractController
         $form->handleRequest($request);
         $data = $form->getData();
 
-        // if ($this->isGranted('ROLE_ADMIN')) {
-            // $rentals = $this->rentalRepository->searchByParams($data['bookTitle'] ?? null, $data['writer'] ?? null, $data['deadline'] ?? null, $data['bookCategory'] ?? null);
-        // } else {
         $rentals = $this->rentalRepository->searchByParams($data['bookTitle'] ?? null, $data['writer'] ?? null, $data['deadline'] ?? null, $data['bookCategory'] ?? null, $user);
         $queues = $this->bookQueueRepository->queryAll($user);
-        // }
         
         return $this->render('/rental/index.html.twig',
         [

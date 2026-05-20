@@ -51,7 +51,7 @@ class RentalFlowService
 
             if ($queuedBook->getMissingOpportunity() < self::MISSING_LIMIT ) {
                 $token = $this->rentalTokenService->generateToken($queuedBook->getBook(), $queuedBook->getUser());
-                // $this->mailerService->sendBookAvailableNotification($token);
+                $this->mailerService->sendBookAvailableNotification($token);
 
                 continue;
             } 
