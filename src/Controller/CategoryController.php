@@ -20,6 +20,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\CurrentUser;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/categories')]
 class CategoryController extends AbstractController
@@ -38,13 +39,11 @@ class CategoryController extends AbstractController
         $form->handleRequest($request);
         $data = $form->getData();
 
-        // $categories = $this->categoryRepository->searchByParams($data['title'] ?? null);
         $queryBuilder = $this->categoryRepository->searchByParams($data['title'] ?? null);
 
         $pagerfanta = new Pagerfanta(new QueryAdapter($queryBuilder));
         $pagerfanta->setMaxPerPage(6);
         $pagerfanta->setCurrentPage($request->query->get('page', 1));
-        // dd($pagerfanta);
 
         if ($user) {
             $userFavCategories = array_map(fn(FavoriteCategory $fc) => $fc->getCategory(), $user->getFavoriteCategories()->toArray());
@@ -57,7 +56,6 @@ class CategoryController extends AbstractController
         return $this->render(
             '/category/index.html.twig',
             [
-                // 'categories' => $categories,
                 'pager' => $pagerfanta,
                 'form' => $form->createView(),
                 'userFavCategories' => $userFavCategories,
@@ -83,12 +81,11 @@ class CategoryController extends AbstractController
             'category' => $category,
             'categoryBooks' => $categoryBooks,
             'bookStates' => $bookStates
-            // 'queuedBooksIds' => $queuedBooksData['queuedBooksIds'],
-            // 'queuedUserBooksIds' => $queuedBooksData['queuedUserBooksIds']
         ]);
     }
 
     #[Route('/create', name: 'category_create', methods: ['GET', 'POST'])]
+    #[IsGranted('ROLE_ADMIN')]
     public function create(Request $request): Response
     {
         $category = new Category();
@@ -112,6 +109,7 @@ class CategoryController extends AbstractController
     }
 
     #[Route('/edit/{id}', name: 'category_edit', requirements: ['id' => '[1-9]\d*'], methods: ['GET','PUT'])]
+    #[IsGranted('ROLE_ADMIN')]
     public function edit(Request $request, Category $category): Response
     {
         $form = $this->createForm(CategoryType::class, $category, [
@@ -140,6 +138,7 @@ class CategoryController extends AbstractController
     }
 
     #[Route('/delete/{id}', name: 'category_delete', requirements: ['id' => '[1-9]\d*'], methods: ['GET', 'DELETE'])]
+    #[IsGranted('ROLE_ADMIN')]
     public function delete(Request $request, Category $category): Response
     {
         $form = $this->createForm(FormType::class, $category, [

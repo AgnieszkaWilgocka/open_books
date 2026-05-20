@@ -63,6 +63,7 @@ class BookController extends AbstractController
     }
 
     #[Route('/create', name: 'book_create', methods: 'GET|POST')]
+    #[IsGranted('ROLE_ADMIN')]
     public function create(Request $request): Response
     {
         $book = new Book();
@@ -98,6 +99,7 @@ class BookController extends AbstractController
     }
 
     #[Route('/edit/{id}', name: 'book_edit', requirements: ['id' => '[1-9]\d*'], methods: ['GET', 'PUT'])]
+    #[IsGranted('ROLE_ADMIN')]
     public function edit(Request $request, Book $book): Response 
     {
         $form = $this->createForm(BookType::class, $book,
@@ -133,6 +135,7 @@ class BookController extends AbstractController
     } 
 
     #[Route('/delete/{id}', name: 'book_delete', requirements: ['id' => '[1-9]\d*'], methods: ['GET', 'DELETE'])]
+    #[IsGranted('ROLE_ADMIN')]
     public function delete(Request $request, Book $book): Response
     {
         $form = $this->createForm(FormType::class, $book,
