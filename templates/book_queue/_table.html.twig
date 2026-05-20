@@ -5,7 +5,6 @@
     <p>Book</p>
     <p>Missed opportunity</p>
     <p>Position</p>
-    <p>Action</p>
   </div>
 
   {% if bookQueues is defined and bookQueues|length %}
@@ -16,11 +15,6 @@
             <p>{{ bookQueue.book.title }}</p>
             <p>{{ bookQueue.missingOpportunity }}</p>
             <p>{{ bookQueue.position }}</p>
-            <p>
-              <a href="">
-                <i class="fa-solid fa-circle-xmark"></i>
-              </a>
-            </p>
         </div>
     {% endfor %}
   {% endif %}

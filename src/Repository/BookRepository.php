@@ -129,9 +129,31 @@ class BookRepository extends ServiceEntityRepository
             ->join('book.category', 'category')
             ->setParameter('category', $category);
         }
-        
-        // return $qb->getQuery()->getResult();
+
         return $qb;
+    }
+
+    public function countByRentals(Book $book): int
+    {
+        return $this->createQueryBuilder('b')
+            ->select('COUNT(r.id)')
+            ->join('b.rentals', 'r')
+            ->andWhere('b = :book')
+            ->andWhere('r.returnedAt IS NULL')
+            ->setParameter('book', $book)
+            ->groupBy('b.id')
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
+    public function countByCategory(Category $category): int
+    {
+        return $this->createQueryBuilder('b')
+            ->select('COUNT(b.id)')
+            ->andWhere('b.category = :category')
+            ->setParameter('category', $category)
+            ->getQuery()
+            ->getSingleScalarResult();
     }
 
     public function save(Book $book): void
@@ -145,6 +167,7 @@ class BookRepository extends ServiceEntityRepository
         $this->entityManager->remove($book);
         $this->entityManager->flush();
     }
+
 
     //    /**
     //     * @return Book[] Returns an array of Book objects

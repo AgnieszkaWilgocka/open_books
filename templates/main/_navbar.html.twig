@@ -18,7 +18,13 @@
                 <i class="fa-solid fa-book"></i>
                 <a href="{{ url('book_index') }}">Książki</a>
             </li>
+            <hr>
+            <li>
+                <i class="fa-brands fa-readme"></i>
+                <a href="{{ url('rental_index') }}">Wypożyczenia</a>
+            </li>
             {% if is_granted('ROLE_ADMIN') %}
+                <hr>
                 <li>
                     <i class="fa-solid fa-users"></i>
                     <a href="{{ url('book_queue_index') }}">Kolejka</a>
@@ -27,12 +33,15 @@
                     <i class="fa-solid fa-ticket"></i>
                     <a href="{{ url('rental_tokens_index') }}">Tokeny</a>
                 </li>
+                <li>
+                    <i class="fa-solid fa-users"></i>
+                    <a href="{{ url('book_admin') }}">Książki - zbiór</a>
+                </li>
+                <li>
+                    <i class="fa-solid fa-users"></i>
+                    <a href="{{ url('rental_admin') }}">Wypożyczenia - zbiór</a>
+                </li>
             {% endif %}
-             <hr>
-            <li>
-                <i class="fa-brands fa-readme"></i>
-                <a href="{{ url('rental_index') }}">Wypożyczenia</a>
-            </li>
          </ul>
     </div>
     {% if newestBook %}
@@ -79,7 +88,6 @@
             {% endif %}
         </ul>
         <i class="fa-solid fa-bars hamburger-icon"></i>
-
         <div class="mobile-menu">
             <div class="drop-down">
                 <ul>
@@ -100,6 +108,7 @@
                         <a href="{{ url('rental_index') }}">Wypożyczenia</a>
                     </li>
                     {% if is_granted('ROLE_ADMIN') %}
+                        <hr>
                         <li class="flex">
                             <i class="fa-solid fa-angle-right"></i>
                             <a href="{{ url('book_queue_index') }}">Kolejka</a>
@@ -108,10 +117,17 @@
                             <i class="fa-solid fa-angle-right"></i>
                             <a href="{{ url('rental_tokens_index') }}">Tokeny</a>
                         </li>
+                        <li class="flex">
+                            <i class="fa-solid fa-angle-right"></i>
+                            <a href="{{ url('rental_admin') }}">Wypożyczenia - zbiór </a>
+                        </li>
+                        <li class="flex">
+                            <i class="fa-solid fa-angle-right"></i>
+                            <a href="{{ url('book_admin') }}">Książki - zbiór </a>
+                        </li>
                     {% endif %}
                     <li class="hide-until-768px">
                         {% if app.user %}
-                        {# <a href="">{{ app.user.email }}</a> #}
                         <a href="{{ url('app_logout') }}">
                             <i class="fa-solid fa-right-from-bracket"></i>
                             Wyloguj

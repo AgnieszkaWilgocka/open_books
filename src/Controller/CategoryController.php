@@ -141,6 +141,12 @@ class CategoryController extends AbstractController
     #[IsGranted('ROLE_ADMIN')]
     public function delete(Request $request, Category $category): Response
     {
+        if ($this->bookRepository->countByCategory($category) > 0 ) {
+            $this->addFlash('warning', 'This category contains books');
+
+            return $this->redirectToRoute('category_index');
+        }
+        
         $form = $this->createForm(FormType::class, $category, [
             'action' => $this->generateUrl('category_delete', ['id' => $category->getId()]),
             'method' => 'DELETE'

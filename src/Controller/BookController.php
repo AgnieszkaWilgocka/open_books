@@ -90,7 +90,7 @@ class BookController extends AbstractController
 
             $this->addFlash('success', 'Book created successfully');
 
-            return $this->redirectToRoute('book_index');        
+            return $this->redirectToRoute('book_admin');        
         }
 
         return $this->render('book/create.html.twig', [
@@ -125,7 +125,7 @@ class BookController extends AbstractController
             $this->bookRepository->save($book); 
             $this->addFlash('success', 'Book updated successfully');
 
-            return $this->redirectToRoute('book_index');
+            return $this->redirectToRoute('book_admin');
         }
 
         return $this->render('book/edit.html.twig', [
@@ -138,6 +138,12 @@ class BookController extends AbstractController
     #[IsGranted('ROLE_ADMIN')]
     public function delete(Request $request, Book $book): Response
     {
+        if ($this->bookRepository->countByRentals($book) > 0) {
+            $this->addFlash('warning', 'This book contains rentals');
+
+            return $this->redirectToRoute('book_admin');
+        }
+        
         $form = $this->createForm(FormType::class, $book,
         [
             'action' => $this->generateUrl('book_delete', ['id' => $book->getId()]),
@@ -150,7 +156,7 @@ class BookController extends AbstractController
             $this->bookRepository->delete($book);
             $this->addFlash('success', 'Book deleted successfully');
 
-            return $this->redirectToRoute('book_index');
+            return $this->redirectToRoute('book_admin');
         }
 
         return $this->render('/book/delete.html.twig', 

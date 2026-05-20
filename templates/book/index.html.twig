@@ -3,9 +3,7 @@
 {% block title %}
     Books list
 {% endblock %}
-{# {% block layouts %} #}
 {% block body %}
-  {# <div class="page-container"> #}
     <div class="popular-container">
       <h2>Most popular</h2>
       <div class="populars-box">
@@ -44,74 +42,7 @@
       <div class="books-container">
         {% for book in pager %}
           {% include "/book/_box.html.twig" %}
-          {# <div class="book-box">
-            <div class="book-top">
-              <div class="book-left">
-                <img src="{{ asset(book.getImagePath) }}" alt="{{ book.title }}" class="img-book">
-              </div>
-                <div class="book-right">
-                  <div class="info">
-                    <div class="category" >
-                        <p style="background-color: #{{ book.category.color }}30">
-                          {{ book.category.title }}
-                        </p>
-                    </div>
-                    <p class="p-title">{{ book.title }}</p>
-                    <p>{{ book.writer }}, <span class="release">{{ book.yearOfRelease }}</span></p>
-                    <p class="pages">Pages:{{ book.pages }}</p>
-                  </div>
-                  {% set status = book.rentals|length ? 'borrowed' : 'available'  %}
-                    <div class="action {{ status }}">
-                      <p class="status">{{ status }}</p>
-                      <div class="last">
-                        {% if app.user %}
-                          {% if book.getActiveRentals|length %}
-                            {% set rental = book.getActiveRentalByUser(app.user) %}
-                            {% if rental %}
-                              <a href="{{ path('rental_return', {'id': rental.id }) }}">
-                                <i class="fa-solid fa-reply"></i>
-                              </a>
-                            {% elseif book.id in queuedUserBooksIds %}
-                              <i class="fa-solid fa-clock-rotate-left"></i>
-                            {% else %}
-                              <form method="post" action="{{ path('book_queue_create', {'id': book.id }) }}">
-                                <button type="submit" class="bell-btn action-btn">
-                                  <i class="fa-solid fa-bell"></i>
-                                </button>
-                              </form>
-                            {% endif %}
-                          {% elseif book.id in queuedBooksIds %}
-                            {% if book.id in queuedUserBooksIds %}
-                              <i class="fa-solid fa-clock-rotate-left"></i>
-                            {% else %}
-                              <form method="post" action="{{ path('book_queue_create', {'id': book.id }) }}">
-                                <button type="submit" class="bell-btn action-btn">
-                                  <i class="fa-solid fa-bell"></i>
-                                </button>
-                              </form>
-                            {% endif %}
-                          {% else %}
-                            <a href="{{ path('rental_create_with_book', {'id': book.id }) }}" class="action-btn">
-                              <i class="fa-solid fa-book"></i>
-                            </a>
-                          {% endif %}
-                        {% else %}
-                          <a href="{{ path('app_login') }}" class="action-btn">
-                            <i class="fa-solid fa-right-to-bracket"></i>
-                          </a>
-                        {% endif %}
-                      </div>
-                    </div>
-                </div>
-            </div> 
-          </div> #}
         {% endfor %} 
       </div>
-
     </div>
-  {# </div> #}
-{# {% endblock %} #}
 {% endblock %}
-
-
-{# <i class="fa-solid fa-book-open-reader"></i> #}

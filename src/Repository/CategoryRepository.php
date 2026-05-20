@@ -37,7 +37,6 @@ class CategoryRepository extends ServiceEntityRepository
         }
 
         return $qb;
-        // return $qb->getQuery()->getResult();
     }
 
     //    /**
