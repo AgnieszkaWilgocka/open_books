@@ -64,8 +64,9 @@ class BookRepository extends ServiceEntityRepository
     public function queryMostRented(int $limit): array
     {
         return $this->createQueryBuilder('book')
-        ->select('book', 'COUNT(rentals.id) AS rentalsCount')
+        ->select('book', 'COUNT(rentals.id) AS rentalsCount', 'category')
         ->join('book.rentals', 'rentals')
+        ->leftJoin('book.category', 'category')
         ->groupBy('book.id')
         ->orderBy('rentalsCount', 'DESC')
         ->setMaxResults($limit)
@@ -110,8 +111,10 @@ class BookRepository extends ServiceEntityRepository
     public function searchByParams(?string $title, ?int $yearOfRelease, ?Category $category): QueryBuilder
     {
         $qb = $this->createQueryBuilder('book')
-            ->select('book', 'partial rentals.{id, returnedAt}')
+            ->select('book', 'rentals', 'category', 'user')
             ->leftJoin('book.rentals', 'rentals', 'WITH', 'rentals.returnedAt IS NULL')
+            ->leftJoin('book.category', 'category')
+            ->leftJoin('rentals.owner', 'user')
             ->orderBy('book.title', 'ASC');
 
         if ($title !== null) {
@@ -126,7 +129,7 @@ class BookRepository extends ServiceEntityRepository
 
         if ($category !== null) {
             $qb = $qb->andWhere('book.category = :category')
-            ->join('book.category', 'category')
+            // ->join('book.category', 'category')
             ->setParameter('category', $category);
         }
 
