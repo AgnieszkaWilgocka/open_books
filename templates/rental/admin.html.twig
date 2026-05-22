@@ -20,7 +20,6 @@
 			<p>Category</p>
 			<p>Deadline</p>
       <p>Owner</p>
-			{# <p>Returned</p> #}
 		</div>
 
 		{% for rental in rentals %}
@@ -36,16 +35,9 @@
 					</p>
 				</div>
 				<p>till:
-					<span>{{ rental.deadline|date('F-Js') }}</span>
+					<span>{{ rental.deadline|date('F jS') }}</span>
 				</p>
         <p>{{ rental.owner.email }}</p>
-				{# <p>
-					<a href="{{ url('rental_return', {'id': rental.id}) }}" class="return-btn">
-						<i class="fa-solid fa-reply"></i>
-						Zwróć
-					</a>
-				</p> #}
-				{# <p>{{ rental.returnedAt ? 'yes' : 'no' }}</p> #}
 			</div>
 		{% endfor %}
 	</div>

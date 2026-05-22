@@ -36,14 +36,12 @@
                     attr: { class: 'field-input' }
                 }) }}
             </div>
-            {# <div class="bottom-content"> #}
-                {{ form_row(form.fileName, {
-                    row_attr: { class: 'column-row file-box' },
-                }) }}
-                <div class="right-side">
-                    <button class="right">Save</button>
-                </div>
-            {# </div> #}
+            {{ form_row(form.fileName, {
+                row_attr: { class: 'column-row file-box' },
+            }) }}
+            <div class="right-side">
+                <button class="right">Save</button>
+            </div>
         {{ form_end(form) }}
     </div>
 </div>

@@ -2,13 +2,15 @@
 
 {% block layout %}
     <div class="app-container">
-        {% for label, messages in app.flashes %}
-            {% for message in messages %}
-                <div class="flash flash-{{ label }}">
-                    {{ message }}
-                </div>
+        <div class="flash-container">
+            {% for label, messages in app.flashes %}
+                {% for message in messages %}
+                    <div class="flash flash-{{ label }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
             {% endfor %}
-        {% endfor %}
+        </div>
         {% include "/main/_navbar.html.twig" %}
         <div class="page-container">
             {% block body %}{% endblock %}

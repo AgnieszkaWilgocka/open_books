@@ -77,7 +77,6 @@ class LoginFormAuthenticator extends AbstractLoginFormAuthenticator
         return new RedirectResponse(
             $this->urlGenerator->generate('book_index')
         );
-        // dd('success');
         // on success, let the request continue
         // return null;
     }

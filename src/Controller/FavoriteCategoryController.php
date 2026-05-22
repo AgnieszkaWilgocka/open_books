@@ -47,10 +47,6 @@ class FavoriteCategoryController extends AbstractController
 
         $userFavCategories = array_map(fn(FavoriteCategory $fc) => $fc->getCategory(), $user->getFavoriteCategories()->toArray());
         $userFavCategoryIds = array_map(fn(Category $category) => $category->getId(), $userFavCategories);
-        // $categories = $this->categoryRepository->findAll();
-        // $categories = $this->categoryRepository->fi();
-
-
 
         $recommendedBook = $this->bookRecommendationService->recommendBook($user);
         
@@ -59,13 +55,12 @@ class FavoriteCategoryController extends AbstractController
             'recommendedBook' => $recommendedBook ?? null,
             'userFavCategoryIds' => $userFavCategoryIds,
             'pager' => $pagerfanta
-            // 'categories' => $categories
             ]
         );
     }
 
     #[Route('/category/{id}/add', name: 'favorite_add', requirements: ['id' => '[1-9]\d*'], methods: ['GET', 'POST'])]
-    public function add(Category $category, #[CurrentUser] $user): Response
+    public function add(Category $category, #[CurrentUser] User $user): Response
     {
         $existingFav = $this->favoriteCategoryRepository->findOneBy([
             'owner' => $user,

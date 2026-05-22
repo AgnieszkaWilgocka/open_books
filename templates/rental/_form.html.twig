@@ -22,7 +22,7 @@
         </div>
     </div>
     {% if deadline is defined %}
-        <p class="book-deadline"><span><i class="fa-regular fa-calendar-days"></i></span>Termin zwrotu: {{ deadline|date('F j') }}</p>
+        <p class="book-deadline"><span><i class="fa-regular fa-calendar-days"></i></span>Termin zwrotu: {{ deadline|date('F jS') }}</p>
     {% endif %}
     {{ form_start(form) }}
         {% if rent_create is defined and rent_create %}

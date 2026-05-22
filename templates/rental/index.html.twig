@@ -1,7 +1,6 @@
 {% extends 'app.html.twig' %}
 
 {% block body %}
-	{# <div class="page-container"> #}
 	<div class="outter-container rentals-container">
 		<h1>Your Rentals</h1>
 		<div class="search">
@@ -23,7 +22,6 @@
 					<p>Category</p>
 					<p>Deadline</p>
 					<p>Action</p>
-					{# <p>Returned</p> #}
 				</div>
 
 				{% for rental in rentals %}
@@ -39,7 +37,7 @@
 							</p>
 						</div>
 						<p>till:
-							<span>{{ rental.deadline|date('F-Js') }}</span>
+							<span>{{ rental.deadline|date('F jS') }}</span>
 						</p>
 						<p>
 							<a href="{{ url('rental_return', {'id': rental.id}) }}" class="return-btn">
@@ -47,7 +45,6 @@
 								Zwróć
 							</a>
 						</p>
-						{# <p>{{ rental.returnedAt ? 'yes' : 'no' }}</p> #}
 					</div>
 				{% endfor %}
 			</div>
@@ -73,6 +70,7 @@
 						<div class="img-title">
 							<img src="{{ asset(queue.book.getImagePath) }}" alt="book image">
 							<p>{{ queue.book.title }}</p>
+							<p>{{queue.book.id}}</p>
 						</div>
 						<p>{{ queue.book.writer }}</p>
 						<div class="category-table-field">
@@ -82,7 +80,6 @@
 						</div>
 						<p>{{ queue.position }}</p>
 						<p>{{ queue.missingOpportunity }}</p>
-						{# <p>{{ rental.returnedAt ? 'yes' : 'no' }}</p> #}
 					</div>
 				{% endfor %}
 			</div>
@@ -90,5 +87,4 @@
 			<p>No rentals found</p>
 		{% endif %}
 	</div>
-	{# </div> #}
 {% endblock %}

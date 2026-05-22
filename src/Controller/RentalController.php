@@ -12,9 +12,7 @@ use App\Repository\BookQueueRepository;
 use App\Repository\BookRepository;
 use App\Repository\RentalRepository;
 use App\Security\Voter\RentalVoter;
-use App\Service\BookQueueService;
 use App\Service\RentalFlowService;
-use App\Service\RentalService;
 use DateTimeImmutable;
 use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -35,9 +33,6 @@ class RentalController extends AbstractController
     #[IsGranted('ROLE_USER')]
     public function index(Request $request, #[CurrentUser] User $user): Response
     {
-        // $rentals = [];
-        // $queues = [];
-
         $form = $this->createForm(SearchRentalType::class, null, [
             'method' => 'GET'
         ]);
@@ -45,12 +40,8 @@ class RentalController extends AbstractController
         $form->handleRequest($request);
         $data = $form->getData();
 
-        // if ($this->isGranted('ROLE_ADMIN')) {
-            // $rentals = $this->rentalRepository->searchByParams($data['bookTitle'] ?? null, $data['writer'] ?? null, $data['deadline'] ?? null, $data['bookCategory'] ?? null);
-        // } else {
         $rentals = $this->rentalRepository->searchByParams($data['bookTitle'] ?? null, $data['writer'] ?? null, $data['deadline'] ?? null, $data['bookCategory'] ?? null, $user);
         $queues = $this->bookQueueRepository->queryAll($user);
-        // }
         
         return $this->render('/rental/index.html.twig',
         [
@@ -60,20 +51,13 @@ class RentalController extends AbstractController
         ]);
     }
 
-    // #[Route('/create', name: 'rental_create', methods: ['GET', 'POST'])]
     #[Route('/create/{id}', name: 'rental_create_with_book', requirements: ['id' => '[1-9]\d*'], methods: ['GET', 'POST'])]
     #[IsGranted('ROLE_USER')]
     public function create(Request $request, #[CurrentUser] User $user, ?Book $book = null): Response
     {
         $rental = new Rental();
-        
-        // if ($book) {
-        //     $rental->setBook($book);
-        // }
-
         $rental->setBook($book);
 
-        // $form = $this->createForm(RentalType::class, $rental, ['lock_book' => $book !== null]);
         $form = $this->createForm(RentalType::class, $rental);
 
         $form->handleRequest($request);
@@ -85,8 +69,6 @@ class RentalController extends AbstractController
 
                 return $this->redirectToRoute('book_index');
             }
-
-            // $this->rentalService->handleRentalCreation($rental, $user);
             $this->rentalFlowService->createRental($rental, $user);
             $this->addFlash('success', 'Rental created successfully');
 
@@ -139,7 +121,6 @@ class RentalController extends AbstractController
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            // $this->rentalService->handleRentalReturn($rental);
             $this->rentalFlowService->returnRental($rental);
             $this->addFlash('success', 'Book returned successfully');
 
@@ -153,7 +134,6 @@ class RentalController extends AbstractController
             'book' => $rental->getBook()
         ]);
     }
-
 
     #[Route('/admin', name: 'rental_admin', methods: ['GET'])]
     #[IsGranted('ROLE_ADMIN')]

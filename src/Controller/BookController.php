@@ -63,6 +63,7 @@ class BookController extends AbstractController
     }
 
     #[Route('/create', name: 'book_create', methods: 'GET|POST')]
+    #[IsGranted('ROLE_ADMIN')]
     public function create(Request $request): Response
     {
         $book = new Book();
@@ -89,7 +90,7 @@ class BookController extends AbstractController
 
             $this->addFlash('success', 'Book created successfully');
 
-            return $this->redirectToRoute('book_index');        
+            return $this->redirectToRoute('book_admin');        
         }
 
         return $this->render('book/create.html.twig', [
@@ -98,6 +99,7 @@ class BookController extends AbstractController
     }
 
     #[Route('/edit/{id}', name: 'book_edit', requirements: ['id' => '[1-9]\d*'], methods: ['GET', 'PUT'])]
+    #[IsGranted('ROLE_ADMIN')]
     public function edit(Request $request, Book $book): Response 
     {
         $form = $this->createForm(BookType::class, $book,
@@ -123,7 +125,7 @@ class BookController extends AbstractController
             $this->bookRepository->save($book); 
             $this->addFlash('success', 'Book updated successfully');
 
-            return $this->redirectToRoute('book_index');
+            return $this->redirectToRoute('book_admin');
         }
 
         return $this->render('book/edit.html.twig', [
@@ -133,8 +135,15 @@ class BookController extends AbstractController
     } 
 
     #[Route('/delete/{id}', name: 'book_delete', requirements: ['id' => '[1-9]\d*'], methods: ['GET', 'DELETE'])]
+    #[IsGranted('ROLE_ADMIN')]
     public function delete(Request $request, Book $book): Response
     {
+        if ($this->bookRepository->countByRentals($book) > 0) {
+            $this->addFlash('warning', 'This book contains rentals');
+
+            return $this->redirectToRoute('book_admin');
+        }
+        
         $form = $this->createForm(FormType::class, $book,
         [
             'action' => $this->generateUrl('book_delete', ['id' => $book->getId()]),
@@ -147,7 +156,7 @@ class BookController extends AbstractController
             $this->bookRepository->delete($book);
             $this->addFlash('success', 'Book deleted successfully');
 
-            return $this->redirectToRoute('book_index');
+            return $this->redirectToRoute('book_admin');
         }
 
         return $this->render('/book/delete.html.twig', 

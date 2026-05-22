@@ -32,7 +32,6 @@ class RentalTokenRepository extends ServiceEntityRepository
     public function queryExpiredTokens(): array
     {
         return $this->createQueryBuilder('rt')
-        // ->select('rt')
         ->andWhere('rt.expiration_date <= :date')
         ->setParameter('date', new DateTimeImmutable())
         ->getQuery()

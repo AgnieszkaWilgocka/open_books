@@ -4,7 +4,4 @@
 	<div class="form-container">
 		{% include "main/_form-delete.html.twig" with {entity_title: book.title} %}
 	</div>
-	{# {{ form_start(form, {'action': path('book_delete', {'id': book.id}), 'method': 'DELETE'}) }}
-	<button>Delete</button>
-	{{ form_end(form) }} #}
 {% endblock %}
