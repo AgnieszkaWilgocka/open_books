@@ -19,7 +19,7 @@ class CategoryFixtures extends Fixture
 
         for ($i = 0; $i < 10; $i++) {
 		    $category = new Category();
-            $category->setTitle($this->faker->colorName());
+            $category->setTitle($this->faker->streetName());
             $category->setColor('#' . sprintf('%06x', random_int(0, 0xFFFFFF)));
             
             $manager->persist($category);
