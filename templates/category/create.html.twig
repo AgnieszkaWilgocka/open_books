@@ -3,29 +3,5 @@
 {% block body %}
 	<div class="form-container">
 		{% include "/category/_form.html.twig" with {action_title: 'Create'} %}
-		{# <div class="form-box">
-			<div class="form-header">
-				<div>
-					<i class="fa-solid fa-pen-clip"></i>
-				</div>
-				<p>tworzenie</p>
-				<div></div>
-			</div>
-			<div class="form-content">
-				{{ form_start(form) }}
-					{{ form_row(form.title, {
-						attr: { class: 'title-input'}
-					}) }}
-					<div class="bottom-content">
-						{{ form_row(form.color, {
-    						attr: { class: 'color-input' },
-							row_attr: { class: 'color-row' },
-							label_attr: { class: 'color-label' }
-						}) }}
-						<button class="right">Save</button>
-					</div>
-				{{ form_end(form) }}
-			</div>
-		</div> #}
 	</div>
 {% endblock %}

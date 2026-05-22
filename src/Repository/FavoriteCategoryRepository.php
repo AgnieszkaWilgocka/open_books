@@ -36,9 +36,7 @@ class FavoriteCategoryRepository extends ServiceEntityRepository
     public function queryRandom(User $user): ?FavoriteCategory
     {
         return $this->createQueryBuilder('fc')
-            // ->select('fc', 'partial user.{id}', 'partial category.{id}')
             ->join('fc.owner', 'user')
-            // ->join('fc.category', 'category')
             ->andWhere('fc.owner = :owner')
             ->setParameter('owner', $user)
             ->orderBy('RAND()', 'ASC')

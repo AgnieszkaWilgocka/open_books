@@ -2,11 +2,9 @@
 
 namespace App\Repository;
 
-use App\Entity\Category;
 use App\Entity\Rental;
 use App\Entity\User;
 use DateTime;
-use DateTimeImmutable;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;

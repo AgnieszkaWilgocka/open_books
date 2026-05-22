@@ -129,7 +129,6 @@ class BookRepository extends ServiceEntityRepository
 
         if ($category !== null) {
             $qb = $qb->andWhere('book.category = :category')
-            // ->join('book.category', 'category')
             ->setParameter('category', $category);
         }
 
