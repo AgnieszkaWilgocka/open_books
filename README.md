@@ -69,7 +69,7 @@ MAILER_DSN=
 ```
 
 ```bash
-cd open-books
+cd open_books
 composer install
 ```
 
@@ -78,14 +78,14 @@ composer install
  php bin/cosnole doctrine:migrations:migrate
  ```
 
- - start the server:
- ```bash
- symfony server:start
- ```
-
  - load fixtures:
  ```bash
  php bin/console doctrine:fixtures:load
+ ```
+
+ - start the server:
+ ```bash
+ symfony server:start
  ```
 
  Demo users:
