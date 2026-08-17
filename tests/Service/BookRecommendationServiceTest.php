@@ -58,6 +58,5 @@ class BookRecommendationServiceTest extends TestCase
         $result = $bookRecommendationService->recommendBook($user);
 
         $this->assertSame($book, $result);
-
     }
 }
