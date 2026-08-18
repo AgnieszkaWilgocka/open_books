@@ -9,7 +9,33 @@ use PHPUnit\Framework\TestCase;
 
 class BookQueueServiceTest extends TestCase
 {
-    public function testAssigningQueuePosition()
+
+    public function testIsBookQueueCreated(): void
+    {
+        $book = new Book();
+        $user = new User();
+        $bookQueueRepositoryMock = $this->createMock(BookQueueRepository::class);
+
+        $bookQueueRepositoryMock
+            ->expects($this->once())
+            ->method('save');
+        
+        $bookQueueService = new BookQueueService($bookQueueRepositoryMock);
+        $bookQueue = $bookQueueService->createQueuedBook($book, $user);
+
+        $this->assertInstanceOf(BookQueue::class, $bookQueue);
+        $this->assertNotNull($bookQueue->getBook());
+        $this->assertNotNull($bookQueue->getUser());
+        $this->assertSame($book, $bookQueue->getBook());
+        $this->assertSame($user, $bookQueue->getUser());
+        $this->assertNotNull($bookQueue->getMissingOpportunity());
+        $this->assertSame(0, $bookQueue->getMissingOpportunity());
+        $this->assertNotNull($bookQueue->getCreatedAt());
+        $this->assertInstanceOf(DateTimeImmutable::class, $bookQueue->getCreatedAt());
+        $this->assertNotNull($bookQueue->getPosition());
+    }
+
+    public function testAssigningQueuePosition(): void
     {
         $bookQueue = new BookQueue();
         $book = new Book();
@@ -26,7 +52,7 @@ class BookQueueServiceTest extends TestCase
         $this->assertSame(2, $bookQueue->getPosition());
     }
 
-    public function testAssigningBookPositionWhenQueueIsEmpty()
+    public function testAssigningBookPositionWhenQueueIsEmpty(): void
     {
         $bookQueue = new BookQueue();
         $book = new Book();
@@ -44,7 +70,7 @@ class BookQueueServiceTest extends TestCase
         $this->assertSame(1, $bookQueue->getPosition());
     }
 
-    public function testPrepareQueuedBooksDataWithNoUser()
+    public function testPrepareQueuedBooksDataWithNoUser(): void
     {
         $user = null;
         $bookQueueRepositoryMock = $this->createMock(BookQueueRepository::class);
@@ -68,32 +94,7 @@ class BookQueueServiceTest extends TestCase
 
     }
 
-    // public function testRecountQueueWithOneBookQueue()
-    // {
-    //     $book = new Book();
-    //     $bookQueue = new BookQueue();
-    //     $bookQueue->setBook($book);
-    //     $bookQueue->setPosition(3);
-
-    //     $bookQueueRepositoryMock = $this->createMock(BookQueueRepository::class);
-
-    //     $bookQueueRepositoryMock
-    //         ->expects($this->once())
-    //         ->method('findBy')
-    //         ->willReturn([$bookQueue]); 
-
-    //     $bookQueueRepositoryMock
-    //         ->expects($this->once())
-    //         ->method('save');
-        
-    //     $service = new BookQueueService($bookQueueRepositoryMock);
-
-    //     $service->recountQueue($book);
-
-    //     $this->assertSame(2, $bookQueue->getPosition());
-    // }
-
-    public function testRecountQueueDecrementsPosition()
+    public function testRecountQueueDecrementsPosition(): void
     {
         $book = new Book();
 
@@ -126,7 +127,7 @@ class BookQueueServiceTest extends TestCase
         }
     }
 
-    public function testRecountQueueWhenBookQueueIsEmpty()
+    public function testRecountQueueWhenBookQueueIsEmpty(): void
     {
         $book = new Book();
 
@@ -146,7 +147,7 @@ class BookQueueServiceTest extends TestCase
         $service->recountQueue($book);
     }
 
-    public function testIncrementationOfMissedOpportunity()
+    public function testIncrementationOfMissedOpportunity(): void
     {
         $bookQueue = new BookQueue();
         $bookQueue->setMissingOpportunity(0);
