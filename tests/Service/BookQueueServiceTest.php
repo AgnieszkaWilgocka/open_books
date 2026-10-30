@@ -10,9 +10,10 @@ use PHPUnit\Framework\TestCase;
 class BookQueueServiceTest extends TestCase
 {
 
+    private Book $book;
+
     public function testIsBookQueueCreated(): void
     {
-        $book = new Book();
         $user = new User();
         $bookQueueRepositoryMock = $this->createMock(BookQueueRepository::class);
 
@@ -21,12 +22,12 @@ class BookQueueServiceTest extends TestCase
             ->method('save');
         
         $bookQueueService = new BookQueueService($bookQueueRepositoryMock);
-        $bookQueue = $bookQueueService->createQueuedBook($book, $user);
+        $bookQueue = $bookQueueService->createQueuedBook($this->book, $user);
 
         $this->assertInstanceOf(BookQueue::class, $bookQueue);
         $this->assertNotNull($bookQueue->getBook());
         $this->assertNotNull($bookQueue->getUser());
-        $this->assertSame($book, $bookQueue->getBook());
+        $this->assertSame($this->book, $bookQueue->getBook());
         $this->assertSame($user, $bookQueue->getUser());
         $this->assertNotNull($bookQueue->getMissingOpportunity());
         $this->assertSame(0, $bookQueue->getMissingOpportunity());
@@ -38,7 +39,6 @@ class BookQueueServiceTest extends TestCase
     public function testAssigningQueuePosition(): void
     {
         $bookQueue = new BookQueue();
-        $book = new Book();
         $bookQueueRepositoryStub = $this->createStub(BookQueueRepository::class);
 
         $bookQueueRepositoryStub
@@ -47,7 +47,7 @@ class BookQueueServiceTest extends TestCase
 
         $service = new BookQueueService($bookQueueRepositoryStub);
 
-        $service->assignPosition($bookQueue, $book);
+        $service->assignPosition($bookQueue, $this->book);
 
         $this->assertSame(2, $bookQueue->getPosition());
     }
@@ -55,8 +55,6 @@ class BookQueueServiceTest extends TestCase
     public function testAssigningBookPositionWhenQueueIsEmpty(): void
     {
         $bookQueue = new BookQueue();
-        $book = new Book();
-
         $bookQueueRepositoryStub = $this->createStub(BookQueueRepository::class);
 
         $bookQueueRepositoryStub
@@ -65,7 +63,7 @@ class BookQueueServiceTest extends TestCase
 
         $service = new BookQueueService($bookQueueRepositoryStub);
 
-        $service->assignPosition($bookQueue, $book);
+        $service->assignPosition($bookQueue, $this->book);
 
         $this->assertSame(1, $bookQueue->getPosition());
     }
@@ -96,13 +94,11 @@ class BookQueueServiceTest extends TestCase
 
     public function testRecountQueueDecrementsPosition(): void
     {
-        $book = new Book();
-
         $bookQueuesArray = [];
 
         for ($i = 2; $i <= 4; $i++) {
             $bookQueue = new BookQueue();
-            $bookQueue->setBook($book);
+            $bookQueue->setBook($this->book);
             $bookQueue->setPosition($i);
             $bookQueuesArray[] = $bookQueue;
         }
@@ -120,7 +116,7 @@ class BookQueueServiceTest extends TestCase
         
         $service = new BookQueueService($bookQueueRepositoryMock);
 
-        $service->recountQueue($book);
+        $service->recountQueue($this->book);
 
         foreach($bookQueuesArray as $index => $bookQueue) {
             $this->assertSame($index + 1, $bookQueue->getPosition());
@@ -129,8 +125,6 @@ class BookQueueServiceTest extends TestCase
 
     public function testRecountQueueWhenBookQueueIsEmpty(): void
     {
-        $book = new Book();
-
         $bookQueueRepositoryMock = $this->createMock(BookQueueRepository::class);
 
         $bookQueueRepositoryMock
@@ -144,7 +138,7 @@ class BookQueueServiceTest extends TestCase
 
         $service = new BookQueueService($bookQueueRepositoryMock);
 
-        $service->recountQueue($book);
+        $service->recountQueue($this->book);
     }
 
     public function testIncrementationOfMissedOpportunity(): void
@@ -163,5 +157,13 @@ class BookQueueServiceTest extends TestCase
         $service->increaseMissingOpportunity($bookQueue);
 
         $this->assertSame(1, $bookQueue->getMissingOpportunity());
+    }
+
+    #[Override]
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->book = new Book;
     }
 }

@@ -10,92 +10,85 @@ use PHPUnit\Framework\TestCase;
 
 class BookNotificationServiceTest extends TestCase
 {
-    
+    private Book $book;
+    private Category $category;
+    private FavoriteCategoryRepository $favoriteCategoryRepositoryMock;
+    private MailerService $mailerServiceMock;
+    private array $favoriteCategories;
+
     public function testDoesNotNotifyWhenFavoriteCategoriesIsEmpty(): void
     {
-        $book = new Book();
-        $category = new Category();
-        $book->setCategory($category);
-
-        $favoriteCategoryRepositoryMock = $this->createMock(FavoriteCategoryRepository::class);
-
-        $favoriteCategoryRepositoryMock
+        $this->favoriteCategoryRepositoryMock
             ->expects($this->once())
             ->method('findBy')
-            ->willReturn([]);
+            ->willReturn($this->favoriteCategories);
 
-        $mailerServiceMock = $this->createMock(MailerService::class);
-        $mailerServiceMock
+        $this->mailerServiceMock
             ->expects($this->never())
             ->method('sendNewBookInCategoryNotification');
 
-        $bookNotificationService = new BookNotificationService($favoriteCategoryRepositoryMock, $mailerServiceMock);
-        $bookNotificationService->sendNewBookNotification($book);
+        $bookNotificationService = new BookNotificationService($this->favoriteCategoryRepositoryMock, $this->mailerServiceMock);
+        $bookNotificationService->sendNewBookNotification($this->book);
     }
 
     public function testDoesNotNotifyWhenNotificationsAreDisabled(): void
     {
-        $book = new Book();
-        $category = new Category();
-        $book->setCategory($category);
-        $favoriteCategories = [];
-
         for ($i = 0; $i < 3; $i++) {
             $favoriteCategory = new FavoriteCategory();
             $favoriteCategory->setNotificationsEnabled(false);
-            $favoriteCategory->setCategory($category);
+            $favoriteCategory->setCategory($this->category);
 
-            $favoriteCategories[] = $favoriteCategory;
+            $this->favoriteCategories[] = $favoriteCategory;
         }
 
-        $favoriteCategoryRepositoryMock = $this->createMock(FavoriteCategoryRepository::class);
-
-        $favoriteCategoryRepositoryMock
+        $this->favoriteCategoryRepositoryMock
             ->expects($this->once())
             ->method('findBy')
-            ->with(['category' => $category])
-            ->willReturn($favoriteCategories);
+            ->with(['category' => $this->category])
+            ->willReturn($this->favoriteCategories);
 
-        $mailerServiceMock = $this->createMock(MailerService::class);
-
-        $mailerServiceMock
+        $this->mailerServiceMock
             ->expects($this->never())
             ->method('sendNewBookInCategoryNotification');
 
-        $bookNotificationService = new BookNotificationService($favoriteCategoryRepositoryMock, $mailerServiceMock);
-        $bookNotificationService->sendNewBookNotification($book);
+        $bookNotificationService = new BookNotificationService($this->favoriteCategoryRepositoryMock, $this->mailerServiceMock);
+        $bookNotificationService->sendNewBookNotification($this->book);
     }
 
     public function testNotifiesWhenFavoriteCategoryExistsAndNotificationsAreEnabled(): void
     {
-        $book = new Book();
-        $category = new Category();
-        $book->setCategory($category);
-        $favoriteCategories = [];
-
         for ($i = 0; $i < 3; $i++) {
             $favoriteCategory = new FavoriteCategory();
             $favoriteCategory->setNotificationsEnabled(true);
-            $favoriteCategory->setCategory($category);
+            $favoriteCategory->setCategory($this->category);
 
-            $favoriteCategories[] = $favoriteCategory;
+            $this->favoriteCategories[] = $favoriteCategory;
         }
 
-        $favoriteCategoryRepositoryMock = $this->createMock(FavoriteCategoryRepository::class);
-
-        $favoriteCategoryRepositoryMock
+        $this->favoriteCategoryRepositoryMock
             ->expects($this->once())
             ->method('findBy')
-            ->with(['category' => $category])
-            ->willReturn($favoriteCategories);
+            ->with(['category' => $this->category])
+            ->willReturn($this->favoriteCategories);
 
-        $mailerServiceMock = $this->createMock(MailerService::class);
-
-        $mailerServiceMock
-            ->expects($this->exactly(count($favoriteCategories)))
+        $this->mailerServiceMock
+            ->expects($this->exactly(count($this->favoriteCategories)))
             ->method('sendNewBookInCategoryNotification');
 
-        $bookNotificationService = new BookNotificationService($favoriteCategoryRepositoryMock, $mailerServiceMock);
-        $bookNotificationService->sendNewBookNotification($book);
+        $bookNotificationService = new BookNotificationService($this->favoriteCategoryRepositoryMock, $this->mailerServiceMock);
+        $bookNotificationService->sendNewBookNotification($this->book);
+    }
+
+    #[Override]
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->book = new Book();
+        $this->category = new Category();
+        $this->book->setCategory($this->category);
+        $this->favoriteCategoryRepositoryMock = $this->createMock(FavoriteCategoryRepository::class);
+        $this->mailerServiceMock = $this->createMock(MailerService::class);
+        $this->favoriteCategories = [];
     }
 }

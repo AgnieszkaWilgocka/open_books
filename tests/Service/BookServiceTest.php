@@ -8,17 +8,15 @@ use PHPUnit\Framework\TestCase;
 
 class BookServiceTest extends TestCase
 {
+    private BookService $bookService;
+    private User $user;
 
     public function testReturnsGuestStateWhenUserIsNull()
     {
-        //Arrange
         $bookStub = $this->createStub(Book::class);
-        $service = new BookService();
 
-        //Act
-        $result = $service->prepareBookState($bookStub, [], [], null);
+        $result = $this->bookService->prepareBookState($bookStub, [], [], null);
 
-        //Assert
         $this->assertSame(['status' => 'guest', 'action' => 'login'], $result);
     }
 
@@ -39,10 +37,8 @@ class BookServiceTest extends TestCase
         $bookStub
             ->method('getActiveRentals')
             ->willReturn([$rentalStub]);
-        
-        $service = new BookService();
 
-        $result = $service->prepareBookState($bookStub, [], [], $user);
+        $result = $this->bookService->prepareBookState($bookStub, [], [], $user);
 
         $this->assertSame([
                     'status' => 'borrowed',
@@ -54,7 +50,6 @@ class BookServiceTest extends TestCase
     {
         $bookStub = $this->createStub(Book::class);
         $rental = new Rental();
-        $user = new User();
         
         $bookStub 
             ->method('getId')
@@ -70,9 +65,7 @@ class BookServiceTest extends TestCase
 
         $queuedUserBooksIds = [1, 2, 3];
 
-        $service = new BookService();
-
-        $result = $service->prepareBookState($bookStub, $queuedUserBooksIds, [], $user);
+        $result = $this->bookService->prepareBookState($bookStub, $queuedUserBooksIds, [], $this->user);
 
         $this->assertSame([
                     'status' => 'borrowed',
@@ -85,7 +78,6 @@ class BookServiceTest extends TestCase
     {
         $bookStub = $this->createStub(Book::class);
         $rental = new Rental();
-        $user = new User();
 
         $bookStub
             ->method('getId')
@@ -101,9 +93,7 @@ class BookServiceTest extends TestCase
 
         $queuedUserBooksIds = [1, 2, 3];
 
-        $service = new BookService();
-
-        $result = $service->prepareBookState($bookStub, $queuedUserBooksIds, [], $user);
+        $result = $this->bookService->prepareBookState($bookStub, $queuedUserBooksIds, [], $this->user);
 
         $this->assertSame([
             'status' => 'borrowed',
@@ -113,7 +103,6 @@ class BookServiceTest extends TestCase
 
     public function testReturnsWaitingActionWhenBookIsReservedForCurrentUser()
     {
-        $user = new User();
         $bookStub = $this->createStub(Book::class);
         $bookStub
             ->method('getActiveRentals')
@@ -125,10 +114,8 @@ class BookServiceTest extends TestCase
         $bookStub
             ->method('getId')
             ->willReturn(1);
-
-        $service = new BookService();
         
-        $result = $service->prepareBookState($bookStub, $queuedUserBooksIds, $queuedBooksIds, $user);
+        $result = $this->bookService->prepareBookState($bookStub, $queuedUserBooksIds, $queuedBooksIds, $this->user);
 
         $this->assertSame([
             'status' => 'borrowed',
@@ -138,7 +125,6 @@ class BookServiceTest extends TestCase
 
     public function testReturnsNotifyActionWhenBookIsReservedForOtherUsers()
     {
-        $user = new User();
         $bookStub = $this->createStub(Book::class);
         $bookStub
             ->method('getActiveRentals')
@@ -151,9 +137,7 @@ class BookServiceTest extends TestCase
         $queuedBooksIds = [2];
         $queuedUserBooksIds = [];
 
-        $service = new BookService;
-
-        $result = $service->prepareBookState($bookStub, $queuedUserBooksIds, $queuedBooksIds, $user);
+        $result = $this->bookService->prepareBookState($bookStub, $queuedUserBooksIds, $queuedBooksIds, $this->user);
 
         $this->assertSame([
             'status' => 'borrowed',
@@ -163,8 +147,6 @@ class BookServiceTest extends TestCase
 
     public function testReturnsBorrowActionWhenBookIsAvailable()
     {
-        $user = new User();
-
         $bookStub = $this->createStub(Book::class);
 
         $bookStub
@@ -174,13 +156,20 @@ class BookServiceTest extends TestCase
         $queuedBooksIds = [];
         $queuedUserBooksIds = [];
 
-        $service = new BookService();
-
-        $result = $service->prepareBookState($bookStub, $queuedUserBooksIds, $queuedBooksIds, $user);
+        $result = $this->bookService->prepareBookState($bookStub, $queuedUserBooksIds, $queuedBooksIds, $this->user);
 
         $this->assertSame([
             'status' => 'available',
             'action' => 'borrow'
         ], $result);
+    }
+
+    #[Override]
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->bookService = new BookService();
+        $this->user = new User();
     }
 }
