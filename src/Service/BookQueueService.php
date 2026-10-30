@@ -29,8 +29,8 @@ class BookQueueService
 
     public function assignPosition(BookQueue $bookQueue, Book $book): void
     {
-        $queuedBooksPositions = $this->bookQueueRepository->queryQueuedBooks($book);
-        $bookQueue->setPosition(count($queuedBooksPositions) + 1);
+        $existingQueuedBooks = $this->bookQueueRepository->queryQueuedBooks($book);
+        $bookQueue->setPosition(count($existingQueuedBooks) + 1);
     }
 
     public function recountQueue(Book $book): void

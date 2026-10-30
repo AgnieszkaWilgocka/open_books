@@ -20,13 +20,14 @@ class RentalService
     public function createFromToken(RentalToken $token): Rental
     {
         $rental = new Rental();
+        $now = new DateTimeImmutable();
 
-        $rental->setCreatedAt(new DateTimeImmutable());
-        $rental->setUpdatedAt(new DateTimeImmutable());
-        $rental->setRentedAt(new DateTimeImmutable());
+        $rental->setCreatedAt($now);
+        $rental->setUpdatedAt($now);
+        $rental->setRentedAt($now);
         $rental->setBook($token->getBook());
         $rental->setOwner($token->getUser());
-        $rental->setDeadline(new DateTimeImmutable('+2 weeks'));
+        $rental->setDeadline($now->modify('+14 days'));
 
         $this->rentalRepository->save($rental);
 
@@ -35,19 +36,21 @@ class RentalService
 
     public function finalizeRental(Rental $rental, User $user): void
     {
-        $rental->setCreatedAt(new DateTimeImmutable());
-        $rental->setUpdatedAt(new DateTimeImmutable());
+        $now = new DateTimeImmutable();
+        $rental->setCreatedAt($now);
+        $rental->setUpdatedAt($now);
         $rental->setOwner($user);
-        $rental->setRentedAt(new DateTimeImmutable());
-        $rental->setDeadline(new DateTimeImmutable('+14 days'));
+        $rental->setRentedAt($now);
+        $rental->setDeadline($now->modify('+14 days'));
 
         $this->rentalRepository->save($rental);
     }
 
     public function markAsReturned(Rental $rental): void
     {
-        $rental->setReturnedAt(new DateTimeImmutable());
-        $rental->setUpdatedAt(new DateTimeImmutable());
+        $now = new DateTimeImmutable();
+        $rental->setReturnedAt($now);
+        $rental->setUpdatedAt($now);
 
         $this->rentalRepository->save($rental);
     }
