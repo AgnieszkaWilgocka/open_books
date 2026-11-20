@@ -61,7 +61,7 @@ class BookRepository extends ServiceEntityRepository
             ->getOneOrNullResult();
     }
 
-    public function queryMostRented(int $limit): array
+    public function queryMostRentedByGivenLimit(int $limit): array
     {
         return $this->createQueryBuilder('book')
         ->select('book', 'COUNT(rentals.id) AS rentalsCount', 'category')
@@ -77,7 +77,8 @@ class BookRepository extends ServiceEntityRepository
     public function queryNewest(): ?Book
     {
         return $this->createQueryBuilder('book')
-            ->select('partial book.{id, createdAt, title, imageFileName, writer, description}')
+            ->select('partial book.{id, createdAt, title, imageFileName, writer, description}', 'category')
+            ->leftJoin('book.category', 'category')
             ->orderBy('book.createdAt', 'DESC')
             ->setMaxResults(1)
             ->getQuery()

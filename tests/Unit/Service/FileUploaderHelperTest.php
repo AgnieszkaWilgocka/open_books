@@ -1,5 +1,7 @@
 <?php
 
+namespace App\Tests\Unit\Service;
+
 use App\Service\FileUploaderHelper;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\File\File;

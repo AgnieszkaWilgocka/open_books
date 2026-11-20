@@ -45,7 +45,7 @@ class BookController extends AbstractController
         $pagerfanta->setMaxPerPage(9);
         $pagerfanta->setCurrentPage($request->query->get('page', 1));
         
-        $popularBooks = $this->bookRepository->queryMostRented(2);
+        $popularBooks = $this->bookRepository->queryMostRentedByGivenLimit(2);
         $queuedBooksData = $this->bookQueueService->prepareQueuedBooksData($user);
 
         $bookStates = [];

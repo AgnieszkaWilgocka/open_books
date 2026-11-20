@@ -1,5 +1,7 @@
 <?php
 
+namespace App\Tests\Unit\Service;
+
 use App\Entity\Book;
 use App\Entity\Rental;
 use App\Entity\RentalToken;
